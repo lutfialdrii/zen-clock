@@ -1,7 +1,7 @@
 # ⏰ Zen Flip Clock, Prayer Times & Pomodoro
 
 <p align="center">
-  <img src="./assets/preview.png" alt="Zen Flip Clock & Prayer Times Preview" width="100%" />
+  <img src="./assets/preview-extension-full.png" alt="Zen Flip Clock & Prayer Times Preview" width="100%" />
 </p>
 
 <p align="center">
@@ -19,11 +19,19 @@
 
 ---
 
-## 📸 Tampilan Aplikasi (Live Screenshots)
+## 📸 Galeri Antarmuka (Live Screenshots)
+
+### 🔌 1. Mode Ekstensi (VS Code & Antigravity IDE)
+
+| Sidebar View (Panel Samping) | Full Editor Panel Tab |
+| :---: | :---: |
+| <img src="./assets/preview-extension.png" alt="Zen Clock Sidebar View" width="100%" /> | <img src="./assets/preview-extension-full.png" alt="Zen Clock Full Tab View" width="100%" /> |
+
+### 🌐 2. Mode Web Standalone & Progressive Web App (PWA)
 
 | Jadwal Sholat & Popover | Pomodoro Timer |
 | :---: | :---: |
-| <img src="./assets/preview-hover.png" alt="Prayer Times Schedule" width="100%" /> | <img src="./assets/preview-pomodoro.png" alt="Pomodoro Timer" width="100%" /> |
+| <img src="./assets/preview-hover.png" alt="Prayer Times Schedule Popover" width="100%" /> | <img src="./assets/preview-pomodoro.png" alt="Pomodoro Timer" width="100%" /> |
 
 ---
 
@@ -119,7 +127,7 @@ npm run preview
 
 ### Memaketkan Extension (.vsix)
 ```bash
-npx vsce package
+npm run package:vsix
 ```
 Install file `.vsix` yang dihasilkan melalui menu Extensions (`...` $\rightarrow$ `Install from VSIX...`).
 

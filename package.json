@@ -3,7 +3,13 @@
   "displayName": "Zen Flip Clock & Prayer Times",
   "description": "Zen Flip Clock & Prayer Times Extension for VS Code and Antigravity IDE",
   "version": "1.0.0",
-  "publisher": "developer",
+  "publisher": "lutfialdrii",
+  "icon": "public/icons/icon-192.png",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lutfialdrii/zen-clock.git"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
