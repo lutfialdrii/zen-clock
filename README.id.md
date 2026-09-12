@@ -61,6 +61,27 @@
 
 ---
 
+## 📦 Cara Memasang Ekstensi (.vsix)
+
+Anda dapat mengunduh file ekstensi `.vsix` siap pakai langsung dari halaman [GitHub Releases](https://github.com/lutfialdrii/zen-clock/releases).
+
+### Cara 1: Lewat Antarmuka IDE (Direkomendasikan)
+1. Unduh file `extension-clock-1.0.0.vsix` dari halaman [Releases](https://github.com/lutfialdrii/zen-clock/releases).
+2. Buka **VS Code** atau **Antigravity IDE**.
+3. Buka tab **Extensions** (`Ctrl+Shift+X` di Windows/Linux atau `Cmd+Shift+X` di macOS).
+4. Klik ikon titik tiga (**`...`**) di pojok kanan atas panel Extensions.
+5. Pilih **Install from VSIX...**
+6. Pilih file `.vsix` yang telah diunduh.
+7. Ikon **Zen Clock** akan langsung muncul di Activity Bar sebelah kiri Anda!
+
+### Cara 2: Lewat Terminal / Command Line
+```bash
+code --install-extension extension-clock-1.0.0.vsix
+```
+*(Ganti `code` dengan `antigravity` jika menggunakan Antigravity IDE CLI)*
+
+---
+
 ## 🚀 1. Menjalankan Versi Web & PWA
 
 ### Menjalankan di Mode Development
@@ -122,18 +143,17 @@ npm run preview
 
 ---
 
-## 🔌 2. Menjalankan Versi VS Code / Antigravity IDE Extension
+## 🔌 2. Pengembangan & Pembuatan Paket Ekstensi
 
 ### Mode Debugging Lokal (F5)
 1. Buka workspace di VS Code atau Antigravity IDE.
 2. Tekan `F5` atau buka panel **Run and Debug** $\rightarrow$ Pilih **Extension**.
 3. Buka ikon **Zen Clock** di Activity Bar sebelah kiri.
 
-### Memaketkan Extension (.vsix)
+### Memaketkan Ekstensi Sendiri (.vsix)
 ```bash
 npm run package:vsix
 ```
-Install file `.vsix` yang dihasilkan melalui menu Extensions (`...` $\rightarrow$ `Install from VSIX...`).
 
 ---
 

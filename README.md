@@ -60,6 +60,27 @@
 
 ---
 
+## 📦 Installing the Extension (.vsix)
+
+You can download the pre-packaged `.vsix` extension file directly from the [GitHub Releases](https://github.com/lutfialdrii/zen-clock/releases) page.
+
+### Method 1: Via VS Code / Antigravity IDE UI (Recommended)
+1. Download `extension-clock-1.0.0.vsix` from the [Releases](https://github.com/lutfialdrii/zen-clock/releases) page.
+2. Open **VS Code** or **Antigravity IDE**.
+3. Open the **Extensions** view (`Ctrl+Shift+X` on Windows/Linux or `Cmd+Shift+X` on macOS).
+4. Click the three dots menu (**`...`**) in the top-right corner of the Extensions panel.
+5. Select **Install from VSIX...**
+6. Choose the downloaded `.vsix` file.
+7. The **Zen Clock** icon will appear on your Activity Bar on the left!
+
+### Method 2: Via Terminal / Command Line
+```bash
+code --install-extension extension-clock-1.0.0.vsix
+```
+*(Or `antigravity --install-extension extension-clock-1.0.0.vsix` if using Antigravity IDE CLI)*
+
+---
+
 ## 🚀 1. Running Web & PWA Version
 
 ### Development Mode
@@ -121,18 +142,17 @@ npm run preview
 
 ---
 
-## 🔌 2. Running VS Code / Antigravity IDE Extension
+## 🔌 2. Extension Development & Packaging
 
 ### Local Debugging (F5)
 1. Open the project folder in VS Code or Antigravity IDE.
 2. Press `F5` or navigate to **Run and Debug** $\rightarrow$ Select **Extension**.
 3. Click the **Zen Clock** icon in the Activity Bar on the left.
 
-### Package Extension (.vsix)
+### Building Your Own Package (.vsix)
 ```bash
 npm run package:vsix
 ```
-Install the generated `.vsix` file via Extensions menu (`...` $\rightarrow$ `Install from VSIX...`).
 
 ---
 
