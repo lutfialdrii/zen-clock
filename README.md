@@ -1,76 +1,141 @@
-# Zen Flip Clock, Prayer Times & Pomodoro
+# ⏰ Zen Flip Clock, Prayer Times & Pomodoro
 
-Aplikasi jam flip animasi (Zen Flip Clock), jadwal sholat otomatis, dan Pomodoro Timer interaktif. Tersedia dalam versi **VS Code / Antigravity IDE Extension** dan **Standalone Web App**.
+<p align="center">
+  <img src="./assets/preview.png" alt="Zen Flip Clock & Prayer Times Preview" width="100%" />
+</p>
+
+<p align="center">
+  <b>Aplikasi Jam Flip 3D Minimalis, Jadwal Sholat Otomatis, & Pomodoro Timer</b><br />
+  Tersedia sebagai <b>Progressive Web App (PWA)</b> mandiri dan <b>VS Code / Antigravity IDE Extension</b>.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/PWA-Supported-5a0fc8?logo=pwa&logoColor=white" alt="PWA" />
+  <img src="https://img.shields.io/badge/VS_Code-Extension-007acc?logo=visualstudiocode&logoColor=white" alt="VS Code Extension" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
+</p>
+
+---
+
+## 📸 Tampilan Aplikasi (Live Screenshots)
+
+| Jadwal Sholat & Popover | Pomodoro Timer |
+| :---: | :---: |
+| <img src="./assets/preview-hover.png" alt="Prayer Times Schedule" width="100%" /> | <img src="./assets/preview-pomodoro.png" alt="Pomodoro Timer" width="100%" /> |
 
 ---
 
 ## 🌟 Fitur Utama
 
-1. **Zen Flip Clock**: Jam flip dengan animasi 3D modern & responsif.
-2. **Jadwal Sholat Otomatis**: Perhitungan waktu sholat akurat dengan `adhan`, deteksi otomatis via Browser Geolocation & IP Reverse Lookup.
-3. **Pomodoro Timer**: Mode kerja (25 menit) & istirahat (5 menit) dengan hitung mundur flip.
-4. **Universal Notification & Sound Alert**:
-   - Di VS Code: Notifikasi native VS Code window.
-   - Di Web Browser: Web Browser Notification + Audio Chime lembut saat waktu sholat atau timer selesai.
-   - Update Judul Tab Browser dinamis `(24:59) Work - Zen Clock`.
+- **🕰️ 3D Zen Flip Clock**: Jam mekanik bergaya flip clock retro-modern dengan kartu animasi 3D yang halus dan responsif.
+- **🕌 Jadwal Sholat Otomatis**:
+  - Perhitungan waktu sholat presisi menggunakan pustaka astronomi [`adhan`](https://github.com/batoulapps/adhan-js).
+  - Deteksi lokasi otomatis via browser Geolocation dengan fallback cerdas IP Reverse Lookup & OpenStreetMap.
+  - Hover popover interaktif untuk melihat daftar lengkap jadwal waktu sholat harian (Subuh, Terbit, Dzuhur, Ashar, Maghrib, Isya).
+- **🍅 Pomodoro Timer**:
+  - Timer kerja (Work 25m) dan istirahat (Break 5m) dengan tampilan angka flip.
+  - Kontrol play/pause/reset interaktif.
+  - Judul tab browser dinamis yang menampilkan sisa waktu timer: `(24:59) Work - Zen Clock`.
+- **📱 Progressive Web App (PWA) & Offline Mode**:
+  - Dapat di-install langsung di Desktop (Chrome, Edge, macOS/Windows) dan Smartphone (Android & iOS).
+  - Service Worker cerdas untuk caching aset statis dan akses offline secara instan.
+  - Tombol **Install** interaktif di bar navigasi.
+- **🔔 Universal Notification & Audio Chime**:
+  - Notifikasi native jendela di VS Code extension.
+  - Web Browser Notification saat waktu sholat atau sesi Pomodoro berakhir.
+  - Suara audio chime lembut saat alarm berbunyi.
 
 ---
 
-## 💻 1. Versi Web (Standalone App)
+## 🚀 1. Menjalankan Versi Web & PWA
 
-### Jalankan Lokal (Development)
+### Menjalankan di Mode Development
 ```bash
 npm run dev
 ```
+Buka browser di `http://localhost:5173`.
 
-### Build untuk Produksi (Web)
+### Membangun untuk Produksi (Web)
 ```bash
 npm run build:web
 ```
-Hasil build web akan tersedia di folder `dist/` dan siap di-deploy ke web hosting mana saja.
+Hasil build web siap pakai akan berada di direktori `dist/`.
 
-### Preview Hasil Build Web
+### Menjalankan Preview Hasil Build
 ```bash
 npm run preview
 ```
 
+### 📲 Cara Install Aplikasi (PWA)
+- **Desktop (Chrome / Edge / Brave)**: Klik tombol **Install** di navigasi aplikasi atau klik ikon install di address bar browser.
+- **Android**: Buka website di Chrome $\rightarrow$ Klik tombol **Install** atau pilih menu *Add to Home Screen*.
+- **iOS / iPadOS (Safari)**: Buka website di Safari $\rightarrow$ Tekan tombol **Share (Bagikan)** $\rightarrow$ Pilih ***Add to Home Screen (Tambah ke Layar Utama)***.
+
 ---
 
-## 🚀 Cara Deploy Versi Web
+## 🌐 Panduan Deployment Web
 
-### Option A: Vercel (Rekomendasi - 1 Klik)
-1. Install Vercel CLI (atau hubungkan repository di [Vercel Dashboard](https://vercel.com)):
-   ```bash
-   npx vercel
-   ```
-2. Atau jalankan di terminal:
+### Opsi 1: Vercel (Rekomendasi)
+1. Hubungkan repository GitHub ini di [Vercel Dashboard](https://vercel.com).
+2. Atau jalankan via Vercel CLI:
    ```bash
    npx vercel --prod
    ```
 
-### Option B: Netlify
-1. Build aplikasi: `npm run build:web`
-2. Upload / drag-and-drop folder `dist/` ke [Netlify Drop](https://app.netlify.com/drop), atau deploy via Netlify CLI:
+### Opsi 2: Netlify
+1. Build aplikasi:
+   ```bash
+   npm run build:web
+   ```
+2. Upload folder `dist/` ke [Netlify Drop](https://app.netlify.com/drop), atau deploy via Netlify CLI:
    ```bash
    npx netlify deploy --prod --dir=dist
    ```
 
-### Option C: GitHub Pages
-1. Install `gh-pages`: `npm install -D gh-pages`
-2. Tambahkan script di `package.json`: `"deploy": "npm run build:web && gh-pages -d dist"`
-3. Jalankan: `npm run deploy`
+### Opsi 3: GitHub Pages
+1. Install dependency deploy:
+   ```bash
+   npm install -D gh-pages
+   ```
+2. Tambahkan script pada `package.json`:
+   ```json
+   "deploy": "npm run build:web && gh-pages -d dist"
+   ```
+3. Jalankan:
+   ```bash
+   npm run deploy
+   ```
 
 ---
 
-## 🔌 2. Versi Extension (VS Code / Antigravity IDE)
+## 🔌 2. Menjalankan Versi VS Code / Antigravity IDE Extension
 
-### Mode Debugging (F5)
-1. Buka folder `extension-clock` di VS Code / Antigravity IDE.
-2. Tekan `F5` (menu **Run and Debug** -> **Extension**).
+### Mode Debugging Lokal (F5)
+1. Buka workspace di VS Code atau Antigravity IDE.
+2. Tekan `F5` atau buka panel **Run and Debug** $\rightarrow$ Pilih **Extension**.
 3. Buka ikon **Zen Clock** di Activity Bar sebelah kiri.
 
-### Build Package Extension (.vsix)
+### Memaketkan Extension (.vsix)
 ```bash
 npx vsce package
 ```
-Install file `.vsix` melalui menu Extension (`Install from VSIX...`).
+Install file `.vsix` yang dihasilkan melalui menu Extensions (`...` $\rightarrow$ `Install from VSIX...`).
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend Core**: React 19, JavaScript (ESNext)
+- **Bundler & Tooling**: Vite 8, TypeScript
+- **PWA**: Service Worker Cache API, Web App Manifest
+- **Prayer Calculation**: Adhan JS
+- **Icons**: Lucide React
+- **Extension API**: VS Code Webview API
+
+---
+
+## 📄 Lisensi
+
+Didistribusikan di bawah lisensi MIT.
