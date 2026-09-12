@@ -47,7 +47,11 @@
     "build:web": "vite build",
     "build:extension": "tsc -p ./ && vite build",
     "preview": "vite preview",
-    "dev": "vite"
+    "dev": "vite",
+    "package:vsix": "npx @vscode/vsce package",
+    "release:patch": "npm version patch -m 'chore(release): v%s'",
+    "release:minor": "npm version minor -m 'chore(release): v%s'",
+    "release:major": "npm version major -m 'chore(release): v%s'"
   },
   "dependencies": {
     "adhan": "^4.4.3",
