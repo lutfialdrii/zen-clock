@@ -1,14 +1,43 @@
 # Changelog
 
-Semua perubahan penting pada proyek **Zen Flip Clock & Prayer Times** akan didokumentasikan dalam file ini.
-
-Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.1.0/) dan proyek ini mematuhi [Semantic Versioning (SemVer)](https://semver.org/spec/v2.0.0.html).
+All notable changes to the **Zen Flip Clock & Prayer Times** project will be documented in this file.  
+Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) dan [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
 ## [1.0.0] - 2026-09-12
 
-### ✨ Fitur Baru (Added)
+### 🇬🇧 English
+
+#### ✨ Added
+- **3D Zen Flip Clock**: Retro-modern 3D mechanical flip clock with smooth card flip animations and localized date display.
+- **Automated Islamic Prayer Times**:
+  - High-precision calculation powered by the astronomical library `adhan`.
+  - Automatic geolocation detection with smart IP reverse lookup and OpenStreetMap reverse geocoding fallback.
+  - Compact prayer pill display with countdown to the next prayer.
+- **Interactive Prayer Popover**: Hover popover displaying the complete daily prayer schedule (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) and detected location district.
+- **Pomodoro Timer**:
+  - Dedicated Work mode (25m) and Break mode (5m).
+  - Clean flip countdown display with interactive Start, Pause, and Reset controls.
+  - Dynamic browser tab title updating remaining time: `(24:59) Work - Zen Clock`.
+- **Progressive Web App (PWA) & Offline Mode**:
+  - Complete `manifest.webmanifest` configuration with HD icons (192x192, 512x512, maskable, and Apple Touch Icon).
+  - Service Worker (`sw.js`) for static asset caching and instant offline access.
+  - Interactive **Install** prompt button in the navigation header on PWA-supported browsers.
+- **Universal Notification & Sound Alert**:
+  - Native window notifications for VS Code / Antigravity IDE.
+  - Web Browser Notification API + Web Audio API synthesizer chime sound on prayer arrival and timer completion.
+- **VS Code Extension Integration**: Contributes `zen-clock-sidebar` activity bar container and `extension-clock.openClock` command.
+- **Real Live Screenshots**: Authentic browser and IDE interface screenshots added directly to `README.md`.
+
+#### 🐛 Fixed
+- **Prayer Popover Positioning**: Fixed the prayer schedule popover jumping to the top of the viewport by adding `position: relative` to the parent container, setting centered coordinates (`left: 50%`), and adding an anti-flicker hover bridge (`::after`).
+
+---
+
+### 🇮🇩 Bahasa Indonesia
+
+#### ✨ Fitur Baru (Added)
 - **3D Zen Flip Clock**: Jam mekanik flip 3D retro-modern dengan kartu animasi halus dan tampilan tanggal berbahasa Indonesia.
 - **Jadwal Sholat Otomatis**:
   - Perhitungan waktu sholat akurat berbasis pustaka astronomi `adhan`.
@@ -29,7 +58,7 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/id/
 - **VS Code Extension Integration**: Kontribusi sidebar view container `zen-clock-sidebar` dan command `extension-clock.openClock`.
 - **Live Browser Screenshots**: Dokumentasi antarmuka aplikasi nyata langsung di `README.md`.
 
-### 🐛 Perbaikan Bug (Fixed)
+#### 🐛 Perbaikan Bug (Fixed)
 - **Prayer Popover Positioning**: Memperbaiki masalah popup detail waktu sholat yang melompat ke posisi terlalu atas layar dengan menambahkan `position: relative` pada kontainer induk, koordinat terpusat `left: 50%`, dan jembatan hover anti-flicker `::after`.
 
 ---
