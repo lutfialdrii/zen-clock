@@ -5,8 +5,12 @@
 </p>
 
 <p align="center">
-  <b>Aplikasi Jam Flip 3D Minimalis, Jadwal Sholat Otomatis, & Pomodoro Timer</b><br />
-  Tersedia sebagai <b>Progressive Web App (PWA)</b> mandiri dan <b>VS Code / Antigravity IDE Extension</b>.
+  <b>Minimalist 3D Retro Flip Clock, Automated Islamic Prayer Times & Pomodoro Timer</b><br />
+  Available as a standalone <b>Progressive Web App (PWA)</b> and a <b>VS Code / Antigravity IDE Extension</b>.
+</p>
+
+<p align="center">
+  <b>English</b> | <a href="./README.id.md">Bahasa Indonesia</a>
 </p>
 
 <p align="center">
@@ -19,117 +23,116 @@
 
 ---
 
-## 📸 Galeri Antarmuka (Live Screenshots)
+## 📸 Interface Gallery (Live Screenshots)
 
-### 🔌 1. Mode Ekstensi (VS Code & Antigravity IDE)
+### 🔌 1. Extension Mode (VS Code & Antigravity IDE)
 
-| Sidebar View (Panel Samping) | Full Editor Panel Tab |
+| Sidebar View | Full Editor Panel Tab |
 | :---: | :---: |
 | <img src="./assets/preview-extension.png" alt="Zen Clock Sidebar View" width="100%" /> | <img src="./assets/preview-extension-full.png" alt="Zen Clock Full Tab View" width="100%" /> |
 
-### 🌐 2. Mode Web Standalone & Progressive Web App (PWA)
+### 🌐 2. Standalone Web & Progressive Web App (PWA) Mode
 
-| Jadwal Sholat & Popover | Pomodoro Timer |
+| Prayer Times & Schedule Popover | Pomodoro Timer |
 | :---: | :---: |
 | <img src="./assets/preview-hover.png" alt="Prayer Times Schedule Popover" width="100%" /> | <img src="./assets/preview-pomodoro.png" alt="Pomodoro Timer" width="100%" /> |
 
 ---
 
-## 🌟 Fitur Utama
+## 🌟 Key Features
 
-- **🕰️ 3D Zen Flip Clock**: Jam mekanik bergaya flip clock retro-modern dengan kartu animasi 3D yang halus dan responsif.
-- **🕌 Jadwal Sholat Otomatis**:
-  - Perhitungan waktu sholat presisi menggunakan pustaka astronomi [`adhan`](https://github.com/batoulapps/adhan-js).
-  - Deteksi lokasi otomatis via browser Geolocation dengan fallback cerdas IP Reverse Lookup & OpenStreetMap.
-  - Hover popover interaktif untuk melihat daftar lengkap jadwal waktu sholat harian (Subuh, Terbit, Dzuhur, Ashar, Maghrib, Isya).
+- **🕰️ 3D Zen Flip Clock**: Mechanical retro-modern flip clock with smooth 3D flip card animations and localized date display.
+- **🕌 Automated Islamic Prayer Times**:
+  - High-precision prayer times calculation powered by astronomical library [`adhan`](https://github.com/batoulapps/adhan-js).
+  - Automatic geolocation detection with smart IP Reverse Lookup & OpenStreetMap fallback.
+  - Interactive hover popover displaying the full daily prayer schedule (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha).
 - **🍅 Pomodoro Timer**:
-  - Timer kerja (Work 25m) dan istirahat (Break 5m) dengan tampilan angka flip.
-  - Kontrol play/pause/reset interaktif.
-  - Judul tab browser dinamis yang menampilkan sisa waktu timer: `(24:59) Work - Zen Clock`.
+  - Work mode (25m) and Break mode (5m) with flip digit countdown.
+  - Interactive start, pause, and reset controls.
+  - Dynamic browser tab title updating remaining time: `(24:59) Work - Zen Clock`.
 - **📱 Progressive Web App (PWA) & Offline Mode**:
-  - Dapat di-install langsung di Desktop (Chrome, Edge, macOS/Windows) dan Smartphone (Android & iOS).
-  - Service Worker cerdas untuk caching aset statis dan akses offline secara instan.
-  - Tombol **Install** interaktif di bar navigasi.
-- **🔔 Universal Notification & Audio Chime**:
-  - Notifikasi native jendela di VS Code extension.
-  - Web Browser Notification saat waktu sholat atau sesi Pomodoro berakhir.
-  - Suara audio chime lembut saat alarm berbunyi.
+  - Fully installable on Desktop (Chrome, Edge, macOS/Windows) and Mobile (Android & iOS).
+  - Smart Service Worker caching for instant offline load.
+  - In-app interactive **Install** button on the navigation bar.
+- **🔔 Universal Notification & Sound Alert**:
+  - Native window notifications in VS Code / Antigravity IDE extension.
+  - Web Browser Notification API + Web Audio API synthesizer chime sound when prayer time arrives or timer ends.
 
 ---
 
-## 🚀 1. Menjalankan Versi Web & PWA
+## 🚀 1. Running Web & PWA Version
 
-### Menjalankan di Mode Development
+### Development Mode
 ```bash
 npm run dev
 ```
-Buka browser di `http://localhost:5173`.
+Open your browser at `http://localhost:5173`.
 
-### Membangun untuk Produksi (Web)
+### Production Build (Web)
 ```bash
 npm run build:web
 ```
-Hasil build web siap pakai akan berada di direktori `dist/`.
+Ready-to-deploy static assets will be output in the `dist/` directory.
 
-### Menjalankan Preview Hasil Build
+### Preview Production Build
 ```bash
 npm run preview
 ```
 
-### 📲 Cara Install Aplikasi (PWA)
-- **Desktop (Chrome / Edge / Brave)**: Klik tombol **Install** di navigasi aplikasi atau klik ikon install di address bar browser.
-- **Android**: Buka website di Chrome $\rightarrow$ Klik tombol **Install** atau pilih menu *Add to Home Screen*.
-- **iOS / iPadOS (Safari)**: Buka website di Safari $\rightarrow$ Tekan tombol **Share (Bagikan)** $\rightarrow$ Pilih ***Add to Home Screen (Tambah ke Layar Utama)***.
+### 📲 How to Install the App (PWA)
+- **Desktop (Chrome / Edge / Brave)**: Click the **Install** button on the in-app navigation bar or the install icon in the browser address bar.
+- **Android**: Open in Chrome $\rightarrow$ Click **Install** or tap the menu $\rightarrow$ *Add to Home screen*.
+- **iOS / iPadOS (Safari)**: Open in Safari $\rightarrow$ Tap the **Share** button $\rightarrow$ Select ***Add to Home Screen***.
 
 ---
 
-## 🌐 Panduan Deployment Web
+## 🌐 Web Deployment Guide
 
-### Opsi 1: Vercel (Rekomendasi)
-1. Hubungkan repository GitHub ini di [Vercel Dashboard](https://vercel.com).
-2. Atau jalankan via Vercel CLI:
+### Option 1: Vercel (Recommended)
+1. Import this repository in [Vercel Dashboard](https://vercel.com).
+2. Or deploy via Vercel CLI:
    ```bash
    npx vercel --prod
    ```
 
-### Opsi 2: Netlify
-1. Build aplikasi:
+### Option 2: Netlify
+1. Build the web app:
    ```bash
    npm run build:web
    ```
-2. Upload folder `dist/` ke [Netlify Drop](https://app.netlify.com/drop), atau deploy via Netlify CLI:
+2. Upload the `dist/` folder to [Netlify Drop](https://app.netlify.com/drop), or deploy via Netlify CLI:
    ```bash
    npx netlify deploy --prod --dir=dist
    ```
 
-### Opsi 3: GitHub Pages
-1. Install dependency deploy:
+### Option 3: GitHub Pages
+1. Install deployment dependency:
    ```bash
    npm install -D gh-pages
    ```
-2. Tambahkan script pada `package.json`:
+2. Add script to `package.json`:
    ```json
    "deploy": "npm run build:web && gh-pages -d dist"
    ```
-3. Jalankan:
+3. Run:
    ```bash
    npm run deploy
    ```
 
 ---
 
-## 🔌 2. Menjalankan Versi VS Code / Antigravity IDE Extension
+## 🔌 2. Running VS Code / Antigravity IDE Extension
 
-### Mode Debugging Lokal (F5)
-1. Buka workspace di VS Code atau Antigravity IDE.
-2. Tekan `F5` atau buka panel **Run and Debug** $\rightarrow$ Pilih **Extension**.
-3. Buka ikon **Zen Clock** di Activity Bar sebelah kiri.
+### Local Debugging (F5)
+1. Open the project folder in VS Code or Antigravity IDE.
+2. Press `F5` or navigate to **Run and Debug** $\rightarrow$ Select **Extension**.
+3. Click the **Zen Clock** icon in the Activity Bar on the left.
 
-### Memaketkan Extension (.vsix)
+### Package Extension (.vsix)
 ```bash
 npm run package:vsix
 ```
-Install file `.vsix` yang dihasilkan melalui menu Extensions (`...` $\rightarrow$ `Install from VSIX...`).
+Install the generated `.vsix` file via Extensions menu (`...` $\rightarrow$ `Install from VSIX...`).
 
 ---
 
@@ -144,6 +147,6 @@ Install file `.vsix` yang dihasilkan melalui menu Extensions (`...` $\rightarrow
 
 ---
 
-## 📄 Lisensi
+## 📄 License
 
-Didistribusikan di bawah lisensi MIT.
+Distributed under the MIT License. See [LICENSE](./LICENSE) for details.
