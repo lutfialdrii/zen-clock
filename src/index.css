@@ -1,0 +1,395 @@
+:root {
+  --bg-color: var(--vscode-editor-background, #0c0d10);
+  --card-bg: var(--vscode-sideBar-background, #1c1e24);
+  --text-color: var(--vscode-editor-foreground, #f0f2f5);
+  --divider-color: var(--vscode-widget-border, #08090a);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding-top: 15px;
+}
+
+/* Nav Header */
+.app-header-nav {
+  display: flex;
+  gap: 8px;
+  background-color: var(--vscode-sideBar-background, rgba(255, 255, 255, 0.05));
+  padding: 4px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.5));
+  padding: 6px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+  color: var(--vscode-foreground, #fff);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-btn.active {
+  background-color: var(--vscode-button-background, #007acc);
+  color: var(--vscode-button-foreground, #fff);
+}
+
+.nav-btn.install-btn {
+  background-color: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.nav-btn.install-btn:hover {
+  background-color: rgba(99, 102, 241, 0.28);
+  color: #ffffff;
+}
+
+.app-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+}
+
+/* Flip Clock */
+.flip-clock {
+  display: flex;
+  gap: clamp(8px, 2vw, 25px);
+}
+
+.flip-unit-container {
+  display: block;
+  position: relative;
+  width: clamp(70px, 20vw, 180px);
+  height: clamp(100px, 28vw, 240px);
+  perspective: 1200px;
+  border-radius: clamp(8px, 2.5vw, 16px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.flip-card {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: clamp(60px, 16vw, 140px);
+  font-weight: 700;
+  border-radius: inherit;
+  background-color: var(--card-bg);
+}
+
+.flip-card-half {
+  display: flex;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  text-align: center;
+  justify-content: center;
+  backface-visibility: hidden;
+}
+
+.flip-card-top {
+  top: 0;
+  align-items: flex-end;
+  transform-origin: 50% 100%;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 2px solid var(--divider-color);
+}
+.flip-card-top span {
+  transform: translateY(50%);
+}
+
+.flip-card-bottom {
+  bottom: 0;
+  align-items: flex-start;
+  transform-origin: 50% 0%;
+  border-radius: inherit;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.flip-card-bottom span {
+  transform: translateY(-50%);
+}
+
+.flip-card-top-static { z-index: 1; }
+.flip-card-bottom-static { z-index: 1; }
+
+.flip-anim-top {
+  z-index: 2;
+  animation: turnTop 0.4s cubic-bezier(0.37, 0, 0.63, 1) forwards;
+}
+
+.flip-anim-bottom {
+  z-index: 2;
+  transform: rotateX(90deg);
+  animation: turnBottom 0.4s cubic-bezier(0.37, 0, 0.63, 1) 0.4s forwards;
+}
+
+@keyframes turnTop {
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(-90deg); }
+}
+
+@keyframes turnBottom {
+  0% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+
+.clock-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(15px, 3vw, 30px);
+}
+
+.date-display {
+  font-size: clamp(11px, 2vw, 16px);
+  color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.5));
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+/* Prayer Time */
+.prayer-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  position: relative;
+}
+
+.prayer-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(10px, 2vw, 13px);
+  color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.6));
+  background-color: var(--vscode-button-secondaryBackground, rgba(255, 255, 255, 0.05));
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.notify-toggle-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 50%;
+  margin-left: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.notify-toggle-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.prayer-display:hover {
+  color: var(--vscode-button-secondaryForeground, rgba(255, 255, 255, 0.9));
+  background-color: var(--vscode-button-secondaryHoverBackground, rgba(255, 255, 255, 0.15));
+}
+
+.prayer-display.error {
+  color: var(--vscode-errorForeground, rgba(255, 85, 85, 0.8));
+}
+
+.prayer-details {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  background-color: var(--vscode-sideBar-background, #1a1c22);
+  border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.1));
+  border-radius: 10px;
+  padding: 14px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(5px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.prayer-details::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.prayer-container:hover .prayer-details {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.prayer-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--vscode-foreground, rgba(255, 255, 255, 0.8));
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--vscode-widget-border, rgba(255,255,255,0.08));
+  text-transform: capitalize;
+}
+
+.prayer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prayer-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.5));
+  font-weight: 500;
+}
+
+.prayer-item.active {
+  color: var(--vscode-textLink-activeForeground, #4fc3f7);
+  font-weight: 600;
+}
+
+/* Pomodoro Component */
+.pomodoro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-color: var(--card-bg);
+  padding: 24px 30px;
+  border-radius: 16px;
+  border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.pomodoro-header {
+  display: flex;
+  gap: 10px;
+}
+
+.pomodoro-tab {
+  background: none;
+  border: none;
+  color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.5));
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pomodoro-tab.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--vscode-foreground, #fff);
+  font-weight: 600;
+}
+
+.pomodoro-timer-display {
+  font-size: clamp(48px, 12vw, 80px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  color: var(--vscode-foreground, #fff);
+}
+
+.pomodoro-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.pomodoro-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--vscode-button-background, #007acc);
+  color: var(--vscode-button-foreground, #fff);
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.pomodoro-btn:hover {
+  background-color: var(--vscode-button-hoverBackground, #005999);
+  transform: scale(1.05);
+}

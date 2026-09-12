@@ -1,0 +1,67 @@
+{
+  "name": "extension-clock",
+  "displayName": "Zen Flip Clock & Prayer Times",
+  "description": "Zen Flip Clock & Prayer Times Extension for VS Code and Antigravity IDE",
+  "version": "1.0.0",
+  "publisher": "developer",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension-clock.openClock",
+        "title": "Zen Clock: Open Flip Clock Panel",
+        "category": "Zen Clock"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "zen-clock-sidebar-container",
+          "title": "Zen Clock",
+          "icon": "$(watch)"
+        }
+      ]
+    },
+    "views": {
+      "zen-clock-sidebar-container": [
+        {
+          "type": "webview",
+          "id": "zen-clock-sidebar",
+          "name": "Zen Clock"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build:extension",
+    "compile": "tsc -p ./ && vite build",
+    "watch": "tsc -watch -p ./",
+    "build": "tsc -p ./ && vite build",
+    "build:web": "vite build",
+    "build:extension": "tsc -p ./ && vite build",
+    "preview": "vite preview",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "adhan": "^4.4.3",
+    "lucide-react": "^1.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/vscode": "^1.80.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "^5.0.0",
+    "vite": "^8.0.1"
+  }
+}
