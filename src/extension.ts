@@ -469,8 +469,23 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri): s
   if (fs.existsSync(htmlPath)) {
     let html = fs.readFileSync(htmlPath, 'utf8');
 
-    // Replace all absolute paths /assets/... & /webview.js to vscode-webview:// URIs
-    html = html.replace(/(href|src)="\/(.*?)"/g, (_match, attr, relativePath) => {
+    // Inject CSP meta tag if not present
+    const cspSource = webview.cspSource;
+    const cspMeta = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${cspSource} https: data:; script-src ${cspSource} 'unsafe-inline'; style-src ${cspSource} 'unsafe-inline'; font-src ${cspSource}; connect-src https:;">`;
+    if (!html.includes('Content-Security-Policy')) {
+      html = html.replace('<head>', `<head>\n    ${cspMeta}`);
+    }
+
+    // Replace all relative and absolute paths (./assets/..., ./webview.js, /assets/..., etc.) to webview asWebviewUri
+    html = html.replace(/(href|src)="(?:\.\/|\/)?(.*?)"/g, (match, attr, relativePath) => {
+      if (
+        relativePath.startsWith('http:') ||
+        relativePath.startsWith('https:') ||
+        relativePath.startsWith('data:') ||
+        relativePath.startsWith('#')
+      ) {
+        return match;
+      }
       const resourceUri = webview.asWebviewUri(vscode.Uri.joinPath(distPath, relativePath));
       return `${attr}="${resourceUri}"`;
     });

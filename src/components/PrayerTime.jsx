@@ -192,6 +192,28 @@ export default function PrayerTime() {
     const api = getVsCodeApi();
     if (api) {
       api.postMessage({ type: 'REQUEST_CHANGE_LOCATION' });
+    } else {
+      const cityName = window.prompt('Masukkan nama kota Anda (contoh: Surabaya, Bandung, Jakarta):', locationName || '');
+      if (cityName && cityName.trim()) {
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName.trim())}&limit=1`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data && data.length > 0) {
+              const item = data[0];
+              const parts = item.display_name.split(',');
+              const shortName = parts.slice(0, 2).join(',').trim();
+              const newCoords = { lat: parseFloat(item.lat), lng: parseFloat(item.lon) };
+              setCoords(newCoords);
+              setLocationName(shortName);
+              try {
+                localStorage.setItem('zenClock_savedLocation', JSON.stringify({ name: shortName, ...newCoords }));
+              } catch (err) {}
+            } else {
+              alert(`Kota "${cityName}" tidak ditemukan. Silakan periksa kembali ejaan.`);
+            }
+          })
+          .catch((err) => alert('Gagal mengambil data kota: ' + err.message));
+      }
     }
   };
 
