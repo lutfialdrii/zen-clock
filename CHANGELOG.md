@@ -31,6 +31,7 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 - **Native VS Code City Selection**: Interactive QuickPick city selector (`extension-clock.changeLocation`) accessible directly by clicking the location name or via Command Palette, supporting popular Indonesian cities and global search.
 - **Bottom Panel Integration & Startup Activation**: Runs automatically upon VS Code launch (`onStartupFinished`) and provides a full-featured bottom panel view (`zen-clock-panel-view`) alongside Terminal and Output.
 - **Interactive Status Bar Item & Rich Tooltip**: Real-time status bar display showing the current clock, upcoming prayer time, and active Pomodoro countdown. Hovering reveals a rich Markdown tooltip with today's complete prayer schedule, Pomodoro timer state, and quick navigation links.
+- **Dedicated Prayer Reminder Page**: Beautiful, peaceful editor tab reminder (`zenPrayerReminder`) that opens automatically when prayer time arrives, displaying the prayer name, exact time, location, an inspiring Quranic reminder, and quick action buttons. Configurable via `zenClock.autoOpenPrayerReminder` setting, with a preview command (`Zen Clock: Preview Prayer Reminder Page`).
 - **Real Live Screenshots**: Authentic browser and IDE interface screenshots added directly to `README.md`.
 
 #### 🐛 Fixed
@@ -63,6 +64,7 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 - **Native VS Code City Selection**: Pemilihan kota interaktif (`extension-clock.changeLocation`) via QuickPick native VS Code dengan klik nama lokasi atau Command Palette.
 - **Integrasi Bottom Panel & Auto-Start Saat Startup**: Otomatis aktif saat VS Code dibuka (`onStartupFinished`) serta menyediakan tab di panel bawah (`zen-clock-panel-view`) sejajar dengan Terminal dan Output.
 - **Status Bar Interaktif & Hover Tooltip**: Penunjuk status bar real-time yang menampilkan jam, waktu sholat berikutnya, atau countdown Pomodoro. Saat di-hover, menampilkan tooltip Markdown informatif berisi jadwal sholat lengkap hari ini, status Pomodoro, dan shortcut cepat.
+- **Halaman Pengingat Sholat Khusus (Prayer Reminder Page)**: Tab editor elegan dan menenangkan (`zenPrayerReminder`) yang otomatis terbuka saat waktu sholat tiba, menampilkan nama sholat, jam, lokasi, kutipan ayat pengingat, dan tombol aksi cepat. Dapat diatur lewat setting `zenClock.autoOpenPrayerReminder`, serta dilengkapi command preview (`Zen Clock: Preview Prayer Reminder Page`).
 - **Live Browser Screenshots**: Dokumentasi antarmuka aplikasi nyata langsung di `README.md`.
 
 #### 🐛 Perbaikan Bug (Fixed)

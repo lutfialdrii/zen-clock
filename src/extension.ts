@@ -18,6 +18,12 @@ interface PomodoroState {
   timeLeft: number;
 }
 
+interface PrayerReminderInfo {
+  name: string;
+  time: string;
+  location: string;
+}
+
 let currentPomodoro: PomodoroState = {
   isRunning: false,
   mode: 'work',
@@ -26,6 +32,7 @@ let currentPomodoro: PomodoroState = {
 
 let statusBarItem: vscode.StatusBarItem;
 let statusBarTimer: NodeJS.Timeout | undefined;
+let lastRemindedPrayerKey = '';
 
 const POPULAR_CITIES: Array<{ name: string; region: string; lat: number; lng: number }> = [
   { name: 'Jakarta', region: 'DKI Jakarta', lat: -6.2088, lng: 106.8456 },
@@ -274,6 +281,44 @@ function updateStatusBar(context: vscode.ExtensionContext) {
   tooltip.appendMarkdown(`[$(layout-panel) Buka Bottom Panel](command:extension-clock.focusPanel) &nbsp;|&nbsp; [$(location) Ganti Kota](command:extension-clock.changeLocation)`);
 
   statusBarItem.tooltip = tooltip;
+
+  // Check prayer time arrival for reminder
+  for (const p of prayersList) {
+    if (!p.time || p.key === 'sunrise') continue;
+    const diffMs = now.getTime() - p.time.getTime();
+    if (diffMs >= 0 && diffMs < 60000) {
+      const reminderKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${p.key}`;
+      if (lastRemindedPrayerKey !== reminderKey) {
+        lastRemindedPrayerKey = reminderKey;
+        triggerPrayerReminder(context, {
+          name: p.name,
+          time: formatTime(p.time),
+          location: savedLocation.name
+        });
+        break;
+      }
+    }
+  }
+}
+
+async function triggerPrayerReminder(context: vscode.ExtensionContext, info: PrayerReminderInfo) {
+  const autoOpen = vscode.workspace.getConfiguration('zenClock').get<boolean>('autoOpenPrayerReminder', true);
+
+  if (autoOpen) {
+    ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, info);
+    vscode.window.showInformationMessage(`🕌 Waktu Sholat ${info.name} telah tiba! (${info.location})`);
+  } else {
+    const action = await vscode.window.showInformationMessage(
+      `🕌 Waktu Sholat ${info.name} (${info.time}) telah tiba!`,
+      'Buka Pengingat',
+      'Buka Zen Clock'
+    );
+    if (action === 'Buka Pengingat') {
+      ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, info);
+    } else if (action === 'Buka Zen Clock') {
+      vscode.commands.executeCommand('zen-clock-panel-view.focus');
+    }
+  }
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -295,7 +340,22 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(focusPanelDisposable);
 
-  // 4. Register Webview View Providers (Sidebar View & Bottom Panel View)
+  // 4. Register Preview Prayer Reminder Command
+  let previewReminderDisposable = vscode.commands.registerCommand('extension-clock.previewReminder', () => {
+    const savedLocation = context.globalState.get<LocationData>(LOCATION_STORAGE_KEY) || {
+      name: 'Jakarta (Default)',
+      lat: -6.2088,
+      lng: 106.8456
+    };
+    ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, {
+      name: 'Ashar',
+      time: '15:15',
+      location: savedLocation.name
+    });
+  });
+  context.subscriptions.push(previewReminderDisposable);
+
+  // 5. Register Webview View Providers (Sidebar View & Bottom Panel View)
   const sidebarProvider = new ZenClockViewProvider(context.extensionUri, context);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('zen-clock-sidebar', sidebarProvider)
@@ -306,7 +366,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider('zen-clock-panel-view', panelProvider)
   );
 
-  // 5. Initialize Status Bar Item
+  // 6. Initialize Status Bar Item
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.command = 'extension-clock.focusPanel';
   context.subscriptions.push(statusBarItem);
@@ -323,6 +383,266 @@ export function deactivate() {
     clearInterval(statusBarTimer);
   }
   activeWebviews.clear();
+}
+
+class ZenPrayerReminderPanel {
+  public static currentPanel: ZenPrayerReminderPanel | undefined;
+  private readonly _panel: vscode.WebviewPanel;
+  private readonly _extensionUri: vscode.Uri;
+  private readonly _context: vscode.ExtensionContext;
+  private _disposables: vscode.Disposable[] = [];
+
+  public static createOrShow(
+    extensionUri: vscode.Uri,
+    context: vscode.ExtensionContext,
+    info: PrayerReminderInfo
+  ) {
+    const column = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.viewColumn
+      : vscode.ViewColumn.One;
+
+    if (ZenPrayerReminderPanel.currentPanel) {
+      ZenPrayerReminderPanel.currentPanel._update(info);
+      ZenPrayerReminderPanel.currentPanel._panel.reveal(column);
+      return;
+    }
+
+    const panel = vscode.window.createWebviewPanel(
+      'zenPrayerReminder',
+      `🕌 Waktu Sholat ${info.name}`,
+      column || vscode.ViewColumn.One,
+      {
+        enableScripts: true,
+        localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'dist')]
+      }
+    );
+
+    ZenPrayerReminderPanel.currentPanel = new ZenPrayerReminderPanel(panel, extensionUri, context, info);
+  }
+
+  private constructor(
+    panel: vscode.WebviewPanel,
+    extensionUri: vscode.Uri,
+    context: vscode.ExtensionContext,
+    info: PrayerReminderInfo
+  ) {
+    this._panel = panel;
+    this._extensionUri = extensionUri;
+    this._context = context;
+
+    this._update(info);
+    this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+
+    this._panel.webview.onDidReceiveMessage(
+      async (message) => {
+        switch (message.command) {
+          case 'CLOSE':
+            this.dispose();
+            break;
+          case 'OPEN_CLOCK':
+            this.dispose();
+            vscode.commands.executeCommand('zen-clock-panel-view.focus');
+            break;
+          case 'DISABLE_AUTO_OPEN':
+            await vscode.workspace
+              .getConfiguration('zenClock')
+              .update('autoOpenPrayerReminder', false, vscode.ConfigurationTarget.Global);
+            vscode.window.showInformationMessage(
+              'Fitur auto-open pengingat sholat telah dinonaktifkan. Pengingat selanjutnya akan berupa notifikasi.'
+            );
+            this.dispose();
+            break;
+        }
+      },
+      null,
+      this._disposables
+    );
+  }
+
+  public dispose() {
+    ZenPrayerReminderPanel.currentPanel = undefined;
+    this._panel.dispose();
+    while (this._disposables.length) {
+      const x = this._disposables.pop();
+      if (x) {
+        x.dispose();
+      }
+    }
+  }
+
+  private _update(info: PrayerReminderInfo) {
+    this._panel.title = `🕌 Waktu Sholat ${info.name}`;
+    this._panel.webview.html = this._getHtml(this._panel.webview, info);
+  }
+
+  private _getHtml(webview: vscode.Webview, info: PrayerReminderInfo): string {
+    const csp = webview.cspSource;
+    return `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${csp} 'unsafe-inline'; script-src ${csp} 'unsafe-inline'; font-src ${csp}; img-src ${csp} https: data:;">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waktu Sholat ${info.name}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
+      background: var(--vscode-editor-background, #0c0d10);
+      color: var(--vscode-editor-foreground, #e0e0e0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .card {
+      background: var(--vscode-sideBar-background, rgba(255, 255, 255, 0.04));
+      border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.1));
+      border-radius: 16px;
+      padding: 40px 32px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .crescent-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      color: #fbbf24;
+      filter: drop-shadow(0 4px 16px rgba(251, 191, 36, 0.35));
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--vscode-foreground, #ffffff);
+    }
+    .meta-info {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .meta-pill {
+      background: var(--vscode-badge-background, rgba(255, 255, 255, 0.08));
+      color: var(--vscode-badge-foreground, #fff);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .quote-box {
+      border-left: 3px solid #fbbf24;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 28px;
+      text-align: left;
+      font-style: italic;
+      font-size: 13px;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+    .quote-author {
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.6;
+      text-align: right;
+      font-style: normal;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: #fbbf24;
+      color: #1a1a1a;
+    }
+    .btn-primary:hover {
+      background: #f59e0b;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--vscode-button-secondaryBackground, rgba(255, 255, 255, 0.1));
+      color: var(--vscode-button-secondaryForeground, #fff);
+    }
+    .btn-secondary:hover {
+      background: var(--vscode-button-secondaryHoverBackground, rgba(255, 255, 255, 0.16));
+    }
+    .btn-subtle {
+      background: transparent;
+      color: var(--vscode-descriptionForeground, #888);
+      font-size: 12px;
+      font-weight: normal;
+      padding: 6px 12px;
+    }
+    .btn-subtle:hover {
+      color: var(--vscode-foreground, #ccc);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <svg class="crescent-icon" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    <div class="badge">Waktu Sholat</div>
+    <h1>Panggilan Sholat ${info.name}</h1>
+    <div class="meta-info">
+      <span class="meta-pill">🕐 ${info.time}</span>
+      <span class="meta-pill">📍 ${info.location}</span>
+    </div>
+    <div class="quote-box">
+      "Dirikanlah shalat, sesungguhnya shalat itu mencegah dari (perbuatan) keji dan mungkar."
+      <div class="quote-author">— QS. Al-Ankabut: 45</div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="vscode.postMessage({ command: 'CLOSE' })">✓ Saya Siap Sholat (Tutup)</button>
+      <button class="btn btn-secondary" onclick="vscode.postMessage({ command: 'OPEN_CLOCK' })">⏱️ Buka Zen Clock</button>
+      <button class="btn btn-subtle" onclick="vscode.postMessage({ command: 'DISABLE_AUTO_OPEN' })">⚙️ Matikan Auto-Open Tab Ini</button>
+    </div>
+  </div>
+  <script>
+    const vscode = acquireVsCodeApi();
+  </script>
+</body>
+</html>`;
+  }
 }
 
 class ZenClockPanel {

@@ -36,6 +36,11 @@
         "command": "extension-clock.focusPanel",
         "title": "Zen Clock: Focus Bottom Panel",
         "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.previewReminder",
+        "title": "Zen Clock: Preview Prayer Reminder Page",
+        "category": "Zen Clock"
       }
     ],
     "viewsContainers": {
@@ -69,6 +74,16 @@
           "name": "Zen Clock"
         }
       ]
+    },
+    "configuration": {
+      "title": "Zen Clock",
+      "properties": {
+        "zenClock.autoOpenPrayerReminder": {
+          "type": "boolean",
+          "default": true,
+          "description": "Otomatis buka tab halaman pengingat waktu sholat saat waktu sholat tiba (Automatically open prayer reminder tab when prayer time arrives)."
+        }
+      }
     }
   },
   "scripts": {
