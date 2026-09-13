@@ -73,11 +73,11 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run build:extension",
-    "compile": "tsc -p ./ && vite build",
-    "watch": "tsc -watch -p ./",
-    "build": "tsc -p ./ && vite build",
+    "compile": "tsc -p ./ --noEmit && esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --sourcemap && vite build",
+    "watch": "tsc -watch -p ./ --noEmit",
+    "build": "npm run compile",
     "build:web": "vite build",
-    "build:extension": "tsc -p ./ && vite build",
+    "build:extension": "npm run compile",
     "preview": "vite preview",
     "dev": "vite",
     "package:vsix": "npx @vscode/vsce package",
@@ -97,6 +97,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/vscode": "^1.80.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "esbuild": "^0.28.2",
     "typescript": "^5.0.0",
     "vite": "^8.0.1"
   }

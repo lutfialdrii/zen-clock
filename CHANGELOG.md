@@ -34,6 +34,7 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 - **Real Live Screenshots**: Authentic browser and IDE interface screenshots added directly to `README.md`.
 
 #### 🐛 Fixed
+- **Extension Host Bundling with esbuild**: Fixed missing runtime dependency (`adhan`) in packaged `.vsix` by bundling `src/extension.ts` with `esbuild`. Resolves `command not found` errors upon activation.
 - **Prayer Popover Positioning**: Fixed the prayer schedule popover jumping to the top of the viewport by adding `position: relative` to the parent container, setting centered coordinates (`left: 50%`), and adding an anti-flicker hover bridge (`::after`).
 
 ---
@@ -65,6 +66,7 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 - **Live Browser Screenshots**: Dokumentasi antarmuka aplikasi nyata langsung di `README.md`.
 
 #### 🐛 Perbaikan Bug (Fixed)
+- **Extension Host Bundling dengan esbuild**: Memperbaiki modul dependency (`adhan`) yang hilang pada file paket `.vsix` dengan mem-bundle `src/extension.ts` menggunakan `esbuild`. Menyelesaikan error `command not found` saat extension diaktifkan.
 - **Prayer Popover Positioning**: Memperbaiki masalah popup detail waktu sholat yang melompat ke posisi terlalu atas layar dengan menambahkan `position: relative` pada kontainer induk, koordinat terpusat `left: 50%`, dan jembatan hover anti-flicker `::after`.
 
 ---
