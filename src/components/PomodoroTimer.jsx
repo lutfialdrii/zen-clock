@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import FlipUnit from './FlipUnit';
-import { sendNotification, requestWebNotificationPermission } from '../utils/notification';
+import { sendNotification, requestWebNotificationPermission, getVsCodeApi } from '../utils/notification';
 
 export default function PomodoroTimer() {
   const [mode, setMode] = useState('work'); // 'work' | 'break'
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
+
+  // Sync status to VS Code status bar
+  useEffect(() => {
+    const api = getVsCodeApi();
+    if (api) {
+      api.postMessage({
+        type: 'POMODORO_STATUS',
+        isRunning,
+        mode,
+        timeLeft
+      });
+    }
+  }, [isRunning, timeLeft, mode]);
 
   useEffect(() => {
     let timer = null;

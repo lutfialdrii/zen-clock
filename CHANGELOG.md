@@ -28,6 +28,9 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
   - Native window notifications for VS Code / Antigravity IDE.
   - Web Browser Notification API + Web Audio API synthesizer chime sound on prayer arrival and timer completion.
 - **VS Code Extension Integration**: Contributes `zen-clock-sidebar` activity bar container and `extension-clock.openClock` command.
+- **Native VS Code City Selection**: Interactive QuickPick city selector (`extension-clock.changeLocation`) accessible directly by clicking the location name or via Command Palette, supporting popular Indonesian cities and global search.
+- **Bottom Panel Integration & Startup Activation**: Runs automatically upon VS Code launch (`onStartupFinished`) and provides a full-featured bottom panel view (`zen-clock-panel-view`) alongside Terminal and Output.
+- **Interactive Status Bar Item & Rich Tooltip**: Real-time status bar display showing the current clock, upcoming prayer time, and active Pomodoro countdown. Hovering reveals a rich Markdown tooltip with today's complete prayer schedule, Pomodoro timer state, and quick navigation links.
 - **Real Live Screenshots**: Authentic browser and IDE interface screenshots added directly to `README.md`.
 
 #### 🐛 Fixed
@@ -56,6 +59,9 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
   - Notifikasi native window untuk VS Code / Antigravity IDE.
   - Web Browser Notification API + Web Audio API synthesizer chime sound saat waktu sholat tiba atau sesi timer selesai.
 - **VS Code Extension Integration**: Kontribusi sidebar view container `zen-clock-sidebar` dan command `extension-clock.openClock`.
+- **Native VS Code City Selection**: Pemilihan kota interaktif (`extension-clock.changeLocation`) via QuickPick native VS Code dengan klik nama lokasi atau Command Palette.
+- **Integrasi Bottom Panel & Auto-Start Saat Startup**: Otomatis aktif saat VS Code dibuka (`onStartupFinished`) serta menyediakan tab di panel bawah (`zen-clock-panel-view`) sejajar dengan Terminal dan Output.
+- **Status Bar Interaktif & Hover Tooltip**: Penunjuk status bar real-time yang menampilkan jam, waktu sholat berikutnya, atau countdown Pomodoro. Saat di-hover, menampilkan tooltip Markdown informatif berisi jadwal sholat lengkap hari ini, status Pomodoro, dan shortcut cepat.
 - **Live Browser Screenshots**: Dokumentasi antarmuka aplikasi nyata langsung di `README.md`.
 
 #### 🐛 Perbaikan Bug (Fixed)

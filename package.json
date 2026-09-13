@@ -17,12 +17,24 @@
     "Other"
   ],
   "main": "./out/extension.js",
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
       {
         "command": "extension-clock.openClock",
         "title": "Zen Clock: Open Flip Clock Panel",
+        "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.changeLocation",
+        "title": "Zen Clock: Change City / Location (Pilih Kota)",
+        "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.focusPanel",
+        "title": "Zen Clock: Focus Bottom Panel",
         "category": "Zen Clock"
       }
     ],
@@ -33,6 +45,13 @@
           "title": "Zen Clock",
           "icon": "$(watch)"
         }
+      ],
+      "panel": [
+        {
+          "id": "zen-clock-panel-container",
+          "title": "Zen Clock",
+          "icon": "$(watch)"
+        }
       ]
     },
     "views": {
@@ -40,6 +59,13 @@
         {
           "type": "webview",
           "id": "zen-clock-sidebar",
+          "name": "Zen Clock"
+        }
+      ],
+      "zen-clock-panel-container": [
+        {
+          "type": "webview",
+          "id": "zen-clock-panel-view",
           "name": "Zen Clock"
         }
       ]
