@@ -105,6 +105,7 @@ Dapat diakses melalui Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 | `extension-clock.togglePomodoro` | **Zen Clock: Start / Pause Pomodoro** | Menjalankan / menjeda timer Pomodoro |
 | `extension-clock.resetPomodoro` | **Zen Clock: Reset Pomodoro Timer** | Mengembalikan Pomodoro ke durasi awal |
 | `extension-clock.previewReminder` | **Zen Clock: Preview Prayer Reminder** | Melihat pratinjau tab pengingat sholat |
+| `extension-clock.changeAccentColor` | **Zen Clock: Change Accent Color Theme** | Memilih tema warna aksen (Amber, Emerald, Azure, Rose, Custom HEX) |
 
 ---
 
@@ -115,6 +116,7 @@ Akses via **Settings** (`Ctrl+,` atau `Cmd+,` $\rightarrow$ Cari `Zen Clock`):
 | Pengaturan | Tipe | Default | Deskripsi |
 | :--- | :---: | :---: | :--- |
 | `zenClock.autoOpenPrayerReminder` | `boolean` | `true` | Otomatis membuka tab pengingat sholat khusus saat waktu sholat tiba |
+| `zenClock.accentColor` | `string` | `"#fbbf24"` | Kode warna HEX atau nama preset tema Zen Clock, Pomodoro, dan Pengingat Sholat |
 
 ---
 

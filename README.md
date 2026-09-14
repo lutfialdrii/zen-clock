@@ -105,6 +105,7 @@ Access these commands from the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 | `extension-clock.togglePomodoro` | **Zen Clock: Start / Pause Pomodoro** | Toggles Pomodoro timer on/off |
 | `extension-clock.resetPomodoro` | **Zen Clock: Reset Pomodoro Timer** | Resets Pomodoro timer to default duration |
 | `extension-clock.previewReminder` | **Zen Clock: Preview Prayer Reminder** | Previews the prayer reminder tab |
+| `extension-clock.changeAccentColor` | **Zen Clock: Change Accent Color Theme** | Select or customize accent color for clock, timer, & reminder |
 
 ---
 
@@ -115,6 +116,7 @@ Configure via **Settings** (`Ctrl+,` or `Cmd+,` $\rightarrow$ Search `Zen Clock`
 | Setting | Type | Default | Description |
 | :--- | :---: | :---: | :--- |
 | `zenClock.autoOpenPrayerReminder` | `boolean` | `true` | Automatically open the dedicated reminder tab when prayer time arrives |
+| `zenClock.accentColor` | `string` | `"#fbbf24"` | Theme accent color preset or hex code for clock digits, buttons, and prayer reminder |
 
 ---
 
