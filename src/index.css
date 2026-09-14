@@ -107,16 +107,16 @@ body {
 /* Flip Clock */
 .flip-clock {
   display: flex;
-  gap: clamp(8px, 2vw, 25px);
+  gap: clamp(6px, 1.5vw, 20px);
 }
 
 .flip-unit-container {
   display: block;
   position: relative;
-  width: clamp(70px, 20vw, 180px);
-  height: clamp(100px, 28vw, 240px);
+  width: clamp(64px, 18vw, 170px);
+  height: clamp(92px, 25vw, 230px);
   perspective: 1200px;
-  border-radius: clamp(8px, 2.5vw, 16px);
+  border-radius: clamp(6px, 2vw, 16px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
@@ -125,8 +125,11 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  font-size: clamp(60px, 16vw, 140px);
+  font-size: clamp(38px, 11vw, 115px);
   font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   border-radius: inherit;
   background-color: var(--card-bg);
 }
@@ -203,11 +206,12 @@ body {
 }
 
 .date-display {
-  font-size: clamp(11px, 2vw, 16px);
+  font-size: clamp(10px, 1.8vw, 15px);
   color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.5));
-  letter-spacing: 0.25em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 500;
+  text-align: center;
   transition: color 0.3s ease;
 }
 
