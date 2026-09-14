@@ -8,6 +8,32 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [Unreleased] - 2026-09-14
 
+### Milestone 2 & 3: Prayer Countdown on Hover, Auto-Refresh & Kemenag Adjustments
+- **Prompt Pengguna:**
+  > *"2. tambahkan countdown sholat terdekat pada saat hover di bottompanel, dan saat sholat tiba maka akan auto refresh ke sholat selanjutnya"*
+  > *"3. ketidaksesuaian jam sholat , terdapat selisih waktu dengan kemenag, bagaimana mengatasinya? apakah memungkinkan untuk dibuatkan menu adjust waktu sholat?"*
+- **Komponen & File Terkait:**
+  - `src/utils/prayerHelper.ts`: Implementasi formula resmi Kementerian Agama RI (Fajr 20°, Isha 18°, Syafi'i, Rounding Up, +2m buffer ihtiyat). Menyediakan helper format countdown detik presisi (`formatCountdownVerbose` dan `formatCountdownDigits`).
+  - `src/extension.ts`:
+    - Mengintegrasikan formula Kemenag RI dengan penyesuaian kustom pengguna ke dalam `updateStatusBar`.
+    - Menambahkan baris countdown real-time (`⏳ Subuh tiba dalam: 01 jam 23 menit 45 detik (01:23:45)`) di header tooltip Status Bar.
+    - Menambahkan countdown dinamis di tabel jadwal sholat tooltip (`👉 Berikutnya (01:23:45)`).
+    - Menambahkan menu QuickPick interaktif `extension-clock.adjustPrayerTimes` untuk menyesuaikan offset menit sholat per waktu dan tombol Reset ke standar Kemenag.
+    - Menambahkan link shortcut `Sesuaikan Jam` di tooltip status bar dan penanganan pesan IPC `REQUEST_ADJUST_PRAYER` / `GET_PRAYER_ADJUSTMENTS`.
+    - Auto-refresh: Saat waktu sholat tiba, host otomatis memicu notifikasi pengingat dan membroadcast `PRAYER_DATA_UPDATED` ke webviews untuk rollover instan.
+  - `src/components/PrayerTime.jsx`:
+    - Menggunakan parameter Kemenag RI dan sinkronisasi penyesuaian kustom dari extension host.
+    - Menampilkan hitung mundur waktu sholat dalam detik presisi di pil status.
+    - Menambahkan tombol interaktif `Sesuaikan Jam (Kemenag)` yang membuka QuickPick native VS Code.
+  - `src/index.css`: Styling responsif untuk `.prayer-actions-bar` dan tombol `.prayer-adjust-btn`.
+  - `package.json`: Mendaftarkan perintah baru `extension-clock.adjustPrayerTimes`.
+- **Keputusan Desain & Rationale:**
+  - Menyelaraskan jadwal sholat dengan ketetapan resmi BHR Kemenag RI di Indonesia dan memberikan fleksibilitas manual adjustment bagi pengguna yang masjid daerahnya memiliki jeda iqomah/offset lokal.
+  - Memberikan pengalaman visual yang hidup dengan countdown detik yang langsung berganti (*auto-refresh*) begitu waktu sholat berikutnya tiba.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses (TypeScript 0 errors, esbuild 69.1kb, Vite build 199ms).
+  - `npm run package:vsix`: Sukses (paket `extension-clock-1.0.0.vsix` 320.36 KB dengan 35 files valid).
+
 ### Milestone 1: Background Pomodoro Engine & Branding Update
 - **Prompt Pengguna:**
   > *"apakah ada issue jika menggunakan opsi 3?"* -> *"oke lakukan"* (Penerapan branding "Zen Clock: Pomodoro & Muslim Prayer Times" dan migrasi Pomodoro Engine ke background Extension Host).

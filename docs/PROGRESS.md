@@ -10,9 +10,9 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 | :--- | :--- | :--- | :---: |
 | **M0: Delegasi Web & Fondasi Dokumentasi** | Arsip snapshot web, init `zen-flip-clock`, dokumentasi arsitektur & SOP isolasi branch | `docs/extension-first-architecture` | ✅ Selesai |
 | **M1: Background Pomodoro Engine** | Timer jalan di Extension Host (Node.js), status bar sync, IPC broadcast ke webviews | `feat/pomodoro-background-host` | ✅ Selesai |
-| **M2: Countdown Sholat di Hover & Auto-Refresh** | Countdown presisi detik di tooltip status bar & webview, auto-switch saat waktu sholat tiba | `feat/prayer-countdown-hover` | ⏳ Siap Dikerjakan |
-| **M3: Formula Kemenag & Menu Adjust Waktu Sholat** | Standar Kemenag RI (+2m ihtiyat), menu QuickPick/Modal penyesuaian offset waktu sholat | `feat/kemenag-adjustment-menu` | ⏳ Menunggu M2 |
-| **M4: Pembersihan Kode PWA & Polish Tampilan** | Hapus tombol PWA install di extension, sinkronisasi tema VS Code, perapihan UI | `refactor/cleanup-pwa-bloat` | ⏳ Menunggu M3 |
+| **M2: Countdown Sholat di Hover & Auto-Refresh** | Countdown presisi detik di tooltip status bar & webview, auto-switch saat waktu sholat tiba | `feat/prayer-countdown-kemenag` | ✅ Selesai |
+| **M3: Formula Kemenag & Menu Adjust Waktu Sholat** | Standar Kemenag RI (+2m ihtiyat), menu QuickPick/Modal penyesuaian offset waktu sholat | `feat/prayer-countdown-kemenag` | ✅ Selesai |
+| **M4: Pembersihan Kode PWA & Polish Tampilan** | Hapus tombol PWA install di extension, sinkronisasi tema VS Code, perapihan UI | `refactor/cleanup-pwa-bloat` | ⏳ Siap Dikerjakan |
 | **M5: VSIX Release & Packaging Verifikasi** | Pengujian akhir bundle VSIX, update README & CHANGELOG final | `main` | ⏳ Antrean Akhir |
 
 ---
@@ -42,18 +42,21 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 
 ---
 
-### Milestone 2: Countdown Sholat di Hover & Auto-Refresh ⏳
-- [ ] Perbarui tooltip Status Bar agar menampilkan countdown detik presisi (`⏳ Subuh dalam 01 jam 23 menit 45 detik`).
-- [ ] Tambahkan logika auto-refresh / rollover otomatis di extension host dan webview saat waktu sholat tercapai (detik <= 0).
-- [ ] Pastikan tidak ada polling berlebih yang membebani CPU.
+### Milestone 2: Countdown Sholat di Hover & Auto-Refresh ✅
+- [x] Perbarui tooltip Status Bar agar menampilkan countdown detik presisi (`⏳ Subuh tiba dalam: 01 jam 23 menit 45 detik (01:23:45)`).
+- [x] Tampilkan indikator countdown aktif di tabel jadwal sholat tooltip (`👉 Berikutnya (01:23:45)`).
+- [x] Tampilkan countdown detik presisi di pil waktu sholat webview (`Subuh dalam 01 jam 23 menit 45 detik`).
+- [x] Implementasikan auto-refresh rollover otomatis di extension host dan webview saat waktu sholat tercapai (detik <= 0).
+- [x] Broadcast event `PRAYER_DATA_UPDATED` ke webviews saat waktu sholat tiba.
 
 ---
 
-### Milestone 3: Formula Kemenag & Menu Adjust Waktu Sholat ⏳
-- [ ] Terapkan parameter standar Kemenag RI di `src/utils/prayerHelper.js` (+2 menit pengaman/ihtiyat, sudut 20°/18°).
-- [ ] Buat skema konfigurasi VS Code `zenClock.prayerAdjustments` di `package.json`.
-- [ ] Tambahkan Command VS Code `extension-clock.adjustPrayerTimes` (QuickPick interaktif untuk mengatur offset menit tiap sholat).
-- [ ] Tambahkan modal/tombol penyesuaian di dalam Webview `PrayerTime.jsx` agar user bisa mengubahnya langsung dari panel.
+### Milestone 3: Formula Kemenag & Menu Adjust Waktu Sholat ✅
+- [x] Terapkan parameter resmi Kemenag RI di `src/utils/prayerHelper.ts` (Subuh 20°, Isya 18°, Syafi'i, +2 menit ihtiyat).
+- [x] Tambahkan Command VS Code `extension-clock.adjustPrayerTimes` (QuickPick interaktif untuk mengatur offset menit tiap waktu sholat).
+- [x] Tambahkan opsi Reset Semua Koreksi ke standar Kemenag RI.
+- [x] Tambahkan tombol "Sesuaikan Jam (Kemenag)" di dalam Webview `PrayerTime.jsx` yang memicu QuickPick native VS Code via IPC `REQUEST_ADJUST_PRAYER`.
+- [x] Simpan konfigurasi penyesuaian di `context.globalState` dan sinkronkan secara reaktif via `PRAYER_ADJUSTMENTS_UPDATED`.
 
 ---
 

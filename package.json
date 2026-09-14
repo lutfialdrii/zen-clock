@@ -48,6 +48,11 @@
         "category": "Zen Clock"
       },
       {
+        "command": "extension-clock.adjustPrayerTimes",
+        "title": "Zen Clock: Adjust Prayer Times (Sesuaikan Menit Waktu Sholat)",
+        "category": "Zen Clock"
+      },
+      {
         "command": "extension-clock.focusPanel",
         "title": "Zen Clock: Focus Bottom Panel",
         "category": "Zen Clock"
