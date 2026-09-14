@@ -1,12 +1,27 @@
-# Changelog
+# Engineering & Development Trajectory Log
 
-Semua perubahan penting pada proyek **Zen Flip Clock & Prayer Times (VS Code Extension)** didokumentasikan di file ini secara *reverse-chronological* (terbaru di atas).
+Dokumen ini adalah catatan teknis internal (*development trajectory log*) proyek **Zen Clock (VS Code Extension)** yang mencatat setiap prompt pengguna, analisis masalah, keputusan arsitektur, dan laporan verifikasi commit secara *reverse-chronological* (terbaru di atas).
 
-Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) dan aturan kedisiplinan dokumentasi AI.
+Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../CHANGELOG.md) di root direktori.
 
 ---
 
 ## [0.0.1] - 2026-09-14
+
+### Documentation Restructuring: Separating Public Release Notes and Internal Dev Log
+- **Prompt Pengguna:**
+  > *"mengapa kita menulis 2 CHANGELOG ?"*
+  > *"sepertinya CHANGELOG pada directory docs perlu direname, karena changelog pada root directory sebagai release note"*
+- **Akar Masalah (Root Cause):**
+  - Proyek sebelumnya memiliki dua file dengan nama identik (`./CHANGELOG.md` di root dan `docs/CHANGELOG.md` di folder docs), yang menyebabkan redundansi, documentation drift, dan kebingungan acuan.
+- **Solusi & Perbaikan:**
+  - Melakukan `git mv docs/CHANGELOG.md docs/DEV_LOG.md` untuk mengkhususkan dokumen di folder `docs/` sebagai **Internal Engineering & Development Trajectory Log**.
+  - Mengubah `./CHANGELOG.md` di root direktori menjadi **Official Release Notes** (`[0.0.1] - 2026-09-14`) untuk pengguna publik dan VS Code Marketplace dalam format dwibahasa (English & Bahasa Indonesia).
+  - Memperbarui seluruh referensi dokumen di `docs/BRANCHING_STRATEGY.md` dan `docs/PROGRESS.md` agar mengarah ke `docs/DEV_LOG.md`.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 332.61 KB, rapi memuat changelog.md publik dan docs/DEV_LOG.md internal).
+  - `code --install-extension extension-clock-0.0.1.vsix --force`: Berhasil terpasang.
 
 ### UI/UX Enhancements: Flip Clock Typography Scaling & Shape Padding in Sidepanel
 - **Prompt Pengguna:**
