@@ -157,6 +157,16 @@ body {
   border-bottom-right-radius: 0;
   border-bottom: 2px solid var(--divider-color);
 }
+
+body[data-view="sidebar"] .flip-card-top {
+  border-bottom: 1px solid var(--divider-color);
+}
+
+@media (max-width: 480px) {
+  body:not([data-view="panel"]):not([data-view="editor"]) .flip-card-top {
+    border-bottom: 1px solid var(--divider-color);
+  }
+}
 .flip-card-top span {
   transform: translateY(50%);
 }

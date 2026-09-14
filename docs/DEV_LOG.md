@@ -6,6 +6,36 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ---
 
+## [0.0.1] - 2026-09-15
+
+### UI/UX Enhancements: Sidebar Viewport Flip Card Divider Refinement
+- **Prompt Pengguna:**
+  > *"batas garis flip pada tampilan side panel cukup tebal, buat sedikit tipis namun jika tampilan full view atau bottom panel, tebal garis sudah sangat baik"*
+- **Akar Masalah (Root Cause):**
+  - Garis pemisah horizontal pada kartu flip (`border-bottom: 2px solid var(--divider-color)`) di `.flip-card-top` tampak ideal pada editor view dan bottom panel yang memiliki kartu berukuran besar (180px–280px).
+  - Namun pada viewport sempit seperti Primary Sidebar (kartu berukuran 92px–118px), garis tebal 2px memakan ~7% dari tinggi separuh kartu sehingga terlihat terlalu tebal (*clunky*).
+- **Solusi & Perbaikan:**
+  - `src/extension.ts`:
+    - Menambahkan identifikasi tipe view (`viewType: 'sidebar' | 'panel' | 'editor'`) pada instansiasi `ZenClockViewProvider` dan `ZenClockPanel`.
+    - Menginjeksi atribut `data-view="${viewType}"` pada tag `<body>` webview HTML.
+  - `src/index.css`:
+    - Menambahkan styling selektif:
+      ```css
+      body[data-view="sidebar"] .flip-card-top {
+        border-bottom: 1px solid var(--divider-color);
+      }
+      @media (max-width: 480px) {
+        body:not([data-view="panel"]):not([data-view="editor"]) .flip-card-top {
+          border-bottom: 1px solid var(--divider-color);
+        }
+      }
+      ```
+    - Dengan ini, garis pemisah di sidebar menjadi 1px yang ramping dan presisi, sementara di editor view dan bottom panel tetap mempertahankan ketebalan tegas 2px.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 333.75 KB).
+  - `code --install-extension extension-clock-0.0.1.vsix --force`: Berhasil terpasang.
+
 ## [0.0.1] - 2026-09-14
 
 ### UI/UX Enhancements: Pomodoro 2-Card Flip Clock Proportional Scaling
