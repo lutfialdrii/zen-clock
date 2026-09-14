@@ -16,6 +16,8 @@ interface PomodoroState {
   isRunning: boolean;
   mode: 'work' | 'break';
   timeLeft: number;
+  totalDuration: number;
+  targetEndTime?: number;
 }
 
 interface PrayerReminderInfo {
@@ -27,9 +29,11 @@ interface PrayerReminderInfo {
 let currentPomodoro: PomodoroState = {
   isRunning: false,
   mode: 'work',
-  timeLeft: 25 * 60
+  timeLeft: 25 * 60,
+  totalDuration: 25 * 60
 };
 
+let pomodoroTimerInterval: NodeJS.Timeout | undefined;
 let statusBarItem: vscode.StatusBarItem;
 let statusBarTimer: NodeJS.Timeout | undefined;
 let lastRemindedPrayerKey = '';
@@ -79,6 +83,164 @@ function broadcastMessage(message: any) {
       console.error('Failed to postMessage to webview', e);
     }
   }
+}
+
+function getPomodoroPayload() {
+  return {
+    isRunning: currentPomodoro.isRunning,
+    mode: currentPomodoro.mode,
+    timeLeft: currentPomodoro.timeLeft,
+    totalDuration: currentPomodoro.totalDuration
+  };
+}
+
+function broadcastPomodoroState() {
+  broadcastMessage({
+    type: 'POMODORO_SYNC',
+    state: getPomodoroPayload()
+  });
+}
+
+function sendPomodoroState(webview: vscode.Webview) {
+  try {
+    webview.postMessage({
+      type: 'POMODORO_SYNC',
+      state: getPomodoroPayload()
+    });
+  } catch (e) {
+    console.error('Failed to post Pomodoro state to webview', e);
+  }
+}
+
+function startPomodoro(context: vscode.ExtensionContext) {
+  if (currentPomodoro.isRunning) return;
+
+  currentPomodoro.isRunning = true;
+  currentPomodoro.targetEndTime = Date.now() + currentPomodoro.timeLeft * 1000;
+
+  if (pomodoroTimerInterval) {
+    clearInterval(pomodoroTimerInterval);
+  }
+
+  pomodoroTimerInterval = setInterval(() => {
+    if (!currentPomodoro.isRunning || !currentPomodoro.targetEndTime) {
+      if (pomodoroTimerInterval) clearInterval(pomodoroTimerInterval);
+      return;
+    }
+
+    const remainingMs = currentPomodoro.targetEndTime - Date.now();
+    const remainingSecs = Math.max(0, Math.round(remainingMs / 1000));
+    currentPomodoro.timeLeft = remainingSecs;
+
+    if (remainingSecs <= 0) {
+      handlePomodoroFinished(context);
+    } else {
+      broadcastPomodoroState();
+      updateStatusBar(context);
+    }
+  }, 1000);
+
+  broadcastPomodoroState();
+  updateStatusBar(context);
+}
+
+function pausePomodoro(context: vscode.ExtensionContext) {
+  if (!currentPomodoro.isRunning) return;
+
+  currentPomodoro.isRunning = false;
+  if (currentPomodoro.targetEndTime) {
+    const remainingMs = currentPomodoro.targetEndTime - Date.now();
+    currentPomodoro.timeLeft = Math.max(0, Math.round(remainingMs / 1000));
+    currentPomodoro.targetEndTime = undefined;
+  }
+
+  if (pomodoroTimerInterval) {
+    clearInterval(pomodoroTimerInterval);
+    pomodoroTimerInterval = undefined;
+  }
+
+  broadcastPomodoroState();
+  updateStatusBar(context);
+}
+
+function resetPomodoro(context: vscode.ExtensionContext) {
+  currentPomodoro.isRunning = false;
+  currentPomodoro.targetEndTime = undefined;
+  if (pomodoroTimerInterval) {
+    clearInterval(pomodoroTimerInterval);
+    pomodoroTimerInterval = undefined;
+  }
+
+  const defaultDuration = currentPomodoro.mode === 'work' ? 25 * 60 : 5 * 60;
+  currentPomodoro.timeLeft = defaultDuration;
+  currentPomodoro.totalDuration = defaultDuration;
+
+  broadcastPomodoroState();
+  updateStatusBar(context);
+}
+
+function switchPomodoroMode(context: vscode.ExtensionContext, newMode: 'work' | 'break') {
+  currentPomodoro.isRunning = false;
+  currentPomodoro.targetEndTime = undefined;
+  if (pomodoroTimerInterval) {
+    clearInterval(pomodoroTimerInterval);
+    pomodoroTimerInterval = undefined;
+  }
+
+  currentPomodoro.mode = newMode;
+  const defaultDuration = newMode === 'work' ? 25 * 60 : 5 * 60;
+  currentPomodoro.timeLeft = defaultDuration;
+  currentPomodoro.totalDuration = defaultDuration;
+
+  broadcastPomodoroState();
+  updateStatusBar(context);
+}
+
+function handlePomodoroFinished(context: vscode.ExtensionContext) {
+  currentPomodoro.isRunning = false;
+  currentPomodoro.targetEndTime = undefined;
+  if (pomodoroTimerInterval) {
+    clearInterval(pomodoroTimerInterval);
+    pomodoroTimerInterval = undefined;
+  }
+
+  const wasWork = currentPomodoro.mode === 'work';
+  if (wasWork) {
+    vscode.window
+      .showInformationMessage(
+        '🍅 Sesi Pomodoro (25m) selesai! Waktunya Istirahat (Break 5m).',
+        'Mulai Istirahat'
+      )
+      .then((action) => {
+        if (action === 'Mulai Istirahat') {
+          switchPomodoroMode(context, 'break');
+          startPomodoro(context);
+        }
+      });
+
+    currentPomodoro.mode = 'break';
+    currentPomodoro.timeLeft = 5 * 60;
+    currentPomodoro.totalDuration = 5 * 60;
+  } else {
+    vscode.window
+      .showInformationMessage(
+        '⚡ Sesi Istirahat (5m) selesai! Siap untuk kembali fokus bekerja (Work 25m)?',
+        'Mulai Kerja'
+      )
+      .then((action) => {
+        if (action === 'Mulai Kerja') {
+          switchPomodoroMode(context, 'work');
+          startPomodoro(context);
+        }
+      });
+
+    currentPomodoro.mode = 'work';
+    currentPomodoro.timeLeft = 25 * 60;
+    currentPomodoro.totalDuration = 25 * 60;
+  }
+
+  broadcastPomodoroState();
+  updateStatusBar(context);
 }
 
 async function promptChangeLocation(context: vscode.ExtensionContext) {
@@ -355,7 +517,22 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(previewReminderDisposable);
 
-  // 5. Register Webview View Providers (Sidebar View & Bottom Panel View)
+  // 5. Register Pomodoro Controls Commands
+  let togglePomodoroDisposable = vscode.commands.registerCommand('extension-clock.togglePomodoro', () => {
+    if (currentPomodoro.isRunning) {
+      pausePomodoro(context);
+    } else {
+      startPomodoro(context);
+    }
+  });
+  context.subscriptions.push(togglePomodoroDisposable);
+
+  let resetPomodoroDisposable = vscode.commands.registerCommand('extension-clock.resetPomodoro', () => {
+    resetPomodoro(context);
+  });
+  context.subscriptions.push(resetPomodoroDisposable);
+
+  // 6. Register Webview View Providers (Sidebar View & Bottom Panel View)
   const sidebarProvider = new ZenClockViewProvider(context.extensionUri, context);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('zen-clock-sidebar', sidebarProvider)
@@ -366,7 +543,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerWebviewViewProvider('zen-clock-panel-view', panelProvider)
   );
 
-  // 6. Initialize Status Bar Item
+  // 7. Initialize Status Bar Item
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.command = 'extension-clock.focusPanel';
   context.subscriptions.push(statusBarItem);
@@ -381,6 +558,9 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
   if (statusBarTimer) {
     clearInterval(statusBarTimer);
+  }
+  if (pomodoroTimerInterval) {
+    clearInterval(pomodoroTimerInterval);
   }
   activeWebviews.clear();
 }
@@ -683,6 +863,16 @@ class ZenClockPanel {
     activeWebviews.add(this._panel.webview);
 
     this._update();
+    sendPomodoroState(this._panel.webview);
+    this._panel.onDidChangeViewState(
+      (e) => {
+        if (e.webviewPanel.visible) {
+          sendPomodoroState(this._panel.webview);
+        }
+      },
+      null,
+      this._disposables
+    );
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
     this._setupMessageListener();
   }
@@ -732,6 +922,12 @@ class ZenClockViewProvider implements vscode.WebviewViewProvider {
     this._view = webviewView;
     activeWebviews.add(webviewView.webview);
 
+    webviewView.onDidChangeVisibility(() => {
+      if (webviewView.visible) {
+        sendPomodoroState(webviewView.webview);
+      }
+    });
+
     webviewView.onDidDispose(() => {
       activeWebviews.delete(webviewView.webview);
     });
@@ -742,6 +938,7 @@ class ZenClockViewProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = getWebviewContent(webviewView.webview, this._extensionUri);
+    sendPomodoroState(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage((message) => {
       handleWebviewMessage(message, webviewView.webview, this._context);
@@ -771,13 +968,20 @@ function handleWebviewMessage(message: any, webview: vscode.Webview, context: vs
       break;
     }
 
-    case 'POMODORO_STATUS':
-      currentPomodoro = {
-        isRunning: !!message.isRunning,
-        mode: message.mode || 'work',
-        timeLeft: typeof message.timeLeft === 'number' ? message.timeLeft : 25 * 60
-      };
-      updateStatusBar(context);
+    case 'GET_POMODORO_STATE':
+      sendPomodoroState(webview);
+      break;
+
+    case 'POMODORO_CMD':
+      if (message.action === 'start') {
+        startPomodoro(context);
+      } else if (message.action === 'pause') {
+        pausePomodoro(context);
+      } else if (message.action === 'reset') {
+        resetPomodoro(context);
+      } else if (message.action === 'switchMode') {
+        switchPomodoroMode(context, message.mode === 'break' ? 'break' : 'work');
+      }
       break;
   }
 }

@@ -1,46 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import FlipUnit from './FlipUnit';
-import { sendNotification, requestWebNotificationPermission, getVsCodeApi } from '../utils/notification';
+import { getVsCodeApi } from '../utils/notification';
 
 export default function PomodoroTimer() {
   const [mode, setMode] = useState('work'); // 'work' | 'break'
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
 
-  // Sync status to VS Code status bar
+  // 1. Subscribe to Extension Host single Pomodoro Engine
   useEffect(() => {
     const api = getVsCodeApi();
-    if (api) {
-      api.postMessage({
-        type: 'POMODORO_STATUS',
-        isRunning,
-        mode,
-        timeLeft
-      });
-    }
-  }, [isRunning, timeLeft, mode]);
 
+    // Ask extension host for live state immediately
+    if (api) {
+      api.postMessage({ type: 'GET_POMODORO_STATE' });
+    }
+
+    const handleMessage = (event) => {
+      const msg = event.data;
+      if (!msg) return;
+
+      if (msg.type === 'POMODORO_SYNC' && msg.state) {
+        setIsRunning(!!msg.state.isRunning);
+        setMode(msg.state.mode || 'work');
+        if (typeof msg.state.timeLeft === 'number') {
+          setTimeLeft(msg.state.timeLeft);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // 2. Standalone browser fallback timer (if running outside VS Code)
   useEffect(() => {
+    const api = getVsCodeApi();
+    if (api) return; // In VS Code, Extension Host owns the timer loop!
+
     let timer = null;
     if (isRunning && timeLeft > 0) {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-      document.title = `(${formattedTime}) ${mode === 'work' ? 'Work' : 'Break'} - Zen Clock`;
-
       timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft === 0 && isRunning) {
-      const isWorkFinished = mode === 'work';
-      const notificationMsg = isWorkFinished
-        ? 'Sesi Work (25m) selesai! Waktunya Istirahat (Break 5m).'
-        : 'Sesi Break (5m) selesai! Siap untuk kembali bekerja (Work 25m)?';
-
-      sendNotification(isWorkFinished ? '🍅 Pomodoro' : '⚡ Break Finished', notificationMsg, 'info');
-
-      if (isWorkFinished) {
+      if (mode === 'work') {
         setMode('break');
         setTimeLeft(5 * 60);
       } else {
@@ -48,36 +53,49 @@ export default function PomodoroTimer() {
         setTimeLeft(25 * 60);
       }
       setIsRunning(false);
-      document.title = 'Zen Flip Clock';
-    } else if (!isRunning) {
-      document.title = 'Zen Flip Clock';
     }
     return () => clearInterval(timer);
   }, [isRunning, timeLeft, mode]);
 
+  // 3. Command Dispatches to Extension Host
   const togglePlay = () => {
-    if (!isRunning) {
-      requestWebNotificationPermission();
+    const api = getVsCodeApi();
+    if (api) {
+      api.postMessage({
+        type: 'POMODORO_CMD',
+        action: isRunning ? 'pause' : 'start'
+      });
+    } else {
+      setIsRunning(!isRunning);
     }
-    setIsRunning(!isRunning);
   };
 
   const resetTimer = () => {
-    setIsRunning(false);
-    if (mode === 'work') {
-      setTimeLeft(25 * 60);
+    const api = getVsCodeApi();
+    if (api) {
+      api.postMessage({
+        type: 'POMODORO_CMD',
+        action: 'reset'
+      });
     } else {
-      setTimeLeft(5 * 60);
+      setIsRunning(false);
+      setTimeLeft(mode === 'work' ? 25 * 60 : 5 * 60);
     }
   };
 
   const switchMode = (newMode) => {
-    setMode(newMode);
-    setIsRunning(false);
-    if (newMode === 'work') {
-      setTimeLeft(25 * 60);
+    if (newMode === mode) return;
+    const api = getVsCodeApi();
+    if (api) {
+      api.postMessage({
+        type: 'POMODORO_CMD',
+        action: 'switchMode',
+        mode: newMode
+      });
     } else {
-      setTimeLeft(5 * 60);
+      setMode(newMode);
+      setIsRunning(false);
+      setTimeLeft(newMode === 'work' ? 25 * 60 : 5 * 60);
     }
   };
 
@@ -107,10 +125,20 @@ export default function PomodoroTimer() {
       </div>
 
       <div className="pomodoro-controls">
-        <button className="pomodoro-btn" onClick={togglePlay} aria-label={isRunning ? 'Pause' : 'Start'}>
+        <button
+          className={`pomodoro-btn ${isRunning ? 'active-playing' : ''}`}
+          onClick={togglePlay}
+          aria-label={isRunning ? 'Pause Pomodoro' : 'Start Pomodoro'}
+          title={isRunning ? 'Pause' : 'Start'}
+        >
           {isRunning ? <Pause size={18} /> : <Play size={18} />}
         </button>
-        <button className="pomodoro-btn" onClick={resetTimer} aria-label="Reset">
+        <button
+          className="pomodoro-btn"
+          onClick={resetTimer}
+          aria-label="Reset Pomodoro"
+          title="Reset"
+        >
           <RotateCcw size={18} />
         </button>
       </div>

@@ -1,41 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import FlipClock from './components/FlipClock';
 import PrayerTime from './components/PrayerTime';
 import PomodoroTimer from './components/PomodoroTimer';
-import { Timer, Clock, Download } from 'lucide-react';
+import { Timer, Clock } from 'lucide-react';
 import './index.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('clock'); // 'clock' | 'pomodoro'
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-
-    const handleAppInstalled = () => {
-      setDeferredPrompt(null);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
-    }
-  };
 
   return (
     <div className="app-container">
@@ -56,16 +27,6 @@ function App() {
           <Timer size={18} />
           <span>Pomodoro</span>
         </button>
-        {deferredPrompt && (
-          <button
-            className="nav-btn install-btn"
-            onClick={handleInstallClick}
-            title="Install Zen Clock App"
-          >
-            <Download size={18} />
-            <span>Install</span>
-          </button>
-        )}
       </div>
 
       <div className="app-content">
@@ -83,4 +44,3 @@ function App() {
 }
 
 export default App;
-

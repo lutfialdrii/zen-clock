@@ -9,8 +9,8 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 | Milestone | Deskripsi | Target Branch | Status |
 | :--- | :--- | :--- | :---: |
 | **M0: Delegasi Web & Fondasi Dokumentasi** | Arsip snapshot web, init `zen-flip-clock`, dokumentasi arsitektur & SOP isolasi branch | `docs/extension-first-architecture` | ✅ Selesai |
-| **M1: Background Pomodoro Engine** | Timer jalan di Extension Host (Node.js), status bar sync, IPC broadcast ke webviews | `feat/pomodoro-background-host` | ⏳ Siap Dikerjakan |
-| **M2: Countdown Sholat di Hover & Auto-Refresh** | Countdown presisi detik di tooltip status bar & webview, auto-switch saat waktu sholat tiba | `feat/prayer-countdown-hover` | ⏳ Menunggu M1 |
+| **M1: Background Pomodoro Engine** | Timer jalan di Extension Host (Node.js), status bar sync, IPC broadcast ke webviews | `feat/pomodoro-background-host` | ✅ Selesai |
+| **M2: Countdown Sholat di Hover & Auto-Refresh** | Countdown presisi detik di tooltip status bar & webview, auto-switch saat waktu sholat tiba | `feat/prayer-countdown-hover` | ⏳ Siap Dikerjakan |
 | **M3: Formula Kemenag & Menu Adjust Waktu Sholat** | Standar Kemenag RI (+2m ihtiyat), menu QuickPick/Modal penyesuaian offset waktu sholat | `feat/kemenag-adjustment-menu` | ⏳ Menunggu M2 |
 | **M4: Pembersihan Kode PWA & Polish Tampilan** | Hapus tombol PWA install di extension, sinkronisasi tema VS Code, perapihan UI | `refactor/cleanup-pwa-bloat` | ⏳ Menunggu M3 |
 | **M5: VSIX Release & Packaging Verifikasi** | Pengujian akhir bundle VSIX, update README & CHANGELOG final | `main` | ⏳ Antrean Akhir |
@@ -30,13 +30,15 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 
 ---
 
-### Milestone 1: Background Pomodoro Engine di Extension Host ⏳
-- [ ] Pindahkan logika interval countdown dari `PomodoroTimer.jsx` ke `src/extension.ts`.
-- [ ] Simpan state Pomodoro (`isRunning`, `mode`, `timeLeft`, `targetEndTime`) di background extension host.
-- [ ] Implementasikan listener pesan `POMODORO_CMD` (`START`, `PAUSE`, `RESET`, `SWITCH_MODE`) di extension host.
-- [ ] Implementasikan broadcast `POMODORO_SYNC` ke seluruh webview yang aktif (sidebar, panel, editor).
-- [ ] Tampilkan countdown Pomodoro secara real-time di Status Bar saat berjalan.
-- [ ] Trigger notifikasi native OS saat sesi kerja / istirahat selesai.
+### Milestone 1: Background Pomodoro Engine di Extension Host ✅
+- [x] Pindahkan logika interval countdown dari `PomodoroTimer.jsx` ke `src/extension.ts`.
+- [x] Simpan state Pomodoro (`isRunning`, `mode`, `timeLeft`, `targetEndTime`) di background extension host.
+- [x] Implementasikan listener pesan `POMODORO_CMD` (`START`, `PAUSE`, `RESET`, `SWITCH_MODE`) di extension host.
+- [x] Implementasikan broadcast `POMODORO_SYNC` ke seluruh webview yang aktif (sidebar, panel, editor).
+- [x] Tampilkan countdown Pomodoro secara real-time di Status Bar saat berjalan.
+- [x] Trigger notifikasi native OS saat sesi kerja / istirahat selesai.
+- [x] Tambahkan commands `extension-clock.togglePomodoro` dan `extension-clock.resetPomodoro` ke Command Palette.
+- [x] Perbarui branding identitas menjadi "Zen Clock: Pomodoro & Muslim Prayer Times" di `package.json`.
 
 ---
 

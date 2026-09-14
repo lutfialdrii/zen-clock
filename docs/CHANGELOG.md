@@ -8,6 +8,21 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [Unreleased] - 2026-09-14
 
+### Milestone 1: Background Pomodoro Engine & Branding Update
+- **Prompt Pengguna:**
+  > *"apakah ada issue jika menggunakan opsi 3?"* -> *"oke lakukan"* (Penerapan branding "Zen Clock: Pomodoro & Muslim Prayer Times" dan migrasi Pomodoro Engine ke background Extension Host).
+- **Komponen & File Terkait:**
+  - `package.json`: Memperbarui `displayName` ke "Zen Clock: Pomodoro & Muslim Prayer Times", menambahkan kategori `Productivity`, keywords SEO, dan perintah `extension-clock.togglePomodoro` serta `extension-clock.resetPomodoro`.
+  - `src/extension.ts`: Mengimplementasikan Background Pomodoro Engine di Extension Host (Node.js) dengan `targetEndTime` drift-proof delta, auto-tick per detik, status bar timer formatting, IPC command handler (`POMODORO_CMD`), broadcast sync (`POMODORO_SYNC`), dan notifikasi native interaktif saat sesi kerja/istirahat selesai.
+  - `src/components/PomodoroTimer.jsx`: Merefaktor komponen React Pomodoro menjadi subscriber/controller murni yang tersinkronisasi langsung dengan Extension Host. Menghilangkan interval lokal yang mengalami throttling/freezing saat webview di-minimize.
+  - `src/App.jsx`: Menghapus tombol install PWA dan listener `beforeinstallprompt` yang tidak diperlukan dalam lingkungan ekstensi VS Code.
+  - `src/main.jsx`: Menghapus registrasi Service Worker PWA yang tidak terpakai di webview.
+- **Keputusan Desain & Rationale:**
+  - Mengatasi masalah utama (*root cause*) di mana timer Pomodoro terhenti saat panel VS Code ditutup atau user berpindah file. Dengan memindahkan engine ke Extension Host, timer terus berjalan di latar belakang dan semua webview (sidebar & bottom panel) selalu sinkron.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses (TypeScript 0 errors, esbuild 65.6kb, Vite build 191ms).
+  - `npm run package:vsix`: Sukses (menghasilkan paket `extension-clock-1.0.0.vsix` 317.04 KB dengan 35 files valid).
+
 ### Arsitektur & Tata Kelola
 - **Prompt Pengguna:**
   > *"karena saya kesulitannya kita maintain dengan satu codebase, jadi sepertinya perlu kita pisahkan, jadi saya memutuskan untuk fokus di pengembangan extension vscode dan vsix, untuk web sepertinya nanti akan saya fork repo ini atau saya akan init project terbaru untuk fokus ke web development nya saja, tapi dengan branding yang sama.. untuk itu bantu saya agar project yang saat ini kita migrasikan untuk fokus ke extension app development, jadi fokus lah merancang dokumentasinya terlebih dahulu, dan saya perlu tanamkan untuk setiap pengembangan suatu fitur, perlu diberlakukaknnya isosalasi branch. Bagaimana menurutmu?"*
