@@ -590,18 +590,17 @@ function updateStatusBar(context: vscode.ExtensionContext) {
   const pSecs = currentPomodoro.timeLeft % 60;
   const pTimeStr = `${String(pMins).padStart(2, '0')}:${String(pSecs).padStart(2, '0')}`;
   if (currentPomodoro.isRunning) {
-    tooltip.appendMarkdown(`- **Pomodoro**: ▶️ Sedang Berjalan (${pTimeStr} tersisa • ${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`);
+    tooltip.appendMarkdown(`- ▶️ **Sedang Berjalan**: ${pTimeStr} tersisa (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`);
   } else {
-    tooltip.appendMarkdown(`- **Pomodoro**: ⏸️ Idle / Jeda (${pTimeStr} • ${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`);
+    tooltip.appendMarkdown(`- ⏸️ **Idle / Jeda**: ${pTimeStr} (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`);
   }
 
   tooltip.appendMarkdown(`---\n\n`);
 
   tooltip.appendMarkdown(`### 🕌 **Jadwal Sholat (Kemenag RI)**\n\n`);
-  tooltip.appendMarkdown(`- 📍 **Lokasi**: ${savedLocation.name}\n`);
-  tooltip.appendMarkdown(`- ⏳ **Berikutnya**: **${nextPrayerLabel}** (${nextPrayerTimeStr}) dalam **${countdownShort}**\n\n`);
+  tooltip.appendMarkdown(`📍 **${savedLocation.name}** &nbsp;•&nbsp; ⏳ **${nextPrayerLabel}** (${countdownShort})\n\n`);
   tooltip.appendMarkdown(`| Waktu | Jam | Status |\n`);
-  tooltip.appendMarkdown(`| :--- | :---: | :---: |\n`);
+  tooltip.appendMarkdown(`| :--- | :---: | :--- |\n`);
 
   const prayersList = [
     { key: 'fajr', name: 'Subuh', time: prayerTimes.fajr },
@@ -621,10 +620,8 @@ function updateStatusBar(context: vscode.ExtensionContext) {
 
   tooltip.appendMarkdown(`\n---\n`);
   tooltip.appendMarkdown(
-    `[$(layout-panel) Buka Panel](command:extension-clock.focusPanel) &nbsp;|&nbsp; ` +
-    `[$(location) Ganti Kota](command:extension-clock.changeLocation) &nbsp;|&nbsp; ` +
-    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;|&nbsp; ` +
-    `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`
+    `[$(layout-panel) Buka Panel](command:extension-clock.focusPanel) &nbsp;•&nbsp; [$(location) Ganti Kota](command:extension-clock.changeLocation)  \n` +
+    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; [$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`
   );
 
   const newTooltipMarkdown = tooltip.value;
