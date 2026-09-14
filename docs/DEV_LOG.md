@@ -8,6 +8,24 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-15
 
+### Documentation & Assets: Integrating Authentic User Manual Screenshots
+- **Prompt Pengguna:**
+  > *"saya telah melakukan manual screenshot pada @assets/image , bantu saya gunakan assets ini pada @README.md dan @README.id.md"*
+- **Akar Masalah (Root Cause):**
+  - Pengguna telah mengambil serangkaian screenshot manual otentik langsung dari lingkungan kerja VS Code / Antigravity IDE di folder `assets/image/`.
+- **Solusi & Perbaikan:**
+  - Memperbarui `README.md` dan `README.id.md` agar header banner dan seluruh galeri antarmuka mengarah ke gambar manual di `assets/image/`:
+    - `preview-sidebar.png`
+    - `preview-bottom-panel.png`
+    - `preview-fullview.png`
+    - `preview-statusbar-hover.png`
+    - `preview-pomodoro.png`
+    - `preview-theme.png`
+    - `preview-prayer-reminder.png`
+  - Menyinkronkan file gambar ke root folder `assets/` agar kedua path referensi tetap valid tanpa risiko broken image.
+- **Hasil Verifikasi:**
+  - Tampilan galeri di kedua README kini menyajikan tangkapan layar otentik dari IDE pengguna dengan sempurna.
+
 ### Assets & Visuals: High-Resolution Screenshot Regeneration
 - **Prompt Pengguna:**
   > *"saya minta anda generate ulang screenshot nya, karena preview pada @assets merupakan gambar lama sebelum kita lakukan enhance"*

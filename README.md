@@ -1,7 +1,7 @@
 # ⏰ Zen Clock: Pomodoro & Muslim Prayer Times
 
 <p align="center">
-  <img src="./assets/preview-extension-full.png" alt="Zen Clock: Pomodoro & Muslim Prayer Times" width="100%" />
+  <img src="./assets/image/preview-fullview.png" alt="Zen Clock: Pomodoro & Muslim Prayer Times" width="100%" />
 </p>
 
 <p align="center">
@@ -65,30 +65,30 @@
 ### 1. Flexible Viewport Layouts
 | 📌 Primary Sidebar View | 🗂️ Bottom Panel (Terminal Area) |
 | :---: | :---: |
-| <img src="./assets/preview-sidebar.png" alt="Zen Clock Primary Sidebar View" width="100%" /> | <img src="./assets/preview-bottom-panel.png" alt="Zen Clock Bottom Panel View" width="100%" /> |
+| <img src="./assets/image/preview-sidebar.png" alt="Zen Clock Primary Sidebar View" width="100%" /> | <img src="./assets/image/preview-bottom-panel.png" alt="Zen Clock Bottom Panel View" width="100%" /> |
 | *Compact vertical layout for continuous background presence.* | *Expansive widescreen layout docking alongside Terminal & Output.* |
 
 | 📑 Full Editor Tab (Zen Focus Mode) |
 | :---: |
-| <img src="./assets/preview-extension-full.png" alt="Zen Clock Full Editor View" width="100%" /> |
+| <img src="./assets/image/preview-fullview.png" alt="Zen Clock Full Editor View" width="100%" /> |
 | *Large mechanical 3D flip cards in an editor tab for dedicated desk clock mode.* |
 
 ### 2. Status Bar & Precision Countdown
 | ⏱️ Live Status Bar Indicator & Rich Hover Tooltip |
 | :---: |
-| <img src="./assets/preview-statusbar-hover.png" alt="Status Bar Indicator & Hover Schedule Tooltip" width="100%" /> |
+| <img src="./assets/image/preview-statusbar-hover.png" alt="Status Bar Indicator & Hover Schedule Tooltip" width="100%" /> |
 | *Right-aligned status bar widget with a hover popover showing today's schedule and exact ticking seconds countdown.* |
 
 ### 3. Pomodoro Timer & Visual Customization
 | 🍅 2-Card Pomodoro Timer Engine | 🎨 Theme Accent Colors & Custom HEX |
 | :---: | :---: |
-| <img src="./assets/preview-pomodoro.png" alt="Pomodoro Timer Engine" width="100%" /> | <img src="./assets/preview-theme.png" alt="Theme Accent Color Customization" width="100%" /> |
+| <img src="./assets/image/preview-pomodoro.png" alt="Pomodoro Timer Engine" width="100%" /> | <img src="./assets/image/preview-theme.png" alt="Theme Accent Color Customization" width="100%" /> |
 | *Bold proportional 2-card flip timer running reliably in Extension Host.* | *Curated palette (Warm Amber, Islamic Emerald, Cyan, Rose, Purple) + Custom HEX.* |
 
 ### 4. Peaceful Prayer Reminder
 | 🕌 Auto-Opening Prayer Reminder Tab |
 | :---: |
-| <img src="./assets/preview-prayer-reminder.png" alt="Zen Prayer Reminder Tab" width="100%" /> |
+| <img src="./assets/image/preview-prayer-reminder.png" alt="Zen Prayer Reminder Tab" width="100%" /> |
 | *Serene editor tab that opens at prayer time with local prayer info and inspirational Quranic verses.* |
 
 ---
