@@ -8,6 +8,24 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-15
 
+### Maintenance & Cleanup: Consolidating Assets Directly Under /assets
+- **Prompt Pengguna:**
+  > *"kalau begitu saya hapus saja directory /assets/image"*
+- **Akar Masalah (Root Cause):**
+  - Folder `assets/image/` redundant karena seluruh berkas screenshot manual pengguna telah disinkronkan langsung di root `assets/`.
+- **Solusi & Perbaikan:**
+  - Menghapus folder `assets/image/`.
+  - Memperbarui seluruh referensi berkas di `README.md` dan `README.id.md` agar langsung mengarah ke `./assets/`:
+    - `./assets/preview-fullview.png`
+    - `./assets/preview-sidebar.png`
+    - `./assets/preview-bottom-panel.png`
+    - `./assets/preview-statusbar-hover.png`
+    - `./assets/preview-pomodoro.png`
+    - `./assets/preview-theme.png`
+    - `./assets/preview-prayer-reminder.png`
+- **Hasil Verifikasi:**
+  - Struktur folder menjadi lebih ringkas dan rapi, tanpa duplikasi, dan seluruh gambar tampil sempurna.
+
 ### Documentation & Assets: Integrating Authentic User Manual Screenshots
 - **Prompt Pengguna:**
   > *"saya telah melakukan manual screenshot pada @assets/image , bantu saya gunakan assets ini pada @README.md dan @README.id.md"*

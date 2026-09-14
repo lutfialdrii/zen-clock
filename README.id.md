@@ -1,7 +1,7 @@
 # ⏰ Zen Clock: Pomodoro & Muslim Prayer Times
 
 <p align="center">
-  <img src="./assets/image/preview-fullview.png" alt="Zen Clock: Pomodoro & Muslim Prayer Times" width="100%" />
+  <img src="./assets/preview-fullview.png" alt="Zen Clock: Pomodoro & Muslim Prayer Times" width="100%" />
 </p>
 
 <p align="center">
@@ -65,30 +65,30 @@
 ### 1. Pilihan Tata Letak Fleksibel
 | 📌 Primary Sidebar View (Panel Samping) | 🗂️ Bottom Panel (Sejajar Terminal) |
 | :---: | :---: |
-| <img src="./assets/image/preview-sidebar.png" alt="Zen Clock Primary Sidebar View" width="100%" /> | <img src="./assets/image/preview-bottom-panel.png" alt="Zen Clock Bottom Panel View" width="100%" /> |
+| <img src="./assets/preview-sidebar.png" alt="Zen Clock Primary Sidebar View" width="100%" /> | <img src="./assets/preview-bottom-panel.png" alt="Zen Clock Bottom Panel View" width="100%" /> |
 | *Tata letak vertikal ringkas untuk pendamping ngoding di bilah samping kiri.* | *Tampilan melebar di panel bawah sejajar tab Terminal & Output.* |
 
 | 📑 Full Editor Tab (Mode Fokus Zen) |
 | :---: |
-| <img src="./assets/image/preview-fullview.png" alt="Zen Clock Full Editor View" width="100%" /> |
+| <img src="./assets/preview-fullview.png" alt="Zen Clock Full Editor View" width="100%" /> |
 | *Kartu flip mekanik 3D ukuran penuh di tab editor untuk mode fokus meja kerja.* |
 
 ### 2. Status Bar & Countdown Presisi
 | ⏱️ Indikator Status Bar & Hover Tooltip Interaktif |
 | :---: |
-| <img src="./assets/image/preview-statusbar-hover.png" alt="Status Bar Indicator & Hover Schedule Tooltip" width="100%" /> |
+| <img src="./assets/preview-statusbar-hover.png" alt="Status Bar Indicator & Hover Schedule Tooltip" width="100%" /> |
 | *Widget di status bar kanan bawah dengan popover jadwal sholat lengkap & hitung mundur detik.* |
 
 ### 3. Pomodoro Timer & Kustomisasi Warna
 | 🍅 Timer Pomodoro 2-Kartu | 🎨 Pilihan Warna Tema & Input HEX |
 | :---: | :---: |
-| <img src="./assets/image/preview-pomodoro.png" alt="Timer Pomodoro Zen Clock" width="100%" /> | <img src="./assets/image/preview-theme.png" alt="Kustomisasi Warna Tema" width="100%" /> |
+| <img src="./assets/preview-pomodoro.png" alt="Timer Pomodoro Zen Clock" width="100%" /> | <img src="./assets/preview-theme.png" alt="Kustomisasi Warna Tema" width="100%" /> |
 | *Timer flip 2 kartu proporsional yang berjalan mandiri di background Extension Host.* | *6 preset warna pilihan (Warm Amber, Islamic Emerald, Azure, Rose, Purple) + kode HEX kustom.* |
 
 ### 4. Halaman Pengingat Sholat Menenangkan
 | 🕌 Tab Pengingat Sholat Otomatis |
 | :---: |
-| <img src="./assets/image/preview-prayer-reminder.png" alt="Tab Pengingat Waktu Sholat" width="100%" /> |
+| <img src="./assets/preview-prayer-reminder.png" alt="Tab Pengingat Waktu Sholat" width="100%" /> |
 | *Tab editor yang otomatis terbuka saat adzan tiba, dilengkapi info jadwal lokal dan ayat pengingat.* |
 
 ---
