@@ -8,6 +8,24 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [0.0.1] - 2026-09-14
 
+### UI/UX Enhancements: Flip Clock Typography Scaling & Shape Padding in Sidepanel
+- **Prompt Pengguna:**
+  > *"terkait text pada flip clock pada webview sidepanel, sepertinya tampilannya agak terlalu sempit alias mentok di shape nya, bagaimana mengatasinya?"*
+- **Akar Masalah (Root Cause):**
+  - Pada `src/index.css`, batas bawah ukuran font ditetapkan terlalu besar (`font-size: clamp(60px, 16vw, 140px)`), sementara batas bawah lebar kartu adalah `width: clamp(70px, 20vw, 180px)`.
+  - Pada font tebal 60px, dua digit angka memakan lebar ~65-72px, sehingga di sidepanel sempit teks memakan hampir 100% lebar kartu dan menabrak lengkungan border shape tanpa margin kiri-kanan.
+- **Solusi & Perbaikan:**
+  - `src/index.css`:
+    - Mengatur ulang rasio proporsional kartu jam: `width: clamp(64px, 18vw, 170px)` dan `height: clamp(92px, 25vw, 230px)`.
+    - Mengurangi batas bawah ukuran font menjadi `font-size: clamp(38px, 11vw, 115px)` (~60% dari lebar kartu), menyisakan ruang bernapas (*breathing room*) nyaman ~10–12px di sisi kiri dan kanan shape.
+    - Menambahkan `line-height: 1`, `letter-spacing: -0.02em`, dan `font-variant-numeric: tabular-nums` untuk perataan angka monospaced yang presisi di tengah kartu.
+    - Menyesuaikan gap antar kartu `gap: clamp(6px, 1.5vw, 20px)` dan memusatkan teks tanggal `.date-display`.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 332.78 KB).
+  - `code --install-extension extension-clock-0.0.1.vsix --force`: Berhasil terpasang.
+  - Teks jam tidak lagi menabrak tepi kartu pada sidebar sempit (240px) maupun layar penuh.
+
 ### UI/UX Enhancements: Tooltip Layout Optimization & Direct Sidebar Focus
 - **Prompt Pengguna:**
   > *"terkait yang ini • ⏳ Subuh (7 jam 55 menit) lebih baik ditampilkan dipaling bawah, dan untuk countdown nya tampilannya dibuat highlight seperti `7 Jam 55 menit`, seperti sebelumnya"*
