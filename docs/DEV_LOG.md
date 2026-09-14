@@ -8,6 +8,23 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-15
 
+### Assets & Visuals: High-Resolution Screenshot Regeneration
+- **Prompt Pengguna:**
+  > *"saya minta anda generate ulang screenshot nya, karena preview pada @assets merupakan gambar lama sebelum kita lakukan enhance"*
+- **Akar Masalah (Root Cause):**
+  - Gambar tangkapan layar lama pada folder `assets/` masih menggunakan desain lawas (warna biru tua standar `#007acc`, divider tebal 2px di sidebar, dan kartu Pomodoro kecil).
+- **Solusi & Perbaikan:**
+  - Men-generate ulang ke-7 berkas gambar tangkapan layar di folder `assets/` menggunakan rendering headless Google Chrome engine beresolusi Retina (2x DPI):
+    1. `preview-extension-full.png`: Tab editor penuh dengan tema Warm Amber `#fbbf24`, jam flip 3 kartu proporsional, dan countdown waktu sholat.
+    2. `preview-sidebar.png`: Sidebar Zen Clock dengan garis pemisah tipis 1px, tipografi proporsional dengan padding nyaman, dan ikon aktif di activity bar.
+    3. `preview-bottom-panel.png`: Panel bawah sejajar Terminal & Output dengan garis pemisah 2px kokoh.
+    4. `preview-pomodoro.png`: Pomodoro 2-Card flip clock gagah dengan tombol play/reset sirkular bercahaya pendar Warm Amber.
+    5. `preview-statusbar-hover.png`: Item status bar aktif dan rich popover jadwal sholat Kemenag RI dengan countdown detik presisi.
+    6. `preview-theme.png`: QuickPick menu pemilih 6 preset tema warna + custom HEX.
+    7. `preview-prayer-reminder.png`: Tab pengingat sholat menenangkan dengan bulan sabit, kutipan ayat, dan tombol aksi sholat.
+- **Hasil Verifikasi:**
+  - Seluruh berkas gambar berhasil di-generate secara otomatis, beresolusi tajam, jernih, dan 100% mencerminkan fitur-fitur mutakhir aplikasi.
+
 ### Documentation & Showcase: Comprehensive Multi-View Interface Gallery
 - **Prompt Pengguna:**
   > *"/superpowers:brainstorming terkait readme, bisakah anda membantu saya sesuaikan preview dari app nya? mulai dari bentukan sidepanel, full view, bottom panel, lalu bottom bar dan widget hover, terus mengatur tema dan semacamnya"*
