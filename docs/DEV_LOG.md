@@ -8,6 +8,23 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-15
 
+### Documentation & Showcase: Comprehensive Multi-View Interface Gallery
+- **Prompt Pengguna:**
+  > *"/superpowers:brainstorming terkait readme, bisakah anda membantu saya sesuaikan preview dari app nya? mulai dari bentukan sidepanel, full view, bottom panel, lalu bottom bar dan widget hover, terus mengatur tema dan semacamnya"*
+- **Akar Masalah (Root Cause):**
+  - Galeri pratinjau di `README.md` dan `README.id.md` sebelumnya hanya menampilkan tabel 2x2 sederhana yang belum mencakup fitur-fitur baru (seperti Bottom Panel, status bar & hover tooltip terperinci, kustomisasi warna tema, dan tab pengingat sholat).
+- **Solusi & Perbaikan:**
+  - Menata ulang Galeri Antarmuka (*Interface Gallery*) menjadi 4 seksi tematik:
+    1. **Flexible Viewport Layouts**: Membandingkan secara proporsional Primary Sidebar View, Bottom Panel (sejajar Terminal), dan Full Editor Tab.
+    2. **Status Bar & Precision Countdown**: Menampilkan widget status bar dan popover hover tooltip jadwal sholat lengkap.
+    3. **Pomodoro Timer & Visual Customization**: Menampilkan timer Pomodoro 2 kartu dan menu kustomisasi warna tema.
+    4. **Peaceful Prayer Reminder**: Menampilkan tab pengingat sholat otomatis yang menenangkan.
+  - Memperbarui `README.md` dan `README.id.md` dengan nama berkas standar di folder `assets/` (`preview-sidebar.png`, `preview-bottom-panel.png`, `preview-extension-full.png`, `preview-statusbar-hover.png`, `preview-pomodoro.png`, `preview-theme.png`, `preview-prayer-reminder.png`).
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 334.98 KB).
+  - Tampilan README rapi dan siap menerima pembaruan tangkapan layar langsung dari pengguna.
+
 ### DX/UX Enhancements: Command Palette Title & Grouping Refinement
 - **Prompt Pengguna:**
   > *"ada sedikit hal yang cukup membingungkan pada command panel, karena banyak nya command untuk menampilkan , apakah ada command yang bisa kita kurangi, atau sedikit diberi deskripsi mengenai command yang ada? agar tidak menimbulkan ambiguitas?"*
