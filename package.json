@@ -1,7 +1,7 @@
 {
   "name": "extension-clock",
-  "displayName": "Zen Flip Clock & Prayer Times",
-  "description": "Zen Flip Clock & Prayer Times Extension for VS Code and Antigravity IDE",
+  "displayName": "Zen Clock: Pomodoro & Muslim Prayer Times",
+  "description": "A mindful 3D flip clock, background Pomodoro timer, and automated Muslim prayer times with adhan reminder for VS Code & Antigravity IDE",
   "version": "1.0.0",
   "publisher": "lutfialdrii",
   "icon": "public/icons/icon-192.png",
@@ -10,10 +10,25 @@
     "type": "git",
     "url": "https://github.com/lutfialdrii/zen-clock.git"
   },
+  "keywords": [
+    "zen",
+    "clock",
+    "flip clock",
+    "pomodoro",
+    "timer",
+    "productivity",
+    "prayer times",
+    "muslim",
+    "jadwal sholat",
+    "adhan",
+    "azan",
+    "reminder"
+  ],
   "engines": {
     "vscode": "^1.80.0"
   },
   "categories": [
+    "Productivity",
     "Other"
   ],
   "main": "./out/extension.js",
@@ -40,6 +55,16 @@
       {
         "command": "extension-clock.previewReminder",
         "title": "Zen Clock: Preview Prayer Reminder Page",
+        "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.togglePomodoro",
+        "title": "Zen Clock: Start / Pause Pomodoro Timer",
+        "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.resetPomodoro",
+        "title": "Zen Clock: Reset Pomodoro Timer",
         "category": "Zen Clock"
       }
     ],
