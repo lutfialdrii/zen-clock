@@ -70,7 +70,8 @@ Semua perintah di atas harus berhasil dengan **0 error dan 0 peringatan kritis**
 
 ### Langkah 4: Dokumentasi Wajib
 Sebelum merge, catat perubahan di:
-- [docs/CHANGELOG.md](file:///Users/sm/Documents/Lutfi/DEV/Learn/extension-clock/docs/CHANGELOG.md) (format standar reverse-chronological).
+- [docs/DEV_LOG.md](file:///Users/sm/Documents/Lutfi/DEV/Learn/extension-clock/docs/DEV_LOG.md) (catatan teknis & trajectory log).
+- [CHANGELOG.md](file:///Users/sm/Documents/Lutfi/DEV/Learn/extension-clock/CHANGELOG.md) di root (jika ada pembaruan rilis publik).
 - [docs/PROGRESS.md](file:///Users/sm/Documents/Lutfi/DEV/Learn/extension-clock/docs/PROGRESS.md) (tandai task yang telah selesai).
 
 ### Langkah 5: Merge ke `main` & Bersihkan Branch
@@ -84,6 +85,6 @@ git branch -d feat/<nama-fitur>
 
 ## 🚫 Larangan & Anti-Pattern
 
-1. **Anti-Ghost Commits**: Jangan pernah membuat commit fungsional tanpa mencatatnya di `docs/CHANGELOG.md`.
+1. **Anti-Ghost Commits**: Jangan pernah membuat commit fungsional tanpa mencatatnya di `docs/DEV_LOG.md`.
 2. **No Broken Baseline**: Jangan pernah melakukan merge ke `main` jika build atau compile gagal.
 3. **Keep Commits Atomic**: Satu commit hanya mencakup satu lingkup logis perubahan.

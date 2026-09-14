@@ -26,7 +26,7 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 - [x] Buat `DELEGATION.md` di repo web dan pastikan build PWA berhasil (`npm run build`).
 - [x] Susun `docs/ARCHITECTURE.md` (arsitektur Extension Host first).
 - [x] Susun `docs/BRANCHING_STRATEGY.md` (SOP isolasi branch & quality gates).
-- [x] Susun `docs/PROGRESS.md` & `docs/CHANGELOG.md`.
+- [x] Susun `docs/PROGRESS.md` & `docs/DEV_LOG.md`.
 
 ---
 

@@ -1,76 +1,57 @@
-# Changelog
+# Release Notes (Changelog)
 
-All notable changes to the **Zen Flip Clock & Prayer Times** project will be documented in this file.  
-Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) dan [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+All notable public releases and user-facing updates for **Zen Clock: Pomodoro & Muslim Prayer Times** are documented in this file.  
+For technical development history, engineering decisions, and prompt trajectory logs, see [docs/DEV_LOG.md](docs/DEV_LOG.md).
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [1.0.0] - 2026-09-12
+## [0.0.1] - 2026-09-14 — Initial Release
 
 ### 🇬🇧 English
 
-#### ✨ Added
-- **3D Zen Flip Clock**: Retro-modern 3D mechanical flip clock with smooth card flip animations and localized date display.
-- **Automated Islamic Prayer Times**:
-  - High-precision calculation powered by the astronomical library `adhan`.
-  - Automatic geolocation detection with smart IP reverse lookup and OpenStreetMap reverse geocoding fallback.
-  - Compact prayer pill display with countdown to the next prayer.
-- **Interactive Prayer Popover**: Hover popover displaying the complete daily prayer schedule (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) and detected location district.
-- **Pomodoro Timer**:
-  - Dedicated Work mode (25m) and Break mode (5m).
-  - Clean flip countdown display with interactive Start, Pause, and Reset controls.
-  - Dynamic browser tab title updating remaining time: `(24:59) Work - Zen Clock`.
-- **Progressive Web App (PWA) & Offline Mode**:
-  - Complete `manifest.webmanifest` configuration with HD icons (192x192, 512x512, maskable, and Apple Touch Icon).
-  - Service Worker (`sw.js`) for static asset caching and instant offline access.
-  - Interactive **Install** prompt button in the navigation header on PWA-supported browsers.
-- **Universal Notification & Sound Alert**:
-  - Native window notifications for VS Code / Antigravity IDE.
-  - Web Browser Notification API + Web Audio API synthesizer chime sound on prayer arrival and timer completion.
-- **VS Code Extension Integration**: Contributes `zen-clock-sidebar` activity bar container and `extension-clock.openClock` command.
-- **Native VS Code City Selection**: Interactive QuickPick city selector (`extension-clock.changeLocation`) accessible directly by clicking the location name or via Command Palette, supporting popular Indonesian cities and global search.
-- **Bottom Panel Integration & Startup Activation**: Runs automatically upon VS Code launch (`onStartupFinished`) and provides a full-featured bottom panel view (`zen-clock-panel-view`) alongside Terminal and Output.
-- **Interactive Status Bar Item & Rich Tooltip**: Real-time status bar display showing the current clock, upcoming prayer time, and active Pomodoro countdown. Hovering reveals a rich Markdown tooltip with today's complete prayer schedule, Pomodoro timer state, and quick navigation links.
-- **Dedicated Prayer Reminder Page**: Beautiful, peaceful editor tab reminder (`zenPrayerReminder`) that opens automatically when prayer time arrives, displaying the prayer name, exact time, location, an inspiring Quranic reminder, and quick action buttons. Configurable via `zenClock.autoOpenPrayerReminder` setting, with a preview command (`Zen Clock: Preview Prayer Reminder Page`).
-- **Real Live Screenshots**: Authentic browser and IDE interface screenshots added directly to `README.md`.
-
-#### 🐛 Fixed
-- **Extension Host Bundling with esbuild**: Fixed missing runtime dependency (`adhan`) in packaged `.vsix` by bundling `src/extension.ts` with `esbuild`. Resolves `command not found` errors upon activation.
-- **Prayer Popover Positioning**: Fixed the prayer schedule popover jumping to the top of the viewport by adding `position: relative` to the parent container, setting centered coordinates (`left: 50%`), and adding an anti-flicker hover bridge (`::after`).
+#### ✨ Features & Highlights
+- **3D Zen Flip Clock**: Retro-modern mechanical flip clock with smooth card flip animations, localized date, and responsive typography scaling for both narrow sidebars and full editor views.
+- **Background Pomodoro Timer Engine**:
+  - Independent timer loop running in the Extension Host (Node.js) that never freezes when tabs are hidden or inactive.
+  - Seamless state synchronization across all views (Sidebar, Bottom Panel, and Full Editor).
+  - Native OS completion notifications and warning confirmations to prevent accidental timer resets.
+- **Automated Islamic Prayer Times (Kemenag RI Standard)**:
+  - Astronomical prayer calculation powered by `adhan` library with Indonesian Ministry of Religious Affairs (Kemenag RI) standard parameters (Fajr 20°, Isha 18°, +2 minutes ihtiyat correction).
+  - Interactive minute adjustments menu (`extension-clock.adjustPrayerTimes`) for custom calibration.
+  - Global city search and curated Indonesian popular cities selection.
+- **Harmonized Accent Color System**:
+  - 6 curated aesthetic themes: Warm Amber (Default), Islamic Emerald, Modern Sky Cyan, Pomodoro Rose, Mystic Purple, and Monochrome Silver.
+  - Custom HEX color input with automated contrast detection and subtle glow effects.
+- **Interactive Status Bar Item & Clean Hover Tooltip**:
+  - Compact right-aligned status bar indicator showing current clock, next prayer, or live Pomodoro countdown.
+  - Clicking the widget opens and focuses the Zen Clock Sidebar.
+  - Rich, beautifully padded hover tooltip displaying today's complete prayer schedule, next prayer countdown highlight, and quick settings links.
+- **Dedicated Prayer Reminder Tab**: Peaceful, calming editor tab reminder that opens automatically when prayer time arrives, displaying Quranic verses and quick navigation.
 
 ---
 
 ### 🇮🇩 Bahasa Indonesia
 
-#### ✨ Fitur Baru (Added)
-- **3D Zen Flip Clock**: Jam mekanik flip 3D retro-modern dengan kartu animasi halus dan tampilan tanggal berbahasa Indonesia.
-- **Jadwal Sholat Otomatis**:
-  - Perhitungan waktu sholat akurat berbasis pustaka astronomi `adhan`.
-  - Deteksi lokasi otomatis via browser Geolocation dengan fallback cerdas IP reverse lookup dan OpenStreetMap.
-  - Tampilan *pill* ringkas untuk waktu sholat terdekat dengan hitung mundur dinamis.
-- **Interactive Prayer Popover**: Hover popover yang menampilkan daftar lengkap seluruh waktu sholat harian (Subuh, Terbit, Dzuhur, Ashar, Maghrib, Isya) dan nama wilayah deteksi lokasi.
-- **Pomodoro Timer**:
-  - Mode fokus kerja (*Work 25m*) dan istirahat (*Break 5m*).
-  - Tampilan angka flip dan kontrol *Start*, *Pause*, dan *Reset*.
-  - Pembaruan judul tab browser secara dinamis `(24:59) Work - Zen Clock`.
-- **Progressive Web App (PWA) & Offline Mode**:
-  - Konfigurasi `manifest.webmanifest` lengkap dengan ikon HD (192x192, 512x512, maskable, dan Apple Touch Icon).
-  - Service Worker (`sw.js`) untuk caching aset statis dan akses offline secara instan.
-  - Tombol **Install** interaktif di bar navigasi saat dibuka di browser yang mendukung PWA.
-- **Universal Notification & Sound Alert**:
-  - Notifikasi native window untuk VS Code / Antigravity IDE.
-  - Web Browser Notification API + Web Audio API synthesizer chime sound saat waktu sholat tiba atau sesi timer selesai.
-- **VS Code Extension Integration**: Kontribusi sidebar view container `zen-clock-sidebar` dan command `extension-clock.openClock`.
-- **Native VS Code City Selection**: Pemilihan kota interaktif (`extension-clock.changeLocation`) via QuickPick native VS Code dengan klik nama lokasi atau Command Palette.
-- **Integrasi Bottom Panel & Auto-Start Saat Startup**: Otomatis aktif saat VS Code dibuka (`onStartupFinished`) serta menyediakan tab di panel bawah (`zen-clock-panel-view`) sejajar dengan Terminal dan Output.
-- **Status Bar Interaktif & Hover Tooltip**: Penunjuk status bar real-time yang menampilkan jam, waktu sholat berikutnya, atau countdown Pomodoro. Saat di-hover, menampilkan tooltip Markdown informatif berisi jadwal sholat lengkap hari ini, status Pomodoro, dan shortcut cepat.
-- **Halaman Pengingat Sholat Khusus (Prayer Reminder Page)**: Tab editor elegan dan menenangkan (`zenPrayerReminder`) yang otomatis terbuka saat waktu sholat tiba, menampilkan nama sholat, jam, lokasi, kutipan ayat pengingat, dan tombol aksi cepat. Dapat diatur lewat setting `zenClock.autoOpenPrayerReminder`, serta dilengkapi command preview (`Zen Clock: Preview Prayer Reminder Page`).
-- **Live Browser Screenshots**: Dokumentasi antarmuka aplikasi nyata langsung di `README.md`.
-
-#### 🐛 Perbaikan Bug (Fixed)
-- **Extension Host Bundling dengan esbuild**: Memperbaiki modul dependency (`adhan`) yang hilang pada file paket `.vsix` dengan mem-bundle `src/extension.ts` menggunakan `esbuild`. Menyelesaikan error `command not found` saat extension diaktifkan.
-- **Prayer Popover Positioning**: Memperbaiki masalah popup detail waktu sholat yang melompat ke posisi terlalu atas layar dengan menambahkan `position: relative` pada kontainer induk, koordinat terpusat `left: 50%`, dan jembatan hover anti-flicker `::after`.
+#### ✨ Fitur Utama (Initial Release)
+- **3D Zen Flip Clock**: Jam mekanik flip 3D retro-modern dengan kartu animasi halus, tampilan tanggal berbahasa Indonesia, dan skala tipografi responsif yang rapi di panel samping maupun tab penuh.
+- **Background Pomodoro Timer Engine**:
+  - Timer berjalan mandiri di background Extension Host (Node.js), tidak akan freeze atau terhenti saat tab VS Code diminimize atau tidak aktif.
+  - Sinkronisasi state otomatis ke seluruh tampilan aktif (Sidebar, Bottom Panel, dan Editor).
+  - Notifikasi suara dan peringatan konfirmasi saat berganti mode agar sesi kerja tidak ter-reset secara tidak sengaja.
+- **Jadwal Sholat Otomatis Standar Kemenag RI**:
+  - Perhitungan waktu sholat akurat berbasis pustaka astronomi `adhan` dengan parameter resmi Kementerian Agama Republik Indonesia (Subuh 20°, Isya 18°, +2 menit ihtiyat).
+  - Menu QuickPick interaktif penyesuaian koreksi menit sholat (+/- menit per jadwal).
+  - Pencarian kota global dan daftar kota populer di Indonesia.
+- **Harmonisasi Warna Tema & Kustomisasi HEX**:
+  - 6 preset warna pilihan: Warm Amber (Default), Islamic Emerald, Modern Sky Cyan, Pomodoro Rose, Mystic Purple, dan Monochrome Silver.
+  - Dukungan kode warna HEX kustom dengan kalkulasi otomatis kontras teks dan efek pendar halus.
+- **Widget Status Bar Interaktif & Tooltip Rapi**:
+  - Penunjuk waktu di bar status kanan bawah VS Code. Klik widget untuk membuka sidebar Zen Clock.
+  - Hover tooltip Markdown elegan berisi jadwal sholat lengkap hari ini, highlight countdown waktu sholat berikutnya, dan menu pengaturan cepat.
+- **Tab Pengingat Sholat Khusus (Prayer Reminder Page)**: Tab editor estetik dan menenangkan yang otomatis terbuka saat waktu sholat tiba, dilengkapi ayat pengingat dan tombol aksi cepat.
 
 ---
 
-[1.0.0]: https://github.com/lutfialdrii/zen-clock/releases/tag/v1.0.0
+[0.0.1]: https://github.com/lutfialdrii/zen-clock/releases/tag/v0.0.1
