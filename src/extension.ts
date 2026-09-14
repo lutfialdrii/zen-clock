@@ -6,6 +6,7 @@ import {
   getKemenagCalculationParameters,
   formatCountdownVerbose,
   formatCountdownDigits,
+  formatCountdownHoursMinutes,
   PRAYER_NAMES
 } from './utils/prayerHelper';
 import {
@@ -59,6 +60,7 @@ let pomodoroTimerInterval: NodeJS.Timeout | undefined;
 let statusBarItem: vscode.StatusBarItem;
 let statusBarTimer: NodeJS.Timeout | undefined;
 let lastRemindedPrayerKey = '';
+let lastTooltipMarkdown = '';
 
 const POPULAR_CITIES: Array<{ name: string; region: string; lat: number; lng: number }> = [
   { name: 'Jakarta', region: 'DKI Jakarta', lat: -6.2088, lng: 106.8456 },
@@ -565,8 +567,7 @@ function updateStatusBar(context: vscode.ExtensionContext) {
   const nextPrayerTimeStr = nextPrayerDate ? formatTime(nextPrayerDate) : '';
 
   const diffSeconds = nextPrayerDate ? Math.max(0, Math.floor((nextPrayerDate.getTime() - now.getTime()) / 1000)) : 0;
-  const countdownVerbose = formatCountdownVerbose(diffSeconds);
-  const countdownDigits = formatCountdownDigits(diffSeconds);
+  const countdownShort = formatCountdownHoursMinutes(diffSeconds);
 
   // Status Bar Text
   if (currentPomodoro.isRunning) {
@@ -596,9 +597,9 @@ function updateStatusBar(context: vscode.ExtensionContext) {
 
   tooltip.appendMarkdown(`---\n\n`);
 
-  tooltip.appendMarkdown(`### 🕌 **Jadwal Waktu Sholat (Kemenag RI)**\n`);
-  tooltip.appendMarkdown(`📍 **Lokasi**: ${savedLocation.name}\n`);
-  tooltip.appendMarkdown(`⏳ **${nextPrayerLabel} tiba dalam**: \`${countdownVerbose}\` (${countdownDigits})\n\n`);
+  tooltip.appendMarkdown(`### 🕌 **Jadwal Sholat (Kemenag RI)**\n\n`);
+  tooltip.appendMarkdown(`- 📍 **Lokasi**: ${savedLocation.name}\n`);
+  tooltip.appendMarkdown(`- ⏳ **Berikutnya**: **${nextPrayerLabel}** (${nextPrayerTimeStr}) dalam **${countdownShort}**\n\n`);
   tooltip.appendMarkdown(`| Waktu | Jam | Status |\n`);
   tooltip.appendMarkdown(`| :--- | :---: | :---: |\n`);
 
@@ -613,7 +614,7 @@ function updateStatusBar(context: vscode.ExtensionContext) {
 
   for (const p of prayersList) {
     const isNext = p.key.toLowerCase() === nextPrayer.toLowerCase();
-    const marker = isNext ? `👉 **Berikutnya (${countdownDigits})**` : '—';
+    const marker = isNext ? `👉 **Berikutnya**` : '—';
     const bold = isNext ? '**' : '';
     tooltip.appendMarkdown(`| ${bold}${p.name}${bold} | ${bold}${formatTime(p.time)}${bold} | ${marker} |\n`);
   }
@@ -626,7 +627,11 @@ function updateStatusBar(context: vscode.ExtensionContext) {
     `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`
   );
 
-  statusBarItem.tooltip = tooltip;
+  const newTooltipMarkdown = tooltip.value;
+  if (lastTooltipMarkdown !== newTooltipMarkdown) {
+    statusBarItem.tooltip = tooltip;
+    lastTooltipMarkdown = newTooltipMarkdown;
+  }
 
   // Check prayer time arrival for reminder
   for (const p of prayersList) {
@@ -757,8 +762,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   updateStatusBar(context);
   statusBarTimer = setInterval(() => {
-    updateStatusBar(context);
-  }, 1000);
+    if (!currentPomodoro.isRunning) {
+      updateStatusBar(context);
+    }
+  }, 15000);
 }
 
 export function deactivate() {
@@ -1225,7 +1232,29 @@ function handleWebviewMessage(message: any, webview: vscode.Webview, context: vs
       } else if (message.action === 'reset') {
         resetPomodoro(context);
       } else if (message.action === 'switchMode') {
-        switchPomodoroMode(context, message.mode === 'break' ? 'break' : 'work');
+        const targetMode: 'work' | 'break' = message.mode === 'break' ? 'break' : 'work';
+        if (targetMode === currentPomodoro.mode) {
+          break;
+        }
+
+        if (currentPomodoro.isRunning) {
+          const modeLabel = targetMode === 'break' ? 'Istirahat (Break 5m)' : 'Kerja (Work 25m)';
+          vscode.window
+            .showWarningMessage(
+              `Sesi Pomodoro sedang berjalan. Beralih ke mode ${modeLabel} akan menghentikan dan mereset sesi aktif. Anda yakin?`,
+              'Ya, Ganti Mode',
+              'Batal'
+            )
+            .then((choice) => {
+              if (choice === 'Ya, Ganti Mode') {
+                switchPomodoroMode(context, targetMode);
+              } else {
+                broadcastPomodoroState();
+              }
+            });
+        } else {
+          switchPomodoroMode(context, targetMode);
+        }
       }
       break;
   }

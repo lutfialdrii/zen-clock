@@ -75,3 +75,18 @@ export function formatCountdownDigits(totalSeconds: number): string {
   const seconds = String(totalSeconds % 60).padStart(2, '0');
   return `${hours}:${minutes}:${seconds}`;
 }
+
+export function formatCountdownHoursMinutes(totalSeconds: number): string {
+  if (totalSeconds <= 0) return 'sekarang';
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours > 0) {
+    return `${hours} jam ${minutes} menit`;
+  }
+  if (minutes > 0) {
+    return `${minutes} menit`;
+  }
+  return '< 1 menit';
+}

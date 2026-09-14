@@ -8,6 +8,28 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [0.0.1] - 2026-09-14
 
+### Bug Fixes & UX Optimization: Pomodoro Switch Warning & Widget Countdown Cleanup
+- **Prompt Pengguna:**
+  > *"2. BUG : saat pomodoro sedang berjalan, dan klik tombol break, langsung mereset waktu, seharusnya perlu ada peringatan terlebih dahulu"*
+  > *"3. terkait count down, pada web view atau full panel ataupun sidepanel, tidak perlu menampilkan detik, cukup menit dan jam seperti rancangan awal."*
+  > *"4. terkait widget bottom panel , countdown terdapat bug setiap detiknya merefresh dan mesti merender ulang widget ini, buat agar hanya menampilkan jam dan menit saja, dan susun kembali kalimat pada widgetnya supaya lebih singkat dan jelas , terutama pada kalimat '⏳ Subuh tiba dalam: 8 jam 38 menit 47 detik (08:38:47)' sejajar dengan section lokasi yang menyebabkan experiencenya kurang baik. dan pada section jam sholat , status nya cukup menampilkan '👉 Berikutnya' seperti saat rancangan awal"*
+- **Komponen & File Terkait:**
+  - `src/extension.ts`:
+    - Menambahkan dialog konfirmasi peringatan `vscode.window.showWarningMessage` saat pengguna mengklik tombol ganti mode (Work <-> Break) ketika timer Pomodoro sedang berjalan aktif, mencegah reset sesi secara tidak sengaja.
+    - Memperbaiki bug status bar refresh setiap detik: Tooltip status bar kini di-*cache* dan hanya di-*reassign* ketika konten teks markdown berubah (`lastTooltipMarkdown !== newTooltipMarkdown`), menghilangkan kedipan (*flicker*) hover tooltip.
+    - Mengubah interval refresh status bar saat idle menjadi 15 detik (cukup untuk pergantian menit tanpa pemborosan komputasi).
+    - Menyusun ulang tata letak tooltip status bar: Memisahkan bagian informasi dengan format *bullet point* rapi (`- 📍 **Lokasi**:` dan `- ⏳ **Berikutnya**: **Subuh** (04:36) dalam **8 jam 38 menit**`).
+    - Menghilangkan detail detik yang berisik pada tabel jadwal sholat status bar, menyederhanakan status menjadi `👉 **Berikutnya**` sesuai rancangan awal.
+  - `src/utils/prayerHelper.ts`:
+    - Menambahkan helper `formatCountdownHoursMinutes(totalSeconds)` yang mengembalikan format jam dan menit bersih (`X jam Y menit`, `Y menit`, `< 1 menit`, atau `sekarang`).
+  - `src/components/PrayerTime.jsx`:
+    - Mengubah tampilan hitung mundur pada pil webview (panel editor, bottom panel, sidebar) agar hanya menampilkan jam dan menit tanpa detik.
+    - Mengurangi interval re-render React ticker dari 1000ms menjadi 10000ms (10s), memangkas konsumsi CPU dan menghentikan efek jitter ukuran pil.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - Unit test `formatCountdownHoursMinutes`: Sukses (menghasilkan format jam dan menit presisi).
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 329.63 KB).
+
 ### Milestone 4: Theme Harmonization & Customizable Accent Color System
 - **Prompt Pengguna:**
   > *"menyesuaikan tema dari page webview nya, dan page reminder untuk sholat, tujuannya ya hanya menyesuaikan warna saja untuk saat ini , karena ketidakseragaman antara page pada saat zen clock dan reminder page"*

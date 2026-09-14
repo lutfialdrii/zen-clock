@@ -4,8 +4,7 @@ import { MapPin, Map, Bell, BellOff, Edit3, SlidersHorizontal, Palette } from 'l
 import { sendNotification, requestWebNotificationPermission, getVsCodeApi } from '../utils/notification';
 import {
   getKemenagCalculationParameters,
-  formatCountdownVerbose,
-  formatCountdownDigits,
+  formatCountdownHoursMinutes,
   PRAYER_NAMES
 } from '../utils/prayerHelper';
 
@@ -134,9 +133,9 @@ export default function PrayerTime() {
     }
   }, [coords, locationName]);
 
-  // Clock ticker for real-time countdown & automatic rollover
+  // Clock ticker for countdown & automatic rollover (every 10s is lightweight and accurate for minutes)
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    const timer = setInterval(() => setCurrentTime(new Date()), 10000);
     return () => clearInterval(timer);
   }, []);
 
@@ -234,7 +233,7 @@ export default function PrayerTime() {
 
   const diffMs = prayerData.time - currentTime;
   const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
-  const timeString = formatCountdownVerbose(diffSeconds);
+  const timeString = formatCountdownHoursMinutes(diffSeconds);
   const nameId = PRAYER_NAMES[prayerData.name.toLowerCase()] || prayerData.name;
 
   return (
