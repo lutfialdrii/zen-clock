@@ -7,23 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
-## [Unreleased]
-
-### 🇬🇧 English
-- **Multi-Language Support (i18n)**:
-  - Added full bilingual support with Bahasa Indonesia as default and English as an optional setting (`zenClock.language`).
-  - Added new Command Palette shortcut `Zen Clock: Display: Switch Language (Ganti Bahasa)` (`extension-clock.changeLanguage`) to toggle languages on the fly.
-  - Reactive language synchronization across Status Bar tooltip, native notifications, QuickPick dialogs, FlipClock date formatting, and the dedicated prayer reminder tab.
-
-### 🇮🇩 Bahasa Indonesia
-- **Dukungan Multi-Bahasa (i18n)**:
-  - Dukungan dwibahasa penuh dengan Bahasa Indonesia sebagai bawaan dan Bahasa Inggris sebagai opsi pengaturan (`zenClock.language`).
-  - Shortcut Command Palette baru `Zen Clock: Display: Switch Language (Ganti Bahasa)` (`extension-clock.changeLanguage`) untuk mengganti bahasa secara instan.
-  - Sinkronisasi reaktif ke seluruh tooltip status bar, notifikasi native OS, dialog prompt, format tanggal jam, dan tab pengingat sholat.
-
----
-
-## [0.0.1] - 2026-09-14 — Initial Release
+## [0.0.1] - 2026-09-15 — Initial Release
 
 ### 🇬🇧 English
 
@@ -37,6 +21,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
   - Astronomical prayer calculation powered by `adhan` library with Indonesian Ministry of Religious Affairs (Kemenag RI) standard parameters (Fajr 20°, Isha 18°, +2 minutes ihtiyat correction).
   - Interactive minute adjustments menu (`extension-clock.adjustPrayerTimes`) for custom calibration.
   - Global city search and curated Indonesian popular cities selection.
+- **Multi-Language Support (i18n)**:
+  - Full bilingual support with Bahasa Indonesia as default and English as an optional setting (`zenClock.language`).
+  - Added new Command Palette shortcut `Zen Clock: Display: Switch Language (Ganti Bahasa)` (`extension-clock.changeLanguage`) to toggle languages on the fly.
+  - Reactive language synchronization across Status Bar tooltip, native notifications, QuickPick dialogs, FlipClock date formatting, and the dedicated prayer reminder tab.
 - **Harmonized Accent Color System**:
   - 6 curated aesthetic themes: Warm Amber (Default), Islamic Emerald, Modern Sky Cyan, Pomodoro Rose, Mystic Purple, and Monochrome Silver.
   - Custom HEX color input with automated contrast detection and subtle glow effects.
@@ -51,7 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### 🇮🇩 Bahasa Indonesia
 
 #### ✨ Fitur Utama (Initial Release)
-- **3D Zen Flip Clock**: Jam mekanik flip 3D retro-modern dengan kartu animasi halus, tampilan tanggal berbahasa Indonesia, dan skala tipografi responsif yang rapi di panel samping maupun tab penuh.
+- **3D Zen Flip Clock**: Jam mekanik flip 3D retro-modern dengan kartu animasi halus, tampilan tanggal berbahasa Indonesia/Inggris dinamis, dan skala tipografi responsif yang rapi di panel samping maupun tab penuh.
 - **Background Pomodoro Timer Engine**:
   - Timer berjalan mandiri di background Extension Host (Node.js), tidak akan freeze atau terhenti saat tab VS Code diminimize atau tidak aktif.
   - Sinkronisasi state otomatis ke seluruh tampilan aktif (Sidebar, Bottom Panel, dan Editor).
@@ -60,6 +48,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
   - Perhitungan waktu sholat akurat berbasis pustaka astronomi `adhan` dengan parameter resmi Kementerian Agama Republik Indonesia (Subuh 20°, Isya 18°, +2 menit ihtiyat).
   - Menu QuickPick interaktif penyesuaian koreksi menit sholat (+/- menit per jadwal).
   - Pencarian kota global dan daftar kota populer di Indonesia.
+- **Dukungan Multi-Bahasa (i18n)**:
+  - Dukungan dwibahasa penuh dengan Bahasa Indonesia sebagai bawaan dan Bahasa Inggris sebagai opsi pengaturan (`zenClock.language`).
+  - Shortcut Command Palette baru `Zen Clock: Display: Switch Language (Ganti Bahasa)` (`extension-clock.changeLanguage`) untuk mengganti bahasa secara instan.
+  - Sinkronisasi reaktif ke seluruh tooltip status bar, notifikasi native OS, dialog prompt, format tanggal jam, dan tab pengingat sholat.
 - **Harmonisasi Warna Tema & Kustomisasi HEX**:
   - 6 preset warna pilihan: Warm Amber (Default), Islamic Emerald, Modern Sky Cyan, Pomodoro Rose, Mystic Purple, dan Monochrome Silver.
   - Dukungan kode warna HEX kustom dengan kalkulasi otomatis kontras teks dan efek pendar halus.
