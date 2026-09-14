@@ -8,6 +8,26 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-14
 
+### UI/UX Enhancements: Pomodoro 2-Card Flip Clock Proportional Scaling
+- **Prompt Pengguna:**
+  > *"terkait desain flip clock pada pomodo perlu di adjust , karena shape nya hanya dua jadi pastikan buat proporsional , sepertinya perlu ditambahkan besar shape nya"*
+- **Akar Masalah (Root Cause):**
+  - Timer Pomodoro hanya menampilkan 2 kartu (`Menit` dan `Detik`), berbeda dengan jam utama yang menampilkan 3 kartu (`Jam`, `Menit`, `Detik`).
+  - Sebelumnya Pomodoro menggunakan ukuran kartu jam 3-unit (`width: 64px – 170px`), sehingga tampilan Pomodoro tampak terlalu kecil dan meninggalkan banyak ruang kosong yang tidak seimbang di kedua sisinya.
+- **Solusi & Perbaikan:**
+  - `src/index.css`:
+    - Menambahkan styling khusus untuk `.pomodoro-flip-clock`:
+      - `width: clamp(85px, 24vw, 210px)` (~33% lebih lebar & proporsional untuk 2 kartu).
+      - `height: clamp(118px, 32vw, 280px)` (aspek rasio kartu lebih gagah).
+      - `font-size: clamp(52px, 14vw, 135px)` (mematuhi rasio ideal ~60% dari lebar kartu, angka bebas dari risiko mentok ke border).
+      - `gap: clamp(10px, 2.5vw, 28px)`.
+    - Membuat padding `.pomodoro-container` responsif: `padding: clamp(16px, 3vw, 24px) clamp(12px, 3vw, 28px)` agar pas di sidebar sempit (240px–260px) tanpa scrollbar horizontal.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 333.01 KB).
+  - `code --install-extension extension-clock-0.0.1.vsix --force`: Berhasil terpasang.
+  - Kartu Pomodoro kini tampak gagah, fokus, dan seimbang baik di sidebar maupun editor tab.
+
 ### Documentation Restructuring: Separating Public Release Notes and Internal Dev Log
 - **Prompt Pengguna:**
   > *"mengapa kita menulis 2 CHANGELOG ?"*
