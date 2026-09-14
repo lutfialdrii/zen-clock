@@ -6,7 +6,7 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
-## [Unreleased] - 2026-09-14
+## [0.0.1] - 2026-09-14
 
 ### Milestone 2 & 3: Prayer Countdown on Hover, Auto-Refresh & Kemenag Adjustments
 - **Prompt Pengguna:**
@@ -70,7 +70,7 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ---
 
-## [1.0.0] - 2026-09-12
+## [0.0.0] - 2026-09-12
 
 ### ✨ Fitur Baru (Added)
 - **3D Zen Flip Clock**: Jam mekanik flip 3D retro-modern dengan kartu animasi halus dan tampilan tanggal berbahasa Indonesia.

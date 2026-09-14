@@ -1,12 +1,11 @@
-# ⏰ Zen Flip Clock, Prayer Times & Pomodoro
+# ⏰ Zen Clock: Pomodoro & Muslim Prayer Times
 
 <p align="center">
-  <img src="./assets/preview-extension-full.png" alt="Zen Flip Clock & Prayer Times Preview" width="100%" />
+  <img src="./assets/preview-extension-full.png" alt="Zen Clock: Pomodoro & Muslim Prayer Times" width="100%" />
 </p>
 
 <p align="center">
-  <b>Minimalist 3D Retro Flip Clock, Automated Islamic Prayer Times & Pomodoro Timer</b><br />
-  Available as a standalone <b>Progressive Web App (PWA)</b> and a <b>VS Code / Antigravity IDE Extension</b>.
+  <b>A mindful 3D retro mechanical flip clock, true background Pomodoro timer, and automated Muslim prayer times with Kemenag RI standards for Visual Studio Code & Antigravity IDE.</b>
 </p>
 
 <p align="center">
@@ -14,156 +13,139 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black" alt="React 19" />
-  <img src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/PWA-Supported-5a0fc8?logo=pwa&logoColor=white" alt="PWA" />
   <img src="https://img.shields.io/badge/VS_Code-Extension-007acc?logo=visualstudiocode&logoColor=white" alt="VS Code Extension" />
+  <img src="https://img.shields.io/badge/Antigravity_IDE-Compatible-4285F4?logo=google&logoColor=white" alt="Antigravity IDE" />
+  <img src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
 ---
 
-## 📸 Interface Gallery (Live Screenshots)
+## 🌟 Key Features
 
-### 🔌 1. Extension Mode (VS Code & Antigravity IDE)
+### 🕰️ 1. 3D Zen Flip Clock
+- Minimalist, distraction-free retro mechanical flip clock.
+- Smooth CSS 3D card folding transitions and localized date display.
+- Works as a persistent companion in your Activity Bar (Sidebar) or Bottom Panel (alongside Terminal and Output).
+
+### 🍅 2. True Background Pomodoro Engine
+- **Immune to Hibernation/Closing**: Powered directly by the **Extension Host (Node.js)** background process. The timer continues ticking accurately even when webviews are closed, minimized, or when you switch files.
+- **Synchronized Across Views**: The sidebar, bottom panel, editor tabs, and status bar always share a single, unified timer state.
+- **Status Bar Integration**: Displays real-time live seconds ticking (e.g. `$(play) 24:45 [Work]`) in your VS Code status bar.
+- **Native OS Notifications**: Interactive dialogs upon work/break completion with quick action buttons (`Start Break`, `Start Work`).
+
+### 🕌 3. Automated Islamic Prayer Times (Kemenag RI Standard)
+- Accurate astronomical prayer calculation using [`adhan`](https://github.com/batoulapps/adhan-js).
+- **Official Kemenag RI Parameters**:
+  - Fajr angle: **20°**, Isha angle: **18°**
+  - Madhab: **Shafi'i**
+  - Rounding: **Rounding Up**
+  - Ihtiyat (safety buffer): **+2 minutes** on all prayer times (Sunrise: -2m).
+- **Interactive Time Adjustments**: Easily fine-tune minutes offset per prayer time using the QuickPick menu or in-webview adjustment button.
+
+### ⏳ 4. Precision Countdown on Hover & Real-Time Auto-Refresh
+- **Status Bar Hover Tooltip**: Hovering over the status bar item reveals a rich Markdown tooltip with exact seconds countdown (`⏳ Subuh arrives in: 01h 23m 45s (01:23:45)`).
+- **Live Active Indicators**: The upcoming prayer row in the schedule table displays the live ticking countdown.
+- **Zero-Reload Auto-Refresh**: The moment prayer time arrives (`00:00:00`), the extension host automatically notifies you and smoothly rolls over to the next prayer schedule without requiring a reload.
+
+### 📖 5. Dedicated Peaceful Prayer Reminder Page
+- A peaceful, elegant editor tab (`zenPrayerReminder`) with a calm dark theme, prayer info, and inspirational Quranic quote.
+- Configurable via `zenClock.autoOpenPrayerReminder`: choose between automatic tab opening or subtle notification prompts.
+
+### 📍 6. Smart Geolocation & City Selector
+- QuickPick city selector with popular Indonesian cities and global city search via OpenStreetMap Nominatim.
+- Automatic IP geolocation fallback.
+
+---
+
+## 📸 Interface Gallery
 
 | Sidebar View | Full Editor Panel Tab |
 | :---: | :---: |
 | <img src="./assets/preview-extension.png" alt="Zen Clock Sidebar View" width="100%" /> | <img src="./assets/preview-extension-full.png" alt="Zen Clock Full Tab View" width="100%" /> |
 
-### 🌐 2. Standalone Web & Progressive Web App (PWA) Mode
-
-| Prayer Times & Schedule Popover | Pomodoro Timer |
+| Schedule Hover Tooltip & Countdown | Pomodoro Timer |
 | :---: | :---: |
 | <img src="./assets/preview-hover.png" alt="Prayer Times Schedule Popover" width="100%" /> | <img src="./assets/preview-pomodoro.png" alt="Pomodoro Timer" width="100%" /> |
 
 ---
 
-## 🌟 Key Features
+## 📦 Installation (.vsix)
 
-- **🕰️ 3D Zen Flip Clock**: Mechanical retro-modern flip clock with smooth 3D flip card animations and localized date display.
-- **🕌 Automated Islamic Prayer Times**:
-  - High-precision prayer times calculation powered by astronomical library [`adhan`](https://github.com/batoulapps/adhan-js).
-  - Automatic geolocation detection with smart IP Reverse Lookup & OpenStreetMap fallback.
-  - Interactive hover popover displaying the full daily prayer schedule (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha).
-- **🍅 Pomodoro Timer**:
-  - Work mode (25m) and Break mode (5m) with flip digit countdown.
-  - Interactive start, pause, and reset controls.
-  - Dynamic browser tab title updating remaining time: `(24:59) Work - Zen Clock`.
-- **📱 Progressive Web App (PWA) & Offline Mode**:
-  - Fully installable on Desktop (Chrome, Edge, macOS/Windows) and Mobile (Android & iOS).
-  - Smart Service Worker caching for instant offline load.
-  - In-app interactive **Install** button on the navigation bar.
-- **🔔 Universal Notification & Sound Alert**:
-  - Native window notifications in VS Code / Antigravity IDE extension.
-  - Web Browser Notification API + Web Audio API synthesizer chime sound when prayer time arrives or timer ends.
-
----
-
-## 📦 Installing the Extension (.vsix)
-
-You can download the pre-packaged `.vsix` extension file directly from the [GitHub Releases](https://github.com/lutfialdrii/zen-clock/releases) page.
+Download the `.vsix` extension package from the [Releases](https://github.com/lutfialdrii/zen-clock/releases) page.
 
 ### Method 1: Via VS Code / Antigravity IDE UI (Recommended)
-1. Download `extension-clock-1.0.0.vsix` from the [Releases](https://github.com/lutfialdrii/zen-clock/releases) page.
-2. Open **VS Code** or **Antigravity IDE**.
-3. Open the **Extensions** view (`Ctrl+Shift+X` on Windows/Linux or `Cmd+Shift+X` on macOS).
-4. Click the three dots menu (**`...`**) in the top-right corner of the Extensions panel.
-5. Select **Install from VSIX...**
-6. Choose the downloaded `.vsix` file.
-7. The **Zen Clock** icon will appear on your Activity Bar on the left!
+1. Open **VS Code** or **Antigravity IDE**.
+2. Press `Ctrl+Shift+X` (or `Cmd+Shift+X` on macOS) to open the **Extensions** panel.
+3. Click the three dots menu (**`...`**) in the top-right corner.
+4. Select **Install from VSIX...**
+5. Select the downloaded `extension-clock-0.0.1.vsix` file.
+6. The **Zen Clock** icon will appear on your Activity Bar!
 
 ### Method 2: Via Terminal / Command Line
 ```bash
-code --install-extension extension-clock-1.0.0.vsix
+code --install-extension extension-clock-0.0.1.vsix
 ```
-*(Or `antigravity --install-extension extension-clock-1.0.0.vsix` if using Antigravity IDE CLI)*
+*(Or `antigravity --install-extension extension-clock-0.0.1.vsix` for Antigravity IDE CLI)*
 
 ---
 
-## 🚀 1. Running Web & PWA Version
+## ⌨️ Commands
 
-### Development Mode
-```bash
-npm run dev
-```
-Open your browser at `http://localhost:5173`.
+Access these commands from the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 
-### Production Build (Web)
-```bash
-npm run build:web
-```
-Ready-to-deploy static assets will be output in the `dist/` directory.
-
-### Preview Production Build
-```bash
-npm run preview
-```
-
-### 📲 How to Install the App (PWA)
-- **Desktop (Chrome / Edge / Brave)**: Click the **Install** button on the in-app navigation bar or the install icon in the browser address bar.
-- **Android**: Open in Chrome $\rightarrow$ Click **Install** or tap the menu $\rightarrow$ *Add to Home screen*.
-- **iOS / iPadOS (Safari)**: Open in Safari $\rightarrow$ Tap the **Share** button $\rightarrow$ Select ***Add to Home Screen***.
+| Command | Title | Description |
+| :--- | :--- | :--- |
+| `extension-clock.openClock` | **Zen Clock: Open Flip Clock Panel** | Opens the Zen Clock in a full editor tab |
+| `extension-clock.focusPanel` | **Zen Clock: Focus Bottom Panel** | Focuses the Zen Clock view in the bottom panel |
+| `extension-clock.changeLocation` | **Zen Clock: Change City / Location** | Select popular cities or search global cities |
+| `extension-clock.adjustPrayerTimes`| **Zen Clock: Adjust Prayer Times** | Adjust minutes offset (+/-) per prayer time |
+| `extension-clock.togglePomodoro` | **Zen Clock: Start / Pause Pomodoro** | Toggles Pomodoro timer on/off |
+| `extension-clock.resetPomodoro` | **Zen Clock: Reset Pomodoro Timer** | Resets Pomodoro timer to default duration |
+| `extension-clock.previewReminder` | **Zen Clock: Preview Prayer Reminder** | Previews the prayer reminder tab |
 
 ---
 
-## 🌐 Web Deployment Guide
+## ⚙️ Extension Settings
 
-### Option 1: Vercel (Recommended)
-1. Import this repository in [Vercel Dashboard](https://vercel.com).
-2. Or deploy via Vercel CLI:
-   ```bash
-   npx vercel --prod
-   ```
+Configure via **Settings** (`Ctrl+,` or `Cmd+,` $\rightarrow$ Search `Zen Clock`):
 
-### Option 2: Netlify
-1. Build the web app:
-   ```bash
-   npm run build:web
-   ```
-2. Upload the `dist/` folder to [Netlify Drop](https://app.netlify.com/drop), or deploy via Netlify CLI:
-   ```bash
-   npx netlify deploy --prod --dir=dist
-   ```
-
-### Option 3: GitHub Pages
-1. Install deployment dependency:
-   ```bash
-   npm install -D gh-pages
-   ```
-2. Add script to `package.json`:
-   ```json
-   "deploy": "npm run build:web && gh-pages -d dist"
-   ```
-3. Run:
-   ```bash
-   npm run deploy
-   ```
+| Setting | Type | Default | Description |
+| :--- | :---: | :---: | :--- |
+| `zenClock.autoOpenPrayerReminder` | `boolean` | `true` | Automatically open the dedicated reminder tab when prayer time arrives |
 
 ---
 
-## 🔌 2. Extension Development & Packaging
+## 💻 Development & Building
 
-### Local Debugging (F5)
-1. Open the project folder in VS Code or Antigravity IDE.
-2. Press `F5` or navigate to **Run and Debug** $\rightarrow$ Select **Extension**.
-3. Click the **Zen Clock** icon in the Activity Bar on the left.
+### Prerequisites
+- Node.js >= 18.x
+- npm >= 9.x
 
-### Building Your Own Package (.vsix)
+### Quick Start
 ```bash
+# 1. Install dependencies
+npm install
+
+# 2. Compile TypeScript & Build Webview
+npm run compile
+
+# 3. Package extension into .vsix
 npm run package:vsix
 ```
 
+### Local Debugging
+1. Open this repository in VS Code or Antigravity IDE.
+2. Press `F5` (Launch Extension). A new Extension Development Host window will open with Zen Clock active.
+
 ---
 
-## 🛠️ Tech Stack
+## 🌐 Standalone Web & PWA Version
 
-- **Frontend Core**: React 19, JavaScript (ESNext)
-- **Bundler & Tooling**: Vite 8, TypeScript
-- **PWA**: Service Worker Cache API, Web App Manifest
-- **Prayer Calculation**: Adhan JS
-- **Icons**: Lucide React
-- **Extension API**: VS Code Webview API
+Looking for the standalone web app / Progressive Web App (PWA) version of Zen Clock?  
+The web edition is maintained in its dedicated repository: [`zen-flip-clock`](https://github.com/lutfialdrii/zen-flip-clock).
 
 ---
 

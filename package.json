@@ -2,7 +2,7 @@
   "name": "extension-clock",
   "displayName": "Zen Clock: Pomodoro & Muslim Prayer Times",
   "description": "A mindful 3D flip clock, background Pomodoro timer, and automated Muslim prayer times with adhan reminder for VS Code & Antigravity IDE",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "publisher": "lutfialdrii",
   "icon": "public/icons/icon-192.png",
   "license": "MIT",
