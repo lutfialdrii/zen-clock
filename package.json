@@ -53,6 +53,11 @@
         "category": "Zen Clock"
       },
       {
+        "command": "extension-clock.focusSidebar",
+        "title": "Focus Sidebar (Buka Sidebar)",
+        "category": "Zen Clock"
+      },
+      {
         "command": "extension-clock.focusPanel",
         "title": "Focus Bottom Panel",
         "category": "Zen Clock"

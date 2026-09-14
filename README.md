@@ -99,6 +99,7 @@ Access these commands from the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 | Command | Title | Description |
 | :--- | :--- | :--- |
 | `extension-clock.openClock` | **Zen Clock: Open Flip Clock Panel** | Opens the Zen Clock in a full editor tab |
+| `extension-clock.focusSidebar` | **Zen Clock: Focus Sidebar** | Opens and focuses the Zen Clock sidebar view |
 | `extension-clock.focusPanel` | **Zen Clock: Focus Bottom Panel** | Focuses the Zen Clock view in the bottom panel |
 | `extension-clock.changeLocation` | **Zen Clock: Change City / Location** | Select popular cities or search global cities |
 | `extension-clock.adjustPrayerTimes`| **Zen Clock: Adjust Prayer Times** | Adjust minutes offset (+/-) per prayer time |
