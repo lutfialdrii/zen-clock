@@ -471,61 +471,65 @@ function broadcastThemeColor() {
 }
 
 async function promptChangeAccentColor(context: vscode.ExtensionContext) {
-  const currentAccent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
+  try {
+    const currentAccent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
 
-  interface AccentQuickPickItem extends vscode.QuickPickItem {
-    id?: string;
-    hex?: string;
-    isCustom?: boolean;
-  }
+    interface AccentQuickPickItem extends vscode.QuickPickItem {
+      id?: string;
+      hex?: string;
+      isCustom?: boolean;
+    }
 
-  const items: AccentQuickPickItem[] = ACCENT_PRESETS.map((preset) => {
-    const isSelected = preset.hex.toLowerCase() === currentAccent.toLowerCase() || preset.id === currentAccent.toLowerCase();
-    return {
-      label: preset.name,
-      description: preset.hex,
-      detail: `${isSelected ? '✓ Aktif — ' : ''}${preset.description}`,
-      id: preset.id,
-      hex: preset.hex
-    };
-  });
-
-  items.push({
-    label: '$(color-mode) Custom Hex Color...',
-    description: 'Input kode HEX sendiri',
-    detail: 'Masukkan kode warna HEX bebas (contoh: #ff6600, #3b82f6)',
-    isCustom: true
-  });
-
-  const selected = await vscode.window.showQuickPick(items, {
-    placeHolder: 'Pilih warna aksen tema untuk Zen Clock & Pengingat Sholat'
-  });
-
-  if (!selected) return;
-
-  if (selected.isCustom) {
-    const inputHex = await vscode.window.showInputBox({
-      prompt: 'Masukkan kode warna HEX (contoh: #ff5722 atau 10b981):',
-      value: currentAccent.startsWith('#') ? currentAccent : '#',
-      validateInput: (val) => {
-        const clean = val.trim().replace(/^#/, '');
-        if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(clean)) {
-          return 'Format HEX tidak valid. Gunakan 3 atau 6 digit hex (contoh: #ff5722)';
-        }
-        return null;
-      }
+    const items: AccentQuickPickItem[] = ACCENT_PRESETS.map((preset) => {
+      const isSelected = preset.hex.toLowerCase() === currentAccent.toLowerCase() || preset.id === currentAccent.toLowerCase();
+      return {
+        label: preset.name,
+        description: preset.hex,
+        detail: `${isSelected ? '✓ Aktif — ' : ''}${preset.description}`,
+        id: preset.id,
+        hex: preset.hex
+      };
     });
 
-    if (inputHex) {
-      const formatted = inputHex.trim().startsWith('#') ? inputHex.trim() : `#${inputHex.trim()}`;
-      await vscode.workspace.getConfiguration('zenClock').update('accentColor', formatted, vscode.ConfigurationTarget.Global);
-      vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${formatted}`);
+    items.push({
+      label: '$(color-mode) Custom Hex Color...',
+      description: 'Input kode HEX sendiri',
+      detail: 'Masukkan kode warna HEX bebas (contoh: #ff6600, #3b82f6)',
+      isCustom: true
+    });
+
+    const selected = await vscode.window.showQuickPick(items, {
+      placeHolder: 'Pilih warna aksen tema untuk Zen Clock & Pengingat Sholat'
+    });
+
+    if (!selected) return;
+
+    if (selected.isCustom) {
+      const inputHex = await vscode.window.showInputBox({
+        prompt: 'Masukkan kode warna HEX (contoh: #ff5722 atau 10b981):',
+        value: currentAccent.startsWith('#') ? currentAccent : '#',
+        validateInput: (val) => {
+          const clean = val.trim().replace(/^#/, '');
+          if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(clean)) {
+            return 'Format HEX tidak valid. Gunakan 3 atau 6 digit hex (contoh: #ff5722)';
+          }
+          return null;
+        }
+      });
+
+      if (inputHex) {
+        const formatted = inputHex.trim().startsWith('#') ? inputHex.trim() : `#${inputHex.trim()}`;
+        await vscode.workspace.getConfiguration('zenClock').update('accentColor', formatted, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${formatted}`);
+        broadcastThemeColor();
+      }
+    } else if (selected.hex) {
+      await vscode.workspace.getConfiguration('zenClock').update('accentColor', selected.hex, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${selected.label}`);
       broadcastThemeColor();
     }
-  } else if (selected.hex) {
-    await vscode.workspace.getConfiguration('zenClock').update('accentColor', selected.hex, vscode.ConfigurationTarget.Global);
-    vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${selected.label}`);
-    broadcastThemeColor();
+  } catch (err: any) {
+    vscode.window.showErrorMessage(`Gagal mengubah warna tema Zen Clock: ${err?.message || err}`);
   }
 }
 

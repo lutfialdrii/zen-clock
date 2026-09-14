@@ -8,6 +8,28 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [0.0.1] - 2026-09-14
 
+### Bug Fixes: VSIX Publisher Conflict Resolution & Clean Command Titles
+- **Prompt Pengguna:**
+  > *"mengapa saat saya install .vsix file pada vscode seperti nya ada beberapa bug dan extension tidak berjalan sesuai yang diharapkan, diantaranya Command 'Zen Clock: Zen Clock: Change Accent Color Theme (Ubah Warna Tema)' resulted in an error"*
+- **Akar Masalah (Root Cause):**
+  1. **Konflik Publisher Lama (`developer.extension-clock@1.0.0` vs `lutfialdrii.extension-clock@0.0.1`)**:
+     - Sebelumnya extension terinstall dengan publisher lama `developer` versi `1.0.0` di `~/.vscode/extensions/developer.extension-clock-1.0.0`.
+     - Ketika file `.vsix` baru dengan publisher `lutfialdrii` diinstall, VS Code menganggapnya sebagai dua ekstensi yang berbeda dan tidak otomatis menghapus versi lama.
+     - Saat VS Code memuat ekstensi, `developer.extension-clock` aktif lebih dulu dan mendaftarkan perintah `extension-clock.openClock`. Saat `lutfialdrii.extension-clock` berusaha aktif, VS Code melempar error fatal `command 'extension-clock.openClock' already exists` pada baris aktivasi pertama.
+     - Akibatnya, aktivasi `lutfialdrii.extension-clock` terhenti (*crashed*) sehingga perintah baru seperti `extension-clock.changeAccentColor` tidak pernah terdaftar.
+  2. **Duplikasi Kategori & Judul Perintah di `package.json`**:
+     - Di `package.json`, perintah didefinisikan dengan `"category": "Zen Clock"` DAN `"title": "Zen Clock: ..."` sehingga VS Code merender judul ganda di Command Palette: `Zen Clock: Zen Clock: Change Accent Color Theme...`.
+- **Solusi & Perbaikan:**
+  - Menjalankan `code --uninstall-extension developer.extension-clock` untuk membersihkan artefak ekstensi versi lama yang berkonflik.
+  - Memperbarui `package.json`: Menghapus prefix redundan `"Zen Clock: "` dari seluruh properti `title` di `contributes.commands` sehingga tampil rapi dan standar (`Zen Clock: Change Accent Color Theme (Ubah Warna Tema)`).
+  - Memperbarui `src/extension.ts`: Membungkus logika `promptChangeAccentColor` dalam blok `try ... catch` untuk menangani kegagalan konfigurasi secara anggun dengan pesan error informatif.
+  - Memperbarui `README.md` dan `README.id.md`: Mendaftarkan perintah `extension-clock.changeAccentColor` dan konfigurasi `zenClock.accentColor` pada tabel dokumentasi.
+  - Mengompilasi ulang dan memaketkan VSIX via `npm run package:vsix` serta menginstall ulang dengan `code --install-extension extension-clock-0.0.1.vsix --force`.
+- **Hasil Verifikasi:**
+  - Hanya satu ekstensi yang terpasang: `lutfialdrii.extension-clock@0.0.1`.
+  - Log aktivasi bebas dari error `command already exists`.
+  - Judul perintah di Command Palette bersih tanpa duplikasi prefix.
+
 ### Bug Fixes & UX Optimization: Pomodoro Switch Warning & Widget Countdown Cleanup
 - **Prompt Pengguna:**
   > *"2. BUG : saat pomodoro sedang berjalan, dan klik tombol break, langsung mereset waktu, seharusnya perlu ada peringatan terlebih dahulu"*

@@ -39,42 +39,42 @@
     "commands": [
       {
         "command": "extension-clock.openClock",
-        "title": "Zen Clock: Open Flip Clock Panel",
+        "title": "Open Flip Clock Panel",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.changeLocation",
-        "title": "Zen Clock: Change City / Location (Pilih Kota)",
+        "title": "Change City / Location (Pilih Kota)",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.adjustPrayerTimes",
-        "title": "Zen Clock: Adjust Prayer Times (Sesuaikan Menit Waktu Sholat)",
+        "title": "Adjust Prayer Times (Sesuaikan Menit Waktu Sholat)",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.focusPanel",
-        "title": "Zen Clock: Focus Bottom Panel",
+        "title": "Focus Bottom Panel",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.previewReminder",
-        "title": "Zen Clock: Preview Prayer Reminder Page",
+        "title": "Preview Prayer Reminder Page",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.togglePomodoro",
-        "title": "Zen Clock: Start / Pause Pomodoro Timer",
+        "title": "Start / Pause Pomodoro Timer",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.resetPomodoro",
-        "title": "Zen Clock: Reset Pomodoro Timer",
+        "title": "Reset Pomodoro Timer",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.changeAccentColor",
-        "title": "Zen Clock: Change Accent Color Theme (Ubah Warna Tema)",
+        "title": "Change Accent Color Theme (Ubah Warna Tema)",
         "category": "Zen Clock"
       }
     ],
