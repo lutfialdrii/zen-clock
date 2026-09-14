@@ -70,7 +70,7 @@ export default function PrayerTime() {
           lat: msg.data.lat,
           lng: msg.data.lng
         });
-        setLocationName(msg.data.name);
+        setLocationName(msg.data.name ? msg.data.name.replace(/\s*\(Default\)/i, '') : 'Jakarta');
         try {
           localStorage.setItem('zenClock_savedLocation', JSON.stringify(msg.data));
         } catch (e) {}
@@ -105,12 +105,12 @@ export default function PrayerTime() {
           setLocationName(city ? `${city}, ${region}` : region);
         } else {
           setCoords({ lat: -6.2088, lng: 106.8456 });
-          setLocationName('Jakarta (Default)');
+          setLocationName('Jakarta');
         }
       })
       .catch(() => {
         setCoords({ lat: -6.2088, lng: 106.8456 });
-        setLocationName('Jakarta (Default)');
+        setLocationName('Jakarta');
       });
   };
 

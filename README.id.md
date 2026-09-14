@@ -99,6 +99,7 @@ Dapat diakses melalui Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 | Perintah | Judul | Deskripsi |
 | :--- | :--- | :--- |
 | `extension-clock.openClock` | **Zen Clock: Open Flip Clock Panel** | Membuka Zen Clock di tab editor penuh |
+| `extension-clock.focusSidebar` | **Zen Clock: Focus Sidebar** | Membuka dan memfokuskan Zen Clock di sidebar samping |
 | `extension-clock.focusPanel` | **Zen Clock: Focus Bottom Panel** | Menampilkan Zen Clock di panel bawah |
 | `extension-clock.changeLocation` | **Zen Clock: Change City / Location** | Memilih kota populer atau cari kota dunia |
 | `extension-clock.adjustPrayerTimes`| **Zen Clock: Adjust Prayer Times** | Mengatur penyesuaian koreksi menit sholat (+/-) |

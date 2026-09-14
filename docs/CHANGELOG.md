@@ -8,6 +8,30 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [0.0.1] - 2026-09-14
 
+### UI/UX Enhancements: Tooltip Layout Optimization & Direct Sidebar Focus
+- **Prompt Pengguna:**
+  > *"terkait yang ini • ⏳ Subuh (7 jam 55 menit) lebih baik ditampilkan dipaling bawah, dan untuk countdown nya tampilannya dibuat highlight seperti `7 Jam 55 menit`, seperti sebelumnya"*
+  > *"terus tulisan Kemanag RI tidak perlu ditampilkan, nantinya cukup kita disclaimer atau deskripsi pada marketplace atau readme.md"*
+  > *"dan terkait table Waktu Jam Status, jaraknya agak terlalu dekat antar kolom"*
+  > *"terkait settings menu , sepertinya untuk 'Buka Panel' kita hapus saja , dan saat bottom panel di klik , cukup buka sidepanel saja , bukan buka panel yang sejajar dengan terminal, bantu ubah ini"*
+- **Komponen & File Terkait:**
+  - `src/extension.ts`:
+    - Memindahkan hitung mundur waktu sholat ke bawah tabel sholat dengan format highlight inline code: `⏳ **Subuh** tiba dalam \`7 jam 55 menit\``.
+    - Menghilangkan teks `(Kemenag RI)` dari header: `### 🕌 **Jadwal Sholat**`.
+    - Menambahkan padding non-breaking space `&nbsp;&nbsp;` antar kolom tabel (`Waktu`, `Jam`, `Status`) agar kolom tidak berhimpitan dan lega dipandang.
+    - Membersihkan teks `(Default)` dari fallback nama lokasi (`'Jakarta'` dan sanitasi `.replace(/\s*\(Default\)/i, '')`).
+    - Mengalihkan aksi klik item Status Bar dari membuka panel bawah ke memfokuskan Sidebar Zen Clock (`zen-clock-sidebar.focus`).
+    - Menghilangkan tombol `Buka Panel` dari footer tooltip, menyatukan 3 aksi penting dalam satu baris simetris: `[Ganti Kota] • [Sesuaikan Jam] • [Warna Tema]`.
+    - Mendaftarkan command baru `extension-clock.focusSidebar` ("Focus Sidebar (Buka Sidebar)").
+  - `src/components/PrayerTime.jsx`:
+    - Mengubah fallback lokasi bawaan dari `'Jakarta (Default)'` menjadi `'Jakarta'`.
+  - `package.json`, `README.md`, `README.id.md`:
+    - Mendaftarkan perintah `extension-clock.focusSidebar` di manifest dan tabel dokumentasi.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error (0 error).
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 332.07 KB).
+  - `code --install-extension extension-clock-0.0.1.vsix --force`: Berhasil terpasang.
+
 ### Bug Fixes: VSIX Publisher Conflict Resolution & Clean Command Titles
 - **Prompt Pengguna:**
   > *"mengapa saat saya install .vsix file pada vscode seperti nya ada beberapa bug dan extension tidak berjalan sesuai yang diharapkan, diantaranya Command 'Zen Clock: Zen Clock: Change Accent Color Theme (Ubah Warna Tema)' resulted in an error"*

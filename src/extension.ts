@@ -543,10 +543,11 @@ function updateStatusBar(context: vscode.ExtensionContext) {
   const mins = String(now.getMinutes()).padStart(2, '0');
 
   const savedLocation = context.globalState.get<LocationData>(LOCATION_STORAGE_KEY) || {
-    name: 'Jakarta (Default)',
+    name: 'Jakarta',
     lat: -6.2088,
     lng: 106.8456
   };
+  const cleanLocationName = (savedLocation.name || 'Jakarta').replace(/\s*\(Default\)/i, '');
 
   const savedAdjustments = context.globalState.get<PrayerAdjustments>(PRAYER_ADJUSTMENTS_STORAGE_KEY) || {};
   const coordinates = new Coordinates(savedLocation.lat, savedLocation.lng);
@@ -601,9 +602,9 @@ function updateStatusBar(context: vscode.ExtensionContext) {
 
   tooltip.appendMarkdown(`---\n\n`);
 
-  tooltip.appendMarkdown(`### 🕌 **Jadwal Sholat (Kemenag RI)**\n\n`);
-  tooltip.appendMarkdown(`📍 **${savedLocation.name}** &nbsp;•&nbsp; ⏳ **${nextPrayerLabel}** (${countdownShort})\n\n`);
-  tooltip.appendMarkdown(`| Waktu | Jam | Status |\n`);
+  tooltip.appendMarkdown(`### 🕌 **Jadwal Sholat**\n\n`);
+  tooltip.appendMarkdown(`📍 Lokasi: **${cleanLocationName}**\n\n`);
+  tooltip.appendMarkdown(`| &nbsp;&nbsp;Waktu&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;Jam&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;Status&nbsp;&nbsp; |\n`);
   tooltip.appendMarkdown(`| :--- | :---: | :--- |\n`);
 
   const prayersList = [
@@ -619,13 +620,16 @@ function updateStatusBar(context: vscode.ExtensionContext) {
     const isNext = p.key.toLowerCase() === nextPrayer.toLowerCase();
     const marker = isNext ? `👉 **Berikutnya**` : '—';
     const bold = isNext ? '**' : '';
-    tooltip.appendMarkdown(`| ${bold}${p.name}${bold} | ${bold}${formatTime(p.time)}${bold} | ${marker} |\n`);
+    tooltip.appendMarkdown(`| &nbsp;&nbsp;${bold}${p.name}${bold}&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;${bold}${formatTime(p.time)}${bold}&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;${marker}&nbsp;&nbsp; |\n`);
   }
 
-  tooltip.appendMarkdown(`\n---\n`);
+  tooltip.appendMarkdown(`\n⏳ **${nextPrayerLabel}** tiba dalam \`${countdownShort}\`\n\n`);
+
+  tooltip.appendMarkdown(`---\n`);
   tooltip.appendMarkdown(
-    `[$(layout-panel) Buka Panel](command:extension-clock.focusPanel) &nbsp;•&nbsp; [$(location) Ganti Kota](command:extension-clock.changeLocation)  \n` +
-    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; [$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`
+    `[$(location) Ganti Kota](command:extension-clock.changeLocation) &nbsp;•&nbsp; ` +
+    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; ` +
+    `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`
   );
 
   const newTooltipMarkdown = tooltip.value;
@@ -645,7 +649,7 @@ function updateStatusBar(context: vscode.ExtensionContext) {
         triggerPrayerReminder(context, {
           name: p.name,
           time: formatTime(p.time),
-          location: savedLocation.name
+          location: cleanLocationName
         });
         broadcastMessage({ type: 'PRAYER_DATA_UPDATED' });
         break;
@@ -669,7 +673,7 @@ async function triggerPrayerReminder(context: vscode.ExtensionContext, info: Pra
     if (action === 'Buka Pengingat') {
       ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, info);
     } else if (action === 'Buka Zen Clock') {
-      vscode.commands.executeCommand('zen-clock-panel-view.focus');
+      vscode.commands.executeCommand('zen-clock-sidebar.focus');
     }
   }
 }
@@ -687,7 +691,12 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(locationDisposable);
 
-  // 3. Register Focus Bottom Panel Command
+  // 3. Register Focus Sidebar & Bottom Panel Commands
+  let focusSidebarDisposable = vscode.commands.registerCommand('extension-clock.focusSidebar', () => {
+    vscode.commands.executeCommand('zen-clock-sidebar.focus');
+  });
+  context.subscriptions.push(focusSidebarDisposable);
+
   let focusPanelDisposable = vscode.commands.registerCommand('extension-clock.focusPanel', () => {
     vscode.commands.executeCommand('zen-clock-panel-view.focus');
   });
@@ -696,14 +705,14 @@ export function activate(context: vscode.ExtensionContext) {
   // 4. Register Preview Prayer Reminder Command
   let previewReminderDisposable = vscode.commands.registerCommand('extension-clock.previewReminder', () => {
     const savedLocation = context.globalState.get<LocationData>(LOCATION_STORAGE_KEY) || {
-      name: 'Jakarta (Default)',
+      name: 'Jakarta',
       lat: -6.2088,
       lng: 106.8456
     };
     ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, {
       name: 'Ashar',
       time: '15:15',
-      location: savedLocation.name
+      location: (savedLocation.name || 'Jakarta').replace(/\s*\(Default\)/i, '')
     });
   });
   context.subscriptions.push(previewReminderDisposable);
@@ -757,7 +766,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // 7. Initialize Status Bar Item
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  statusBarItem.command = 'extension-clock.focusPanel';
+  statusBarItem.command = 'extension-clock.focusSidebar';
   context.subscriptions.push(statusBarItem);
   statusBarItem.show();
 
