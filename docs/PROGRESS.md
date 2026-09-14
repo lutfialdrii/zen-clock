@@ -13,7 +13,8 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 | **M2: Countdown Sholat di Hover & Auto-Refresh** | Countdown presisi detik di tooltip status bar & webview, auto-switch saat waktu sholat tiba | `feat/prayer-countdown-kemenag` | ✅ Selesai |
 | **M3: Formula Kemenag & Menu Adjust Waktu Sholat** | Standar Kemenag RI (+2m ihtiyat), menu QuickPick/Modal penyesuaian offset waktu sholat | `feat/prayer-countdown-kemenag` | ✅ Selesai |
 | **M4: Harmonisasi Tema & Pembersihan Kode** | Presets aksen warna + custom hex, harmonisasi Zen Clock & Pengingat Sholat, pembersihan kode PWA | `feat/accent-color-theme` | ✅ Selesai |
-| **M5: VSIX Release & Packaging Verifikasi** | Pengujian akhir bundle VSIX, update README & CHANGELOG final | `main` | ✅ Selesai (Siap Rilis) |
+| **M5: VSIX Release & Packaging Verifikasi** | Pengujian akhir bundle VSIX, update README & CHANGELOG final | `main` | ✅ Selesai |
+| **M6: Dukungan Multi-Bahasa (i18n)** | Bahasa Indonesia (Default) & English, command switch language cepat, sinkronisasi tooltip & webview | `main` | ✅ Selesai |
 
 ---
 
@@ -76,3 +77,18 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 - [x] Build dan validasi paket VSIX `extension-clock-0.0.1.vsix` (333.75 KB).
 - [x] Verifikasi instalasi lokal melalui `code --install-extension`.
 - [x] Siap rilis tag `v0.0.1` dan GitHub Release.
+
+---
+
+### Milestone 6: Dukungan Multi-Bahasa (i18n) ✅
+- [x] Buat modul kamus terjemahan `src/utils/i18n.ts` untuk Bahasa Indonesia (Bawaan) & English.
+- [x] Tambahkan setting konfigurasi `zenClock.language` (`id` | `en`) di `package.json`.
+- [x] Tambahkan command VS Code `extension-clock.changeLanguage` ("Display: Switch Language (Ganti Bahasa)").
+- [x] Integrasikan pemilihan bahasa interaktif melalui QuickPick.
+- [x] Perbarui `updateStatusBar` & markdown tooltip agar otomatis menyesuaikan bahasa aktif secara reaktif.
+- [x] Perbarui notifikasi OS, dialog konfirmasi, dan input prompts agar menggunakan teks terjemahan dinamis.
+- [x] Hubungkan IPC event `GET_LANGUAGE` & `LANGUAGE_UPDATED` untuk sinkronisasi state bahasa ke seluruh Webview.
+- [x] Format tanggal lokal dinamis pada `FlipClock.jsx` (`id-ID` vs `en-US`).
+- [x] Lokalisasi nama waktu sholat, pil countdown, dan tombol aksi di `PrayerTime.jsx`.
+- [x] Lokalisasi kartu pengingat sholat `ZenPrayerReminderPanel` beserta kutipan ayat & tombol aksi.
+

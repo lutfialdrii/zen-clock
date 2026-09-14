@@ -81,6 +81,11 @@
         "command": "extension-clock.changeAccentColor",
         "title": "Theme: Change Accent Color (Ubah Warna Tema)",
         "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.changeLanguage",
+        "title": "Display: Switch Language (Ganti Bahasa)",
+        "category": "Zen Clock"
       }
     ],
     "viewsContainers": {
@@ -118,6 +123,19 @@
     "configuration": {
       "title": "Zen Clock",
       "properties": {
+        "zenClock.language": {
+          "type": "string",
+          "enum": [
+            "id",
+            "en"
+          ],
+          "default": "id",
+          "enumDescriptions": [
+            "Bahasa Indonesia (Bawaan)",
+            "English"
+          ],
+          "description": "Bahasa tampilan antarmuka dan notifikasi untuk Zen Clock (Display and notification language for Zen Clock)."
+        },
         "zenClock.autoOpenPrayerReminder": {
           "type": "boolean",
           "default": true,

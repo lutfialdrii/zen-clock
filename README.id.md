@@ -128,6 +128,7 @@ Dapat diakses melalui Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 | `extension-clock.adjustPrayerTimes`| **Zen Clock: Prayer Times: Adjust Minutes** | Mengatur penyesuaian koreksi menit waktu sholat (+/- menit) |
 | `extension-clock.previewReminder` | **Zen Clock: Prayer Times: Preview Reminder Page** | Melihat pratinjau tab pengingat waktu sholat |
 | `extension-clock.changeAccentColor` | **Zen Clock: Theme: Change Accent Color** | Memilih preset tema warna atau input kode HEX kustom |
+| `extension-clock.changeLanguage` | **Zen Clock: Display: Switch Language (Ganti Bahasa)** | Mengganti bahasa tampilan antara Bahasa Indonesia (bawaan) dan English |
 
 ---
 
@@ -137,6 +138,7 @@ Akses via **Settings** (`Ctrl+,` atau `Cmd+,` $\rightarrow$ Cari `Zen Clock`):
 
 | Pengaturan | Tipe | Default | Deskripsi |
 | :--- | :---: | :---: | :--- |
+| `zenClock.language` | `string` (`"id"` \| `"en"`) | `"id"` | Bahasa tampilan antarmuka, notifikasi, dan tooltip (Bahasa Indonesia bawaan, Bahasa Inggris opsional) |
 | `zenClock.autoOpenPrayerReminder` | `boolean` | `true` | Otomatis membuka tab pengingat sholat khusus saat waktu sholat tiba |
 | `zenClock.accentColor` | `string` | `"#fbbf24"` | Kode warna HEX atau nama preset tema Zen Clock, Pomodoro, dan Pengingat Sholat |
 

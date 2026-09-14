@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import FlipUnit from './FlipUnit';
 import { getVsCodeApi } from '../utils/notification';
+import { getTranslations } from '../utils/i18n';
 
-export default function PomodoroTimer() {
+export default function PomodoroTimer({ language = 'id' }) {
   const [mode, setMode] = useState('work'); // 'work' | 'break'
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
@@ -101,6 +102,7 @@ export default function PomodoroTimer() {
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
+  const t = getTranslations(language);
 
   return (
     <div className="pomodoro-container">
@@ -128,16 +130,16 @@ export default function PomodoroTimer() {
         <button
           className={`pomodoro-btn ${isRunning ? 'active-playing' : ''}`}
           onClick={togglePlay}
-          aria-label={isRunning ? 'Pause Pomodoro' : 'Start Pomodoro'}
-          title={isRunning ? 'Pause' : 'Start'}
+          aria-label={isRunning ? t.ui.pause : t.ui.start}
+          title={isRunning ? t.ui.pause : t.ui.start}
         >
           {isRunning ? <Pause size={18} /> : <Play size={18} />}
         </button>
         <button
           className="pomodoro-btn btn-secondary"
           onClick={resetTimer}
-          aria-label="Reset Pomodoro"
-          title="Reset"
+          aria-label={t.ui.reset}
+          title={t.ui.reset}
         >
           <RotateCcw size={18} />
         </button>

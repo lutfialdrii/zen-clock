@@ -7,6 +7,7 @@ import {
   formatCountdownVerbose,
   formatCountdownDigits,
   formatCountdownHoursMinutes,
+  getPrayerName,
   PRAYER_NAMES
 } from './utils/prayerHelper';
 import {
@@ -15,6 +16,7 @@ import {
   DEFAULT_ACCENT_COLOR,
   ThemeVariables
 } from './utils/themeHelper';
+import { Language, getTranslations } from './utils/i18n';
 
 const LOCATION_STORAGE_KEY = 'zenClock.selectedLocation';
 const PRAYER_ADJUSTMENTS_STORAGE_KEY = 'zenClock.prayerAdjustments';
@@ -136,6 +138,30 @@ function sendPomodoroState(webview: vscode.Webview) {
   }
 }
 
+function getLanguage(): Language {
+  const lang = vscode.workspace.getConfiguration('zenClock').get<string>('language');
+  return lang === 'en' ? 'en' : 'id';
+}
+
+function broadcastLanguage() {
+  const language = getLanguage();
+  broadcastMessage({
+    type: 'LANGUAGE_UPDATED',
+    language
+  });
+}
+
+function sendLanguageState(webview: vscode.Webview) {
+  try {
+    webview.postMessage({
+      type: 'LANGUAGE_UPDATED',
+      language: getLanguage()
+    });
+  } catch (e) {
+    console.error('Failed to post Language state to webview', e);
+  }
+}
+
 function startPomodoro(context: vscode.ExtensionContext) {
   if (currentPomodoro.isRunning) return;
 
@@ -228,15 +254,20 @@ function handlePomodoroFinished(context: vscode.ExtensionContext) {
     pomodoroTimerInterval = undefined;
   }
 
+  const lang = getLanguage();
+  const t = getTranslations(lang);
   const wasWork = currentPomodoro.mode === 'work';
+
   if (wasWork) {
+    const msg = lang === 'en'
+      ? '🍅 Pomodoro session (25m) completed! Time for a break (5m).'
+      : '🍅 Sesi Pomodoro (25m) selesai! Waktunya Istirahat (Break 5m).';
+    const actionBtn = lang === 'en' ? 'Start Break' : 'Mulai Istirahat';
+
     vscode.window
-      .showInformationMessage(
-        '🍅 Sesi Pomodoro (25m) selesai! Waktunya Istirahat (Break 5m).',
-        'Mulai Istirahat'
-      )
+      .showInformationMessage(msg, actionBtn)
       .then((action) => {
-        if (action === 'Mulai Istirahat') {
+        if (action === actionBtn) {
           switchPomodoroMode(context, 'break');
           startPomodoro(context);
         }
@@ -246,13 +277,15 @@ function handlePomodoroFinished(context: vscode.ExtensionContext) {
     currentPomodoro.timeLeft = 5 * 60;
     currentPomodoro.totalDuration = 5 * 60;
   } else {
+    const msg = lang === 'en'
+      ? '⚡ Break session (5m) finished! Ready to focus again (Work 25m)?'
+      : '⚡ Sesi Istirahat (5m) selesai! Siap untuk kembali fokus bekerja (Work 25m)?';
+    const actionBtn = lang === 'en' ? 'Start Work' : 'Mulai Kerja';
+
     vscode.window
-      .showInformationMessage(
-        '⚡ Sesi Istirahat (5m) selesai! Siap untuk kembali fokus bekerja (Work 25m)?',
-        'Mulai Kerja'
-      )
+      .showInformationMessage(msg, actionBtn)
       .then((action) => {
-        if (action === 'Mulai Kerja') {
+        if (action === actionBtn) {
           switchPomodoroMode(context, 'work');
           startPomodoro(context);
         }
@@ -269,31 +302,35 @@ function handlePomodoroFinished(context: vscode.ExtensionContext) {
 
 async function promptChangeLocation(context: vscode.ExtensionContext) {
   const currentSaved = context.globalState.get<LocationData>(LOCATION_STORAGE_KEY);
+  const lang = getLanguage();
+  const isEn = lang === 'en';
 
   const quickPickItems: vscode.QuickPickItem[] = [
     {
-      label: '$(search) Cari Kota Lain...',
-      description: 'Ketik nama kota manual (Indonesia atau Dunia)'
+      label: isEn ? '$(search) Search Other City...' : '$(search) Cari Kota Lain...',
+      description: isEn ? 'Type city name manually (Indonesia or Worldwide)' : 'Ketik nama kota manual (Indonesia atau Dunia)'
     },
     {
-      label: '$(globe) Deteksi Otomatis (IP Geolocation)',
-      description: 'Gunakan deteksi lokasi otomatis dari jaringan'
+      label: isEn ? '$(globe) Automatic Detection (IP Geolocation)' : '$(globe) Deteksi Otomatis (IP Geolocation)',
+      description: isEn ? 'Use automatic location detection from network' : 'Gunakan deteksi lokasi otomatis dari jaringan'
     },
     {
       kind: vscode.QuickPickItemKind.Separator,
-      label: 'Kota Populer'
+      label: isEn ? 'Popular Cities' : 'Kota Populer'
     },
     ...POPULAR_CITIES.map((c) => ({
       label: `$(pin) ${c.name}`,
       description: c.region,
-      detail: currentSaved && currentSaved.name.includes(c.name) ? '✓ Lokasi aktif saat ini' : undefined
+      detail: currentSaved && currentSaved.name.includes(c.name)
+        ? (isEn ? '✓ Currently active location' : '✓ Lokasi aktif saat ini')
+        : undefined
     }))
   ];
 
   const selected = await vscode.window.showQuickPick(quickPickItems, {
     placeHolder: currentSaved
-      ? `Lokasi aktif: ${currentSaved.name} (Pilih untuk mengganti)`
-      : 'Pilih kota untuk perhitungan jadwal waktu sholat...',
+      ? (isEn ? `Active location: ${currentSaved.name} (Select to change)` : `Lokasi aktif: ${currentSaved.name} (Pilih untuk mengganti)`)
+      : (isEn ? 'Select city for prayer time calculation...' : 'Pilih kota untuk perhitungan jadwal waktu sholat...'),
     matchOnDescription: true,
     matchOnDetail: true
   });
@@ -302,10 +339,10 @@ async function promptChangeLocation(context: vscode.ExtensionContext) {
     return;
   }
 
-  if (selected.label.includes('Cari Kota Lain')) {
+  if (selected.label.includes('Cari Kota Lain') || selected.label.includes('Search Other City')) {
     const query = await vscode.window.showInputBox({
-      prompt: 'Masukkan nama kota (contoh: Cirebon, Purwokerto, London, Tokyo):',
-      placeHolder: 'Nama kota...'
+      prompt: isEn ? 'Enter city name (e.g., London, Cairo, Tokyo, Surabaya):' : 'Masukkan nama kota (contoh: Cirebon, Purwokerto, London, Tokyo):',
+      placeHolder: isEn ? 'City name...' : 'Nama kota...'
     });
 
     if (!query || !query.trim()) {
@@ -316,7 +353,7 @@ async function promptChangeLocation(context: vscode.ExtensionContext) {
       await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
-          title: `Mencari koordinat untuk "${query}"...`,
+          title: isEn ? `Searching coordinates for "${query}"...` : `Mencari koordinat untuk "${query}"...`,
           cancellable: false
         },
         async () => {
@@ -338,20 +375,34 @@ async function promptChangeLocation(context: vscode.ExtensionContext) {
             await context.globalState.update(LOCATION_STORAGE_KEY, locationData);
             broadcastMessage({ type: 'LOCATION_UPDATED', data: locationData });
             updateStatusBar(context);
-            vscode.window.showInformationMessage(`Lokasi Zen Clock berhasil diubah ke: ${shortName}`);
+            vscode.window.showInformationMessage(
+              isEn
+                ? `Zen Clock location changed to: ${shortName}`
+                : `Lokasi Zen Clock berhasil diubah ke: ${shortName}`
+            );
           } else {
-            vscode.window.showErrorMessage(`Kota "${query}" tidak ditemukan. Silakan periksa kembali ejaan.`);
+            vscode.window.showErrorMessage(
+              isEn
+                ? `City "${query}" not found. Please check your spelling.`
+                : `Kota "${query}" tidak ditemukan. Silakan periksa kembali ejaan.`
+            );
           }
         }
       );
     } catch (err) {
-      vscode.window.showErrorMessage(`Gagal mengambil data lokasi: ${err}`);
+      vscode.window.showErrorMessage(
+        isEn ? `Failed to fetch location data: ${err}` : `Gagal mengambil data lokasi: ${err}`
+      );
     }
-  } else if (selected.label.includes('Deteksi Otomatis')) {
+  } else if (selected.label.includes('Deteksi Otomatis') || selected.label.includes('Automatic Detection')) {
     await context.globalState.update(LOCATION_STORAGE_KEY, undefined);
     broadcastMessage({ type: 'LOCATION_RESET_AUTO' });
     updateStatusBar(context);
-    vscode.window.showInformationMessage('Lokasi Zen Clock diatur kembali ke Deteksi Otomatis (IP Geolocation).');
+    vscode.window.showInformationMessage(
+      isEn
+        ? 'Zen Clock location reset to Automatic Detection (IP Geolocation).'
+        : 'Lokasi Zen Clock diatur kembali ke Deteksi Otomatis (IP Geolocation).'
+    );
   } else {
     const cleanName = selected.label.replace('$(pin) ', '').trim();
     const city = POPULAR_CITIES.find((c) => c.name === cleanName);
@@ -364,77 +415,89 @@ async function promptChangeLocation(context: vscode.ExtensionContext) {
       await context.globalState.update(LOCATION_STORAGE_KEY, locationData);
       broadcastMessage({ type: 'LOCATION_UPDATED', data: locationData });
       updateStatusBar(context);
-      vscode.window.showInformationMessage(`Lokasi Zen Clock berhasil diubah ke: ${city.name}`);
+      vscode.window.showInformationMessage(
+        isEn
+          ? `Zen Clock location changed to: ${city.name}`
+          : `Lokasi Zen Clock berhasil diubah ke: ${city.name}`
+      );
     }
   }
 }
 
 async function promptAdjustPrayerTimes(context: vscode.ExtensionContext) {
   const currentAdjustments = context.globalState.get<PrayerAdjustments>(PRAYER_ADJUSTMENTS_STORAGE_KEY) || {};
+  const lang = getLanguage();
+  const isEn = lang === 'en';
 
-  const prayerKeys: Array<{ key: keyof PrayerAdjustments; name: string; ihtiyat: number }> = [
-    { key: 'fajr', name: 'Subuh', ihtiyat: 2 },
-    { key: 'sunrise', name: 'Terbit', ihtiyat: -2 },
-    { key: 'dhuhr', name: 'Dzuhur', ihtiyat: 2 },
-    { key: 'asr', name: 'Ashar', ihtiyat: 2 },
-    { key: 'maghrib', name: 'Maghrib', ihtiyat: 2 },
-    { key: 'isha', name: 'Isya', ihtiyat: 2 }
+  const prayerKeys: Array<{ key: keyof PrayerAdjustments; ihtiyat: number }> = [
+    { key: 'fajr', ihtiyat: 2 },
+    { key: 'sunrise', ihtiyat: -2 },
+    { key: 'dhuhr', ihtiyat: 2 },
+    { key: 'asr', ihtiyat: 2 },
+    { key: 'maghrib', ihtiyat: 2 },
+    { key: 'isha', ihtiyat: 2 }
   ];
 
   const items: (vscode.QuickPickItem & { prayerKey?: keyof PrayerAdjustments })[] = [
     ...prayerKeys.map((p) => {
+      const prayerName = getPrayerName(p.key, lang);
       const userOffset = currentAdjustments[p.key] || 0;
       const totalOffset = p.ihtiyat + userOffset;
       const sign = userOffset >= 0 ? `+${userOffset}` : `${userOffset}`;
       const totalSign = totalOffset >= 0 ? `+${totalOffset}` : `${totalOffset}`;
       return {
-        label: `$(watch) ${p.name}`,
-        description: `Koreksi: ${sign}m (Total buffer: ${totalSign}m)`,
-        detail: `Pilih untuk mengatur koreksi menit sholat ${p.name}`,
+        label: `$(watch) ${prayerName}`,
+        description: isEn ? `Offset: ${sign}m (Total buffer: ${totalSign}m)` : `Koreksi: ${sign}m (Total buffer: ${totalSign}m)`,
+        detail: isEn ? `Select to adjust minute offset for ${prayerName}` : `Pilih untuk mengatur koreksi menit sholat ${prayerName}`,
         prayerKey: p.key
       };
     }),
     {
       kind: vscode.QuickPickItemKind.Separator,
-      label: 'Opsi Standar'
+      label: isEn ? 'Standard Options' : 'Opsi Standar'
     },
     {
-      label: '$(refresh) Reset Semua ke Standar Kemenag RI',
-      description: 'Kembalikan seluruh koreksi manual ke 0 menit'
+      label: isEn ? '$(refresh) Reset All to Kemenag RI Standard' : '$(refresh) Reset Semua ke Standar Kemenag RI',
+      description: isEn ? 'Reset all manual offsets to 0 minutes' : 'Kembalikan seluruh koreksi manual ke 0 menit'
     }
   ];
 
   const selected = await vscode.window.showQuickPick(items, {
-    placeHolder: 'Pilih waktu sholat untuk mengatur penyesuaian menit (offset)...',
+    placeHolder: isEn ? 'Select prayer time to configure minute offset...' : 'Pilih waktu sholat untuk mengatur penyesuaian menit (offset)...',
     matchOnDescription: true
   });
 
   if (!selected) return;
 
-  if (selected.label.includes('Reset Semua')) {
+  if (selected.label.includes('Reset Semua') || selected.label.includes('Reset All')) {
     await context.globalState.update(PRAYER_ADJUSTMENTS_STORAGE_KEY, {});
     broadcastMessage({ type: 'PRAYER_ADJUSTMENTS_UPDATED', data: {} });
     updateStatusBar(context);
-    vscode.window.showInformationMessage('Seluruh penyesuaian waktu sholat dikembalikan ke standar Kemenag RI (+2m ihtiyat).');
+    vscode.window.showInformationMessage(
+      isEn
+        ? 'All prayer time adjustments reset to Kemenag RI standard (+2m ihtiyat).'
+        : 'Seluruh penyesuaian waktu sholat dikembalikan ke standar Kemenag RI (+2m ihtiyat).'
+    );
     return;
   }
 
   const pickedKey = selected.prayerKey;
   if (!pickedKey) return;
-  const prayerObj = prayerKeys.find((p) => p.key === pickedKey);
-  if (!prayerObj) return;
+  const prayerName = getPrayerName(pickedKey, lang);
 
   const currentVal = currentAdjustments[pickedKey] || 0;
   const input = await vscode.window.showInputBox({
-    prompt: `Masukkan koreksi menit untuk ${prayerObj.name} (contoh: 2 untuk +2 menit, -1 untuk -1 menit, 0 untuk standar):`,
+    prompt: isEn
+      ? `Enter minute offset for ${prayerName} (e.g. 2 for +2 mins, -1 for -1 min, 0 for standard):`
+      : `Masukkan koreksi menit untuk ${prayerName} (contoh: 2 untuk +2 menit, -1 untuk -1 menit, 0 untuk standar):`,
     value: String(currentVal),
     validateInput: (val) => {
       const num = parseInt(val.trim(), 10);
       if (isNaN(num)) {
-        return 'Harap masukkan angka bulat menit (misal: 1, -2, 0).';
+        return isEn ? 'Please enter an integer minute (e.g. 1, -2, 0).' : 'Harap masukkan angka bulat menit (misal: 1, -2, 0).';
       }
       if (num < -60 || num > 60) {
-        return 'Nilai koreksi harus antara -60 sampai +60 menit.';
+        return isEn ? 'Offset value must be between -60 and +60 minutes.' : 'Nilai koreksi harus antara -60 sampai +60 menit.';
       }
       return null;
     }
@@ -452,7 +515,9 @@ async function promptAdjustPrayerTimes(context: vscode.ExtensionContext) {
   broadcastMessage({ type: 'PRAYER_ADJUSTMENTS_UPDATED', data: updatedAdjustments });
   updateStatusBar(context);
   vscode.window.showInformationMessage(
-    `Waktu ${prayerObj.name} disesuaikan: ${newOffset >= 0 ? '+' : ''}${newOffset} menit.`
+    isEn
+      ? `${prayerName} prayer time adjusted: ${newOffset >= 0 ? '+' : ''}${newOffset} minutes.`
+      : `Waktu ${prayerName} disesuaikan: ${newOffset >= 0 ? '+' : ''}${newOffset} menit.`
   );
 }
 
@@ -473,6 +538,8 @@ function broadcastThemeColor() {
 async function promptChangeAccentColor(context: vscode.ExtensionContext) {
   try {
     const currentAccent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
+    const lang = getLanguage();
+    const isEn = lang === 'en';
 
     interface AccentQuickPickItem extends vscode.QuickPickItem {
       id?: string;
@@ -485,33 +552,33 @@ async function promptChangeAccentColor(context: vscode.ExtensionContext) {
       return {
         label: preset.name,
         description: preset.hex,
-        detail: `${isSelected ? '✓ Aktif — ' : ''}${preset.description}`,
+        detail: `${isSelected ? (isEn ? '✓ Active — ' : '✓ Aktif — ') : ''}${preset.description}`,
         id: preset.id,
         hex: preset.hex
       };
     });
 
     items.push({
-      label: '$(color-mode) Custom Hex Color...',
-      description: 'Input kode HEX sendiri',
-      detail: 'Masukkan kode warna HEX bebas (contoh: #ff6600, #3b82f6)',
+      label: isEn ? '$(color-mode) Custom Hex Color...' : '$(color-mode) Custom Hex Color...',
+      description: isEn ? 'Input custom HEX color' : 'Input kode HEX sendiri',
+      detail: isEn ? 'Enter any HEX color code (e.g., #ff6600, #3b82f6)' : 'Masukkan kode warna HEX bebas (contoh: #ff6600, #3b82f6)',
       isCustom: true
     });
 
     const selected = await vscode.window.showQuickPick(items, {
-      placeHolder: 'Pilih warna aksen tema untuk Zen Clock & Pengingat Sholat'
+      placeHolder: isEn ? 'Select theme accent color for Zen Clock & Prayer Reminder' : 'Pilih warna aksen tema untuk Zen Clock & Pengingat Sholat'
     });
 
     if (!selected) return;
 
     if (selected.isCustom) {
       const inputHex = await vscode.window.showInputBox({
-        prompt: 'Masukkan kode warna HEX (contoh: #ff5722 atau 10b981):',
+        prompt: isEn ? 'Enter HEX color code (e.g., #ff5722 or 10b981):' : 'Masukkan kode warna HEX (contoh: #ff5722 atau 10b981):',
         value: currentAccent.startsWith('#') ? currentAccent : '#',
         validateInput: (val) => {
           const clean = val.trim().replace(/^#/, '');
           if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(clean)) {
-            return 'Format HEX tidak valid. Gunakan 3 atau 6 digit hex (contoh: #ff5722)';
+            return isEn ? 'Invalid HEX format. Use 3 or 6 hex digits (e.g., #ff5722).' : 'Format HEX tidak valid. Gunakan 3 atau 6 digit hex (contoh: #ff5722)';
           }
           return null;
         }
@@ -520,12 +587,16 @@ async function promptChangeAccentColor(context: vscode.ExtensionContext) {
       if (inputHex) {
         const formatted = inputHex.trim().startsWith('#') ? inputHex.trim() : `#${inputHex.trim()}`;
         await vscode.workspace.getConfiguration('zenClock').update('accentColor', formatted, vscode.ConfigurationTarget.Global);
-        vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${formatted}`);
+        vscode.window.showInformationMessage(
+          isEn ? `Zen Clock theme color changed to: ${formatted}` : `Warna tema Zen Clock berhasil diubah ke: ${formatted}`
+        );
         broadcastThemeColor();
       }
     } else if (selected.hex) {
       await vscode.workspace.getConfiguration('zenClock').update('accentColor', selected.hex, vscode.ConfigurationTarget.Global);
-      vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${selected.label}`);
+      vscode.window.showInformationMessage(
+        isEn ? `Zen Clock theme color changed to: ${selected.label}` : `Warna tema Zen Clock berhasil diubah ke: ${selected.label}`
+      );
       broadcastThemeColor();
     }
   } catch (err: any) {
@@ -533,10 +604,52 @@ async function promptChangeAccentColor(context: vscode.ExtensionContext) {
   }
 }
 
+async function promptChangeLanguage(context: vscode.ExtensionContext) {
+  const currentLang = getLanguage();
+  const items: (vscode.QuickPickItem & { lang: Language })[] = [
+    {
+      label: '🇮🇩 Bahasa Indonesia (Bawaan)',
+      description: 'id',
+      detail: currentLang === 'id' ? '✓ Aktif saat ini' : undefined,
+      lang: 'id'
+    },
+    {
+      label: '🇬🇧 English',
+      description: 'en',
+      detail: currentLang === 'en' ? '✓ Currently active' : undefined,
+      lang: 'en'
+    }
+  ];
+
+  const selected = await vscode.window.showQuickPick(items, {
+    placeHolder: currentLang === 'en'
+      ? 'Select Zen Clock display language...'
+      : 'Pilih bahasa tampilan Zen Clock...'
+  });
+
+  if (!selected) return;
+
+  await vscode.workspace.getConfiguration('zenClock').update('language', selected.lang, vscode.ConfigurationTarget.Global);
+  const t = getTranslations(selected.lang);
+  const langName = selected.lang === 'id' ? 'Bahasa Indonesia' : 'English';
+  vscode.window.showInformationMessage(
+    t.prompts.languageChanged.replace('{lang}', langName)
+  );
+  broadcastLanguage();
+  updateStatusBar(context);
+  if (ZenPrayerReminderPanel.currentPanel) {
+    ZenPrayerReminderPanel.currentPanel.updateLanguage();
+  }
+}
+
 function updateStatusBar(context: vscode.ExtensionContext) {
   if (!statusBarItem) {
     return;
   }
+
+  const lang = getLanguage();
+  const t = getTranslations(lang);
+  const isEn = lang === 'en';
 
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, '0');
@@ -568,11 +681,11 @@ function updateStatusBar(context: vscode.ExtensionContext) {
     nextPrayerDate = tomorrowTimes.timeForPrayer(nextPrayer);
   }
 
-  const nextPrayerLabel = PRAYER_NAMES[nextPrayer.toLowerCase() as keyof typeof PRAYER_NAMES] || nextPrayer;
+  const nextPrayerLabel = getPrayerName(nextPrayer.toLowerCase(), lang);
   const nextPrayerTimeStr = nextPrayerDate ? formatTime(nextPrayerDate) : '';
 
   const diffSeconds = nextPrayerDate ? Math.max(0, Math.floor((nextPrayerDate.getTime() - now.getTime()) / 1000)) : 0;
-  const countdownShort = formatCountdownHoursMinutes(diffSeconds);
+  const countdownShort = formatCountdownHoursMinutes(diffSeconds, lang);
 
   // Status Bar Text
   if (currentPomodoro.isRunning) {
@@ -595,41 +708,63 @@ function updateStatusBar(context: vscode.ExtensionContext) {
   const pSecs = currentPomodoro.timeLeft % 60;
   const pTimeStr = `${String(pMins).padStart(2, '0')}:${String(pSecs).padStart(2, '0')}`;
   if (currentPomodoro.isRunning) {
-    tooltip.appendMarkdown(`- ▶️ **Sedang Berjalan**: ${pTimeStr} tersisa (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`);
+    tooltip.appendMarkdown(
+      isEn
+        ? `- ▶️ **Running**: ${pTimeStr} remaining (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`
+        : `- ▶️ **Sedang Berjalan**: ${pTimeStr} tersisa (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`
+    );
   } else {
-    tooltip.appendMarkdown(`- ⏸️ **Idle / Jeda**: ${pTimeStr} (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`);
+    tooltip.appendMarkdown(
+      isEn
+        ? `- ⏸️ **Idle / Paused**: ${pTimeStr} (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`
+        : `- ⏸️ **Idle / Jeda**: ${pTimeStr} (${currentPomodoro.mode === 'work' ? 'Work' : 'Break'})\n\n`
+    );
   }
 
   tooltip.appendMarkdown(`---\n\n`);
 
-  tooltip.appendMarkdown(`### 🕌 **Jadwal Sholat**\n\n`);
-  tooltip.appendMarkdown(`📍 Lokasi: **${cleanLocationName}**\n\n`);
-  tooltip.appendMarkdown(`| &nbsp;&nbsp;Waktu&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;Jam&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;Status&nbsp;&nbsp; |\n`);
+  tooltip.appendMarkdown(`### 🕌 **${t.statusBar.scheduleTitle}**\n\n`);
+  tooltip.appendMarkdown(isEn ? `📍 Location: **${cleanLocationName}**\n\n` : `📍 Lokasi: **${cleanLocationName}**\n\n`);
+  tooltip.appendMarkdown(
+    isEn
+      ? `| &nbsp;&nbsp;Prayer&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;Time&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;Status&nbsp;&nbsp; |\n`
+      : `| &nbsp;&nbsp;Waktu&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;Jam&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;Status&nbsp;&nbsp; |\n`
+  );
   tooltip.appendMarkdown(`| :--- | :---: | :--- |\n`);
 
   const prayersList = [
-    { key: 'fajr', name: 'Subuh', time: prayerTimes.fajr },
-    { key: 'sunrise', name: 'Terbit', time: prayerTimes.sunrise },
-    { key: 'dhuhr', name: 'Dzuhur', time: prayerTimes.dhuhr },
-    { key: 'asr', name: 'Ashar', time: prayerTimes.asr },
-    { key: 'maghrib', name: 'Maghrib', time: prayerTimes.maghrib },
-    { key: 'isha', name: 'Isya', time: prayerTimes.isha }
+    { key: 'fajr', name: getPrayerName('fajr', lang), time: prayerTimes.fajr },
+    { key: 'sunrise', name: getPrayerName('sunrise', lang), time: prayerTimes.sunrise },
+    { key: 'dhuhr', name: getPrayerName('dhuhr', lang), time: prayerTimes.dhuhr },
+    { key: 'asr', name: getPrayerName('asr', lang), time: prayerTimes.asr },
+    { key: 'maghrib', name: getPrayerName('maghrib', lang), time: prayerTimes.maghrib },
+    { key: 'isha', name: getPrayerName('isha', lang), time: prayerTimes.isha }
   ];
 
   for (const p of prayersList) {
     const isNext = p.key.toLowerCase() === nextPrayer.toLowerCase();
-    const marker = isNext ? `👉 **Berikutnya**` : '—';
+    const marker = isNext ? (isEn ? `👉 **Next**` : `👉 **Berikutnya**`) : '—';
     const bold = isNext ? '**' : '';
     tooltip.appendMarkdown(`| &nbsp;&nbsp;${bold}${p.name}${bold}&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;${bold}${formatTime(p.time)}${bold}&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;${marker}&nbsp;&nbsp; |\n`);
   }
 
-  tooltip.appendMarkdown(`\n⏳ **${nextPrayerLabel}** tiba dalam \`${countdownShort}\`\n\n`);
+  tooltip.appendMarkdown(
+    isEn
+      ? `\n⏳ **${nextPrayerLabel}** ${t.statusBar.arrivesIn} \`${countdownShort}\`\n\n`
+      : `\n⏳ **${nextPrayerLabel}** ${t.statusBar.arrivesIn} \`${countdownShort}\`\n\n`
+  );
 
   tooltip.appendMarkdown(`---\n`);
   tooltip.appendMarkdown(
-    `[$(location) Ganti Kota](command:extension-clock.changeLocation) &nbsp;•&nbsp; ` +
-    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; ` +
-    `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`
+    (isEn
+      ? `[$(location) Change City](command:extension-clock.changeLocation) &nbsp;•&nbsp; ` +
+        `[$(gear) Adjust Time](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; ` +
+        `[$(paintcan) Theme Color](command:extension-clock.changeAccentColor) &nbsp;•&nbsp; ` +
+        `[$(globe) Switch Language](command:extension-clock.changeLanguage)`
+      : `[$(location) Ganti Kota](command:extension-clock.changeLocation) &nbsp;•&nbsp; ` +
+        `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; ` +
+        `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor) &nbsp;•&nbsp; ` +
+        `[$(globe) Ganti Bahasa](command:extension-clock.changeLanguage)`)
   );
 
   const newTooltipMarkdown = tooltip.value;
@@ -660,19 +795,23 @@ function updateStatusBar(context: vscode.ExtensionContext) {
 
 async function triggerPrayerReminder(context: vscode.ExtensionContext, info: PrayerReminderInfo) {
   const autoOpen = vscode.workspace.getConfiguration('zenClock').get<boolean>('autoOpenPrayerReminder', true);
+  const lang = getLanguage();
+  const t = getTranslations(lang);
 
   if (autoOpen) {
     ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, info);
-    vscode.window.showInformationMessage(`🕌 Waktu Sholat ${info.name} telah tiba! (${info.location})`);
+    const msg = t.notifications.prayerArrived.replace('{name}', info.name) + ` (${info.location})`;
+    vscode.window.showInformationMessage(msg);
   } else {
+    const msg = t.notifications.prayerArrived.replace('{name}', info.name) + ` (${info.time})`;
     const action = await vscode.window.showInformationMessage(
-      `🕌 Waktu Sholat ${info.name} (${info.time}) telah tiba!`,
-      'Buka Pengingat',
-      'Buka Zen Clock'
+      msg,
+      t.notifications.openReminder,
+      t.notifications.openClock
     );
-    if (action === 'Buka Pengingat') {
+    if (action === t.notifications.openReminder) {
       ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, info);
-    } else if (action === 'Buka Zen Clock') {
+    } else if (action === t.notifications.openClock) {
       vscode.commands.executeCommand('zen-clock-sidebar.focus');
     }
   }
@@ -709,8 +848,9 @@ export function activate(context: vscode.ExtensionContext) {
       lat: -6.2088,
       lng: 106.8456
     };
+    const lang = getLanguage();
     ZenPrayerReminderPanel.createOrShow(context.extensionUri, context, {
-      name: 'Ashar',
+      name: getPrayerName('asr', lang),
       time: '15:15',
       location: (savedLocation.name || 'Jakarta').replace(/\s*\(Default\)/i, '')
     });
@@ -744,11 +884,24 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(changeAccentDisposable);
 
+  // 8. Register Change Language Command
+  let changeLanguageDisposable = vscode.commands.registerCommand('extension-clock.changeLanguage', () => {
+    promptChangeLanguage(context);
+  });
+  context.subscriptions.push(changeLanguageDisposable);
+
   // Listen to configuration changes
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('zenClock.accentColor')) {
         broadcastThemeColor();
+      }
+      if (e.affectsConfiguration('zenClock.language')) {
+        broadcastLanguage();
+        updateStatusBar(context);
+        if (ZenPrayerReminderPanel.currentPanel) {
+          ZenPrayerReminderPanel.currentPanel.updateLanguage();
+        }
       }
     })
   );
@@ -805,6 +958,9 @@ class ZenPrayerReminderPanel {
       ? vscode.window.activeTextEditor.viewColumn
       : vscode.ViewColumn.One;
 
+    const lang = getLanguage();
+    const t = getTranslations(lang);
+
     if (ZenPrayerReminderPanel.currentPanel) {
       ZenPrayerReminderPanel.currentPanel._update(info);
       ZenPrayerReminderPanel.currentPanel._panel.reveal(column);
@@ -813,7 +969,7 @@ class ZenPrayerReminderPanel {
 
     const panel = vscode.window.createWebviewPanel(
       'zenPrayerReminder',
-      `🕌 Waktu Sholat ${info.name}`,
+      `🕌 ${t.reminder.title.replace('{name}', info.name)}`,
       column || vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -840,6 +996,8 @@ class ZenPrayerReminderPanel {
 
     this._panel.webview.onDidReceiveMessage(
       async (message) => {
+        const lang = getLanguage();
+        const isEn = lang === 'en';
         switch (message.command) {
           case 'CLOSE':
             this.dispose();
@@ -853,7 +1011,9 @@ class ZenPrayerReminderPanel {
               .getConfiguration('zenClock')
               .update('autoOpenPrayerReminder', false, vscode.ConfigurationTarget.Global);
             vscode.window.showInformationMessage(
-              'Fitur auto-open pengingat sholat telah dinonaktifkan. Pengingat selanjutnya akan berupa notifikasi.'
+              isEn
+                ? 'Automatic prayer reminder tab disabled. You will receive notifications instead.'
+                : 'Fitur auto-open pengingat sholat telah dinonaktifkan. Pengingat selanjutnya akan berupa notifikasi.'
             );
             this.dispose();
             break;
@@ -881,9 +1041,20 @@ class ZenPrayerReminderPanel {
     }
   }
 
+  public updateLanguage() {
+    if (this._info) {
+      const lang = getLanguage();
+      const t = getTranslations(lang);
+      this._panel.title = `🕌 ${t.reminder.title.replace('{name}', this._info.name)}`;
+      this._panel.webview.html = this._getHtml(this._panel.webview, this._info);
+    }
+  }
+
   private _update(info: PrayerReminderInfo) {
     this._info = info;
-    this._panel.title = `🕌 Waktu Sholat ${info.name}`;
+    const lang = getLanguage();
+    const t = getTranslations(lang);
+    this._panel.title = `🕌 ${t.reminder.title.replace('{name}', info.name)}`;
     this._panel.webview.html = this._getHtml(this._panel.webview, info);
   }
 
@@ -891,14 +1062,17 @@ class ZenPrayerReminderPanel {
     const csp = webview.cspSource;
     const accent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
     const theme = getThemeVariables(accent);
+    const lang = getLanguage();
+    const t = getTranslations(lang);
+    const isEn = lang === 'en';
 
     return `<!DOCTYPE html>
-<html lang="id">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${csp} 'unsafe-inline'; script-src ${csp} 'unsafe-inline'; font-src ${csp}; img-src ${csp} https: data:;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Waktu Sholat ${info.name}</title>
+  <title>${t.reminder.title.replace('{name}', info.name)}</title>
   <style>
     :root {
       --zen-accent: ${theme.hex};
@@ -1043,20 +1217,20 @@ class ZenPrayerReminderPanel {
     <svg class="crescent-icon" viewBox="0 0 24 24" fill="currentColor">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
     </svg>
-    <div class="badge">Waktu Sholat</div>
-    <h1>Panggilan Sholat ${info.name}</h1>
+    <div class="badge">${isEn ? 'Prayer Time' : 'Waktu Sholat'}</div>
+    <h1>${t.reminder.title.replace('{name}', info.name)}</h1>
     <div class="meta-info">
       <span class="meta-pill">🕐 ${info.time}</span>
       <span class="meta-pill">📍 ${info.location}</span>
     </div>
     <div class="quote-box">
-      "Dirikanlah shalat, sesungguhnya shalat itu mencegah dari (perbuatan) keji dan mungkar."
-      <div class="quote-author">— QS. Al-Ankabut: 45</div>
+      ${t.reminder.quranQuote}
+      <div class="quote-author">— ${t.reminder.quranSurah}</div>
     </div>
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="vscode.postMessage({ command: 'CLOSE' })">✓ Saya Siap Sholat (Tutup)</button>
-      <button class="btn btn-secondary" onclick="vscode.postMessage({ command: 'OPEN_CLOCK' })">⏱️ Buka Zen Clock</button>
-      <button class="btn btn-subtle" onclick="vscode.postMessage({ command: 'DISABLE_AUTO_OPEN' })">⚙️ Matikan Auto-Open Tab Ini</button>
+      <button class="btn btn-primary" onclick="vscode.postMessage({ command: 'CLOSE' })">${t.reminder.readyToPray}</button>
+      <button class="btn btn-secondary" onclick="vscode.postMessage({ command: 'OPEN_CLOCK' })">${t.reminder.openZenClock}</button>
+      <button class="btn btn-subtle" onclick="vscode.postMessage({ command: 'DISABLE_AUTO_OPEN' })">${t.reminder.disableAutoOpen}</button>
     </div>
   </div>
   <script>
@@ -1106,10 +1280,12 @@ class ZenClockPanel {
 
     this._update();
     sendPomodoroState(this._panel.webview);
+    sendLanguageState(this._panel.webview);
     this._panel.onDidChangeViewState(
       (e) => {
         if (e.webviewPanel.visible) {
           sendPomodoroState(this._panel.webview);
+          sendLanguageState(this._panel.webview);
         }
       },
       null,
@@ -1168,6 +1344,7 @@ class ZenClockViewProvider implements vscode.WebviewViewProvider {
     webviewView.onDidChangeVisibility(() => {
       if (webviewView.visible) {
         sendPomodoroState(webviewView.webview);
+        sendLanguageState(webviewView.webview);
       }
     });
 
@@ -1182,6 +1359,7 @@ class ZenClockViewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = getWebviewContent(webviewView.webview, this._extensionUri, this._viewType);
     sendPomodoroState(webviewView.webview);
+    sendLanguageState(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage((message) => {
       handleWebviewMessage(message, webviewView.webview, this._context);
@@ -1233,6 +1411,14 @@ function handleWebviewMessage(message: any, webview: vscode.Webview, context: vs
 
     case 'REQUEST_CHANGE_ACCENT':
       promptChangeAccentColor(context);
+      break;
+
+    case 'GET_LANGUAGE':
+      sendLanguageState(webview);
+      break;
+
+    case 'REQUEST_CHANGE_LANGUAGE':
+      promptChangeLanguage(context);
       break;
 
     case 'POMODORO_CMD':

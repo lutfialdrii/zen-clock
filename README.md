@@ -128,6 +128,7 @@ Access these commands from the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 | `extension-clock.adjustPrayerTimes`| **Zen Clock: Prayer Times: Adjust Minutes** | Adjust minutes offset (+/-) per prayer time |
 | `extension-clock.previewReminder` | **Zen Clock: Prayer Times: Preview Reminder Page** | Previews the prayer reminder tab |
 | `extension-clock.changeAccentColor` | **Zen Clock: Theme: Change Accent Color** | Select or customize accent color for clock, timer, & reminder |
+| `extension-clock.changeLanguage` | **Zen Clock: Display: Switch Language (Ganti Bahasa)** | Switch display language between Indonesian (default) and English |
 
 ---
 
@@ -137,6 +138,7 @@ Configure via **Settings** (`Ctrl+,` or `Cmd+,` $\rightarrow$ Search `Zen Clock`
 
 | Setting | Type | Default | Description |
 | :--- | :---: | :---: | :--- |
+| `zenClock.language` | `string` (`"id"` \| `"en"`) | `"id"` | Display language for interface, notifications, and tooltips (Indonesian default, English optional) |
 | `zenClock.autoOpenPrayerReminder` | `boolean` | `true` | Automatically open the dedicated reminder tab when prayer time arrives |
 | `zenClock.accentColor` | `string` | `"#fbbf24"` | Theme accent color preset or hex code for clock digits, buttons, and prayer reminder |
 

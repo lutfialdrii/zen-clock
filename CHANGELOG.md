@@ -7,6 +7,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ---
 
+## [Unreleased]
+
+### 🇬🇧 English
+- **Multi-Language Support (i18n)**:
+  - Added full bilingual support with Bahasa Indonesia as default and English as an optional setting (`zenClock.language`).
+  - Added new Command Palette shortcut `Zen Clock: Display: Switch Language (Ganti Bahasa)` (`extension-clock.changeLanguage`) to toggle languages on the fly.
+  - Reactive language synchronization across Status Bar tooltip, native notifications, QuickPick dialogs, FlipClock date formatting, and the dedicated prayer reminder tab.
+
+### 🇮🇩 Bahasa Indonesia
+- **Dukungan Multi-Bahasa (i18n)**:
+  - Dukungan dwibahasa penuh dengan Bahasa Indonesia sebagai bawaan dan Bahasa Inggris sebagai opsi pengaturan (`zenClock.language`).
+  - Shortcut Command Palette baru `Zen Clock: Display: Switch Language (Ganti Bahasa)` (`extension-clock.changeLanguage`) untuk mengganti bahasa secara instan.
+  - Sinkronisasi reaktif ke seluruh tooltip status bar, notifikasi native OS, dialog prompt, format tanggal jam, dan tab pengingat sholat.
+
+---
+
 ## [0.0.1] - 2026-09-14 — Initial Release
 
 ### 🇬🇧 English

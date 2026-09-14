@@ -1,4 +1,5 @@
 import { CalculationParameters, Rounding, Madhab } from 'adhan';
+import { Language, getTranslations } from './i18n';
 
 export interface PrayerAdjustments {
   fajr?: number;
@@ -36,6 +37,11 @@ export const PRAYER_NAMES: Record<string, string> = {
   isha: 'Isya'
 };
 
+export function getPrayerName(key: string, lang: Language = 'id'): string {
+  const t = getTranslations(lang);
+  return (t.prayers as Record<string, string>)[key] || PRAYER_NAMES[key] || key;
+}
+
 export function getKemenagCalculationParameters(customAdjustments: PrayerAdjustments = {}): CalculationParameters {
   const params = new CalculationParameters('Other', 20, 18);
   params.madhab = Madhab.Shafi;
@@ -53,19 +59,20 @@ export function getKemenagCalculationParameters(customAdjustments: PrayerAdjustm
   return params;
 }
 
-export function formatCountdownVerbose(totalSeconds: number): string {
-  if (totalSeconds <= 0) return '00 detik';
+export function formatCountdownVerbose(totalSeconds: number, lang: Language = 'id'): string {
+  const t = getTranslations(lang);
+  if (totalSeconds <= 0) return `00 ${t.countdown.seconds}`;
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
   if (hours > 0) {
-    return `${hours} jam ${minutes} menit ${seconds} detik`;
+    return `${hours} ${hours > 1 && lang === 'en' ? t.countdown.hours : t.countdown.hourSingular} ${minutes} ${minutes > 1 && lang === 'en' ? t.countdown.minutes : t.countdown.minuteSingular} ${seconds} ${t.countdown.seconds}`;
   }
   if (minutes > 0) {
-    return `${minutes} menit ${seconds} detik`;
+    return `${minutes} ${minutes > 1 && lang === 'en' ? t.countdown.minutes : t.countdown.minuteSingular} ${seconds} ${t.countdown.seconds}`;
   }
-  return `${seconds} detik`;
+  return `${seconds} ${t.countdown.seconds}`;
 }
 
 export function formatCountdownDigits(totalSeconds: number): string {
@@ -76,17 +83,18 @@ export function formatCountdownDigits(totalSeconds: number): string {
   return `${hours}:${minutes}:${seconds}`;
 }
 
-export function formatCountdownHoursMinutes(totalSeconds: number): string {
-  if (totalSeconds <= 0) return 'sekarang';
+export function formatCountdownHoursMinutes(totalSeconds: number, lang: Language = 'id'): string {
+  const t = getTranslations(lang);
+  if (totalSeconds <= 0) return t.countdown.now;
   const totalMinutes = Math.floor(totalSeconds / 60);
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
   if (hours > 0) {
-    return `${hours} jam ${minutes} menit`;
+    return `${hours} ${hours > 1 && lang === 'en' ? t.countdown.hours : t.countdown.hourSingular} ${minutes} ${minutes > 1 && lang === 'en' ? t.countdown.minutes : t.countdown.minuteSingular}`;
   }
   if (minutes > 0) {
-    return `${minutes} menit`;
+    return `${minutes} ${minutes > 1 && lang === 'en' ? t.countdown.minutes : t.countdown.minuteSingular}`;
   }
-  return '< 1 menit';
+  return t.countdown.lessThanMinute;
 }

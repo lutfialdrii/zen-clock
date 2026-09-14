@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FlipUnit from './FlipUnit';
 
-export default function FlipClock() {
+export default function FlipClock({ language = 'id' }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -20,6 +20,8 @@ export default function FlipClock() {
   const minutes = time.getMinutes();
   const seconds = time.getSeconds();
   
+  const locale = language === 'en' ? 'en-US' : 'id-ID';
+
   return (
     <div className="clock-wrapper">
       <div className="flip-clock">
@@ -28,7 +30,7 @@ export default function FlipClock() {
         <FlipUnit digit={seconds} />
       </div>
       <div className="date-display">
-        {time.toLocaleDateString('id-ID', {
+        {time.toLocaleDateString(locale, {
           weekday: 'long',
           day: 'numeric',
           month: 'long',

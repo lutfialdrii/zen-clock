@@ -5,10 +5,12 @@ import { sendNotification, requestWebNotificationPermission, getVsCodeApi } from
 import {
   getKemenagCalculationParameters,
   formatCountdownHoursMinutes,
+  getPrayerName,
   PRAYER_NAMES
 } from '../utils/prayerHelper';
+import { getTranslations } from '../utils/i18n';
 
-export default function PrayerTime() {
+export default function PrayerTime({ language = 'id' }) {
   const [coords, setCoords] = useState(null);
   const [error, setError] = useState(null);
   const [prayerData, setPrayerData] = useState(null);
@@ -158,14 +160,16 @@ export default function PrayerTime() {
           nextTime = tomorrowTimes.timeForPrayer(next);
         }
 
-        const currentPrayerNameId = PRAYER_NAMES[next.toLowerCase()] || next;
+        const currentPrayerNameId = getPrayerName(next.toLowerCase(), language);
 
         if (nextTime) {
           const diffSeconds = Math.floor((nextTime - currentTime) / 1000);
-          if (diffSeconds <= 0 && lastNotifiedPrayerRef.current !== currentPrayerNameId) {
-            lastNotifiedPrayerRef.current = currentPrayerNameId;
+          if (diffSeconds <= 0 && lastNotifiedPrayerRef.current !== next.toLowerCase()) {
+            lastNotifiedPrayerRef.current = next.toLowerCase();
 
-            const msgText = `Waktu Sholat ${currentPrayerNameId} telah tiba! (${locationName || 'Lokasi Anda'})`;
+            const msgText = language === 'en'
+              ? `Prayer Time for ${currentPrayerNameId} has arrived! (${locationName || 'Your Location'})`
+              : `Waktu Sholat ${currentPrayerNameId} telah tiba! (${locationName || 'Lokasi Anda'})`;
             if (notifyEnabled) {
               sendNotification('Zen Clock', msgText, 'info');
             }
@@ -181,19 +185,19 @@ export default function PrayerTime() {
           return dateObj ? dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '--:--';
         };
 
-        setAllPrayers({
-          Subuh: formatTime(times.fajr),
-          Terbit: formatTime(times.sunrise),
-          Dzuhur: formatTime(times.dhuhr),
-          Ashar: formatTime(times.asr),
-          Maghrib: formatTime(times.maghrib),
-          Isya: formatTime(times.isha)
-        });
+        setAllPrayers([
+          { key: 'fajr', name: getPrayerName('fajr', language), time: formatTime(times.fajr) },
+          { key: 'sunrise', name: getPrayerName('sunrise', language), time: formatTime(times.sunrise) },
+          { key: 'dhuhr', name: getPrayerName('dhuhr', language), time: formatTime(times.dhuhr) },
+          { key: 'asr', name: getPrayerName('asr', language), time: formatTime(times.asr) },
+          { key: 'maghrib', name: getPrayerName('maghrib', language), time: formatTime(times.maghrib) },
+          { key: 'isha', name: getPrayerName('isha', language), time: formatTime(times.isha) }
+        ]);
       } catch (err) {
         console.error('Prayer Calculation Error:', err);
       }
     }
-  }, [coords, currentTime, notifyEnabled, locationName, adjustments]);
+  }, [coords, currentTime, notifyEnabled, locationName, adjustments, language]);
 
   const handleChangeLocation = (e) => {
     e.stopPropagation();
@@ -231,16 +235,25 @@ export default function PrayerTime() {
     return null;
   }
 
+  const t = getTranslations(language);
   const diffMs = prayerData.time - currentTime;
   const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
-  const timeString = formatCountdownHoursMinutes(diffSeconds);
-  const nameId = PRAYER_NAMES[prayerData.name.toLowerCase()] || prayerData.name;
+  const timeString = formatCountdownHoursMinutes(diffSeconds, language);
+  const prayerName = getPrayerName(prayerData.name.toLowerCase(), language);
+  const activeKey = prayerData.name.toLowerCase();
 
   return (
     <div className="prayer-container">
-      <div className="prayer-display" title={`Waktu ${nameId} berikutnya tiba dalam ${timeString}`}>
+      <div
+        className="prayer-display"
+        title={
+          language === 'en'
+            ? `Next prayer ${prayerName} in ${timeString}`
+            : `Waktu ${prayerName} berikutnya tiba dalam ${timeString}`
+        }
+      >
         <MapPin size={16} />
-        <span>{nameId} dalam {timeString}</span>
+        <span>{prayerName} {t.countdown.in} {timeString}</span>
         <button
           className="notify-toggle-btn"
           onClick={(e) => {
@@ -251,7 +264,7 @@ export default function PrayerTime() {
               requestWebNotificationPermission();
             }
           }}
-          title={notifyEnabled ? 'Notifikasi sholat aktif' : 'Notifikasi sholat mati'}
+          title={notifyEnabled ? t.ui.notifActive : t.ui.notifInactive}
         >
           {notifyEnabled ? <Bell size={14} /> : <BellOff size={14} />}
         </button>
@@ -263,7 +276,7 @@ export default function PrayerTime() {
             <div
               className="prayer-location clickable"
               onClick={handleChangeLocation}
-              title="Klik untuk memilih atau mengubah kota"
+              title={t.ui.clickToChangeCity}
             >
               <div className="prayer-location-left">
                 <Map size={14} />
@@ -277,28 +290,36 @@ export default function PrayerTime() {
             <button
               className="prayer-adjust-btn"
               onClick={handleAdjustPrayerTimes}
-              title="Sesuaikan koreksi menit waktu sholat (Kemenag RI)"
+              title={
+                language === 'en'
+                  ? 'Adjust prayer time minute offset (Kemenag RI)'
+                  : 'Sesuaikan koreksi menit waktu sholat (Kemenag RI)'
+              }
             >
               <SlidersHorizontal size={13} />
-              <span>Sesuaikan Jam</span>
+              <span>{t.ui.adjustTime}</span>
             </button>
             <button
               className="prayer-theme-btn"
               onClick={handleChangeAccentTheme}
-              title="Pilih atau ubah warna tema aksen Zen Clock"
+              title={
+                language === 'en'
+                  ? 'Choose or change Zen Clock theme accent color'
+                  : 'Pilih atau ubah warna tema aksen Zen Clock'
+              }
             >
               <Palette size={13} />
-              <span>Warna Tema</span>
+              <span>{t.ui.themeColor}</span>
             </button>
           </div>
         </div>
 
         <div className="prayer-list">
-          {allPrayers &&
-            Object.entries(allPrayers).map(([name, time]) => (
-              <div className={`prayer-item ${nameId === name ? 'active' : ''}`} key={name}>
-                <span className="prayer-item-name">{name}</span>
-                <span className="prayer-item-time">{time}</span>
+          {Array.isArray(allPrayers) &&
+            allPrayers.map((item) => (
+              <div className={`prayer-item ${activeKey === item.key ? 'active' : ''}`} key={item.key}>
+                <span className="prayer-item-name">{item.name}</span>
+                <span className="prayer-item-time">{item.time}</span>
               </div>
             ))}
         </div>

@@ -8,6 +8,31 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-15
 
+### Feature & Localization: Multi-Language Support (Indonesian Default & English Optional)
+- **Prompt Pengguna:**
+  > *"secara defaultnya berbahasa indonesia, namun kita sediakan jika ingin menggunakan bahasa inggris"*
+- **Akar Masalah (Root Cause):**
+  - Sebelumnya sebagian besar antarmuka, format tanggal, teks countdown waktu sholat, notifikasi OS, quickpick prompts, dan reminder panel di-hardcode dalam Bahasa Indonesia tanpa mekanisme internasionalisasi (i18n) dinamis.
+- **Solusi & Perbaikan:**
+  - Membuat modul kamus terjemahan terpusat `src/utils/i18n.ts` dengan schema `Translations` yang mencakup:
+    - Nama waktu sholat (Fajr/Sunrise/Dhuhr/Asr/Maghrib/Isha vs Subuh/Terbit/Dzuhur/Ashar/Maghrib/Isya).
+    - Unit countdown jam/menit/detik (`hour`, `minute`, `second`, `in`, dsb).
+    - Tooltip status bar Markdown & popover jadwal sholat.
+    - Notifikasi native VS Code & dialog konfirmasi aksi.
+    - QuickPick prompts untuk pemilihan kota, penyesuaian offset menit, dan aksen warna tema.
+    - Halaman kartu pengingat sholat (`ZenPrayerReminderPanel`) lengkap dengan terjemahan kutipan ayat Quran & tombol aksi.
+  - Menambahkan konfigurasi VS Code di `package.json`: `"zenClock.language"` (enum `["id", "en"]`, default `"id"`).
+  - Menambahkan command VS Code di `package.json`: `"extension-clock.changeLanguage"` ("Display: Switch Language (Ganti Bahasa)").
+  - Mengimplementasikan `promptChangeLanguage` dengan QuickPick interaktif (`🇮🇩 Bahasa Indonesia (Bawaan)` / `🇬🇧 English`).
+  - Menghubungkan listener `onDidChangeConfiguration` untuk `zenClock.language` agar status bar tooltip ter-refresh seketika dan mengirim event `{ type: 'LANGUAGE_UPDATED', language }` ke semua webview aktif.
+  - Memperbarui Webview (`src/App.jsx`, `src/components/FlipClock.jsx`, `src/components/PrayerTime.jsx`, `src/components/PomodoroTimer.jsx`):
+    - Sinkronisasi state bahasa dua arah melalui IPC (`GET_LANGUAGE` & `LANGUAGE_UPDATED`).
+    - Format tanggal dinamis pada `FlipClock` (`id-ID` vs `en-US`).
+    - Label tombol ("Sesuaikan Jam" / "Adjust Time", "Warna Tema" / "Theme Color"), tooltip notifikasi, dan daftar waktu sholat yang responsif terhadap bahasa aktif.
+- **Hasil Verifikasi:**
+  - TypeScript typecheck (`tsc -p ./ --noEmit`), esbuild bundle, dan Vite webview compilation (`npm run build`) sukses tanpa error (0 issues).
+  - Peralihan bahasa antara Bahasa Indonesia dan Bahasa Inggris berjalan reaktif secara instan di Webview, Status Bar tooltip, dan notifikasi.
+
 ### Maintenance & Cleanup: Consolidating Assets Directly Under /assets
 - **Prompt Pengguna:**
   > *"kalau begitu saya hapus saja directory /assets/image"*
