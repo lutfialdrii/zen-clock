@@ -8,6 +8,12 @@ import {
   formatCountdownDigits,
   PRAYER_NAMES
 } from './utils/prayerHelper';
+import {
+  getThemeVariables,
+  ACCENT_PRESETS,
+  DEFAULT_ACCENT_COLOR,
+  ThemeVariables
+} from './utils/themeHelper';
 
 const LOCATION_STORAGE_KEY = 'zenClock.selectedLocation';
 const PRAYER_ADJUSTMENTS_STORAGE_KEY = 'zenClock.prayerAdjustments';
@@ -448,6 +454,79 @@ async function promptAdjustPrayerTimes(context: vscode.ExtensionContext) {
   );
 }
 
+function broadcastThemeColor() {
+  const accent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
+  const theme = getThemeVariables(accent);
+
+  broadcastMessage({
+    type: 'THEME_COLOR_UPDATED',
+    data: theme
+  });
+
+  if (ZenPrayerReminderPanel.currentPanel) {
+    ZenPrayerReminderPanel.currentPanel.updateTheme();
+  }
+}
+
+async function promptChangeAccentColor(context: vscode.ExtensionContext) {
+  const currentAccent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
+
+  interface AccentQuickPickItem extends vscode.QuickPickItem {
+    id?: string;
+    hex?: string;
+    isCustom?: boolean;
+  }
+
+  const items: AccentQuickPickItem[] = ACCENT_PRESETS.map((preset) => {
+    const isSelected = preset.hex.toLowerCase() === currentAccent.toLowerCase() || preset.id === currentAccent.toLowerCase();
+    return {
+      label: preset.name,
+      description: preset.hex,
+      detail: `${isSelected ? '✓ Aktif — ' : ''}${preset.description}`,
+      id: preset.id,
+      hex: preset.hex
+    };
+  });
+
+  items.push({
+    label: '$(color-mode) Custom Hex Color...',
+    description: 'Input kode HEX sendiri',
+    detail: 'Masukkan kode warna HEX bebas (contoh: #ff6600, #3b82f6)',
+    isCustom: true
+  });
+
+  const selected = await vscode.window.showQuickPick(items, {
+    placeHolder: 'Pilih warna aksen tema untuk Zen Clock & Pengingat Sholat'
+  });
+
+  if (!selected) return;
+
+  if (selected.isCustom) {
+    const inputHex = await vscode.window.showInputBox({
+      prompt: 'Masukkan kode warna HEX (contoh: #ff5722 atau 10b981):',
+      value: currentAccent.startsWith('#') ? currentAccent : '#',
+      validateInput: (val) => {
+        const clean = val.trim().replace(/^#/, '');
+        if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$/.test(clean)) {
+          return 'Format HEX tidak valid. Gunakan 3 atau 6 digit hex (contoh: #ff5722)';
+        }
+        return null;
+      }
+    });
+
+    if (inputHex) {
+      const formatted = inputHex.trim().startsWith('#') ? inputHex.trim() : `#${inputHex.trim()}`;
+      await vscode.workspace.getConfiguration('zenClock').update('accentColor', formatted, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${formatted}`);
+      broadcastThemeColor();
+    }
+  } else if (selected.hex) {
+    await vscode.workspace.getConfiguration('zenClock').update('accentColor', selected.hex, vscode.ConfigurationTarget.Global);
+    vscode.window.showInformationMessage(`Warna tema Zen Clock berhasil diubah ke: ${selected.label}`);
+    broadcastThemeColor();
+  }
+}
+
 function updateStatusBar(context: vscode.ExtensionContext) {
   if (!statusBarItem) {
     return;
@@ -543,7 +622,8 @@ function updateStatusBar(context: vscode.ExtensionContext) {
   tooltip.appendMarkdown(
     `[$(layout-panel) Buka Panel](command:extension-clock.focusPanel) &nbsp;|&nbsp; ` +
     `[$(location) Ganti Kota](command:extension-clock.changeLocation) &nbsp;|&nbsp; ` +
-    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes)`
+    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;|&nbsp; ` +
+    `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`
   );
 
   statusBarItem.tooltip = tooltip;
@@ -643,6 +723,21 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(resetPomodoroDisposable);
 
+  // 7. Register Change Accent Color Command
+  let changeAccentDisposable = vscode.commands.registerCommand('extension-clock.changeAccentColor', () => {
+    promptChangeAccentColor(context);
+  });
+  context.subscriptions.push(changeAccentDisposable);
+
+  // Listen to configuration changes
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('zenClock.accentColor')) {
+        broadcastThemeColor();
+      }
+    })
+  );
+
   // 6. Register Webview View Providers (Sidebar View & Bottom Panel View)
   const sidebarProvider = new ZenClockViewProvider(context.extensionUri, context);
   context.subscriptions.push(
@@ -681,6 +776,7 @@ class ZenPrayerReminderPanel {
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionUri: vscode.Uri;
   private readonly _context: vscode.ExtensionContext;
+  private _info: PrayerReminderInfo;
   private _disposables: vscode.Disposable[] = [];
 
   public static createOrShow(
@@ -720,6 +816,7 @@ class ZenPrayerReminderPanel {
     this._panel = panel;
     this._extensionUri = extensionUri;
     this._context = context;
+    this._info = info;
 
     this._update(info);
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
@@ -761,13 +858,23 @@ class ZenPrayerReminderPanel {
     }
   }
 
+  public updateTheme() {
+    if (this._info) {
+      this._panel.webview.html = this._getHtml(this._panel.webview, this._info);
+    }
+  }
+
   private _update(info: PrayerReminderInfo) {
+    this._info = info;
     this._panel.title = `🕌 Waktu Sholat ${info.name}`;
     this._panel.webview.html = this._getHtml(this._panel.webview, info);
   }
 
   private _getHtml(webview: vscode.Webview, info: PrayerReminderInfo): string {
     const csp = webview.cspSource;
+    const accent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
+    const theme = getThemeVariables(accent);
+
     return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -776,6 +883,12 @@ class ZenPrayerReminderPanel {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Waktu Sholat ${info.name}</title>
   <style>
+    :root {
+      --zen-accent: ${theme.hex};
+      --zen-accent-hover: ${theme.hover};
+      --zen-accent-text: ${theme.text};
+      --zen-accent-glow: ${theme.glow};
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
@@ -807,15 +920,15 @@ class ZenPrayerReminderPanel {
       width: 56px;
       height: 56px;
       margin: 0 auto 16px;
-      color: #fbbf24;
-      filter: drop-shadow(0 4px 16px rgba(251, 191, 36, 0.35));
+      color: var(--zen-accent);
+      filter: drop-shadow(0 4px 16px var(--zen-accent-glow));
     }
     .badge {
       display: inline-block;
       padding: 4px 12px;
       border-radius: 9999px;
-      background: rgba(251, 191, 36, 0.15);
-      color: #fbbf24;
+      background: var(--zen-accent-glow);
+      color: var(--zen-accent);
       font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
@@ -845,7 +958,7 @@ class ZenPrayerReminderPanel {
       font-size: 12px;
     }
     .quote-box {
-      border-left: 3px solid #fbbf24;
+      border-left: 3px solid var(--zen-accent);
       background: rgba(255, 255, 255, 0.02);
       padding: 14px 16px;
       border-radius: 0 8px 8px 0;
@@ -880,11 +993,12 @@ class ZenPrayerReminderPanel {
       border: none;
     }
     .btn-primary {
-      background: #fbbf24;
-      color: #1a1a1a;
+      background: var(--zen-accent);
+      color: var(--zen-accent-text);
+      box-shadow: 0 2px 12px var(--zen-accent-glow);
     }
     .btn-primary:hover {
-      background: #f59e0b;
+      background: var(--zen-accent-hover);
       transform: translateY(-1px);
     }
     .btn-secondary {
@@ -1093,6 +1207,16 @@ function handleWebviewMessage(message: any, webview: vscode.Webview, context: vs
       sendPomodoroState(webview);
       break;
 
+    case 'GET_THEME_COLOR': {
+      const accent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
+      webview.postMessage({ type: 'THEME_COLOR_UPDATED', data: getThemeVariables(accent) });
+      break;
+    }
+
+    case 'REQUEST_CHANGE_ACCENT':
+      promptChangeAccentColor(context);
+      break;
+
     case 'POMODORO_CMD':
       if (message.action === 'start') {
         startPomodoro(context);
@@ -1120,6 +1244,12 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri): s
     if (!html.includes('Content-Security-Policy')) {
       html = html.replace('<head>', `<head>\n    ${cspMeta}`);
     }
+
+    // Inject initial theme CSS variables so there is zero flash of unstyled theme
+    const accent = vscode.workspace.getConfiguration('zenClock').get<string>('accentColor') || DEFAULT_ACCENT_COLOR;
+    const theme = getThemeVariables(accent);
+    const themeStyle = `<style id="zen-theme-vars">:root { --zen-accent: ${theme.hex}; --zen-accent-hover: ${theme.hover}; --zen-accent-text: ${theme.text}; --zen-accent-glow: ${theme.glow}; }</style>`;
+    html = html.replace('</head>', `    ${themeStyle}\n  </head>`);
 
     // Replace all relative and absolute paths (./assets/..., ./webview.js, /assets/..., etc.) to webview asWebviewUri
     html = html.replace(/(href|src)="(?:\.\/|\/)?(.*?)"/g, (match, attr, relativePath) => {

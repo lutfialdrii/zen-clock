@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Coordinates, PrayerTimes } from 'adhan';
-import { MapPin, Map, Bell, BellOff, Edit3, SlidersHorizontal } from 'lucide-react';
+import { MapPin, Map, Bell, BellOff, Edit3, SlidersHorizontal, Palette } from 'lucide-react';
 import { sendNotification, requestWebNotificationPermission, getVsCodeApi } from '../utils/notification';
 import {
   getKemenagCalculationParameters,
@@ -212,6 +212,14 @@ export default function PrayerTime() {
     }
   };
 
+  const handleChangeAccentTheme = (e) => {
+    e.stopPropagation();
+    const api = getVsCodeApi();
+    if (api) {
+      api.postMessage({ type: 'REQUEST_CHANGE_ACCENT' });
+    }
+  };
+
   if (error) {
     return (
       <div className="prayer-container">
@@ -266,14 +274,24 @@ export default function PrayerTime() {
             </div>
           )}
 
-          <button
-            className="prayer-adjust-btn"
-            onClick={handleAdjustPrayerTimes}
-            title="Sesuaikan koreksi menit waktu sholat (Kemenag RI)"
-          >
-            <SlidersHorizontal size={13} />
-            <span>Sesuaikan Jam (Kemenag)</span>
-          </button>
+          <div className="prayer-actions-row">
+            <button
+              className="prayer-adjust-btn"
+              onClick={handleAdjustPrayerTimes}
+              title="Sesuaikan koreksi menit waktu sholat (Kemenag RI)"
+            >
+              <SlidersHorizontal size={13} />
+              <span>Sesuaikan Jam</span>
+            </button>
+            <button
+              className="prayer-theme-btn"
+              onClick={handleChangeAccentTheme}
+              title="Pilih atau ubah warna tema aksen Zen Clock"
+            >
+              <Palette size={13} />
+              <span>Warna Tema</span>
+            </button>
+          </div>
         </div>
 
         <div className="prayer-list">

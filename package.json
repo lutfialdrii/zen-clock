@@ -71,6 +71,11 @@
         "command": "extension-clock.resetPomodoro",
         "title": "Zen Clock: Reset Pomodoro Timer",
         "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.changeAccentColor",
+        "title": "Zen Clock: Change Accent Color Theme (Ubah Warna Tema)",
+        "category": "Zen Clock"
       }
     ],
     "viewsContainers": {
@@ -112,6 +117,11 @@
           "type": "boolean",
           "default": true,
           "description": "Otomatis buka tab halaman pengingat waktu sholat saat waktu sholat tiba (Automatically open prayer reminder tab when prayer time arrives)."
+        },
+        "zenClock.accentColor": {
+          "type": "string",
+          "default": "#fbbf24",
+          "description": "Warna aksen tema untuk Zen Clock, Pomodoro, dan Pengingat Sholat (Theme accent color for Zen Clock, Pomodoro, and Prayer Reminder). Format: preset nama atau kode hex (e.g. #fbbf24, #10b981)."
         }
       }
     }

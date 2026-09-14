@@ -3,6 +3,10 @@
   --card-bg: var(--vscode-sideBar-background, #1c1e24);
   --text-color: var(--vscode-editor-foreground, #f0f2f5);
   --divider-color: var(--vscode-widget-border, #08090a);
+  --zen-accent: #fbbf24;
+  --zen-accent-hover: #f59e0b;
+  --zen-accent-text: #1c1917;
+  --zen-accent-glow: rgba(251, 191, 36, 0.35);
 }
 
 * {
@@ -75,8 +79,9 @@ body {
 }
 
 .nav-btn.active {
-  background-color: var(--vscode-button-background, #007acc);
-  color: var(--vscode-button-foreground, #fff);
+  background-color: var(--zen-accent);
+  color: var(--zen-accent-text, #fff);
+  box-shadow: 0 2px 8px var(--zen-accent-glow);
 }
 
 .nav-btn.install-btn {
@@ -305,7 +310,14 @@ body {
   border-bottom: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
 }
 
-.prayer-adjust-btn {
+.prayer-actions-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.prayer-adjust-btn,
+.prayer-theme-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -315,16 +327,17 @@ body {
   color: var(--vscode-button-secondaryForeground, #ddd);
   border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.12));
   border-radius: 6px;
-  padding: 4px 8px;
+  padding: 5px 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 100%;
+  flex: 1;
 }
 
-.prayer-adjust-btn:hover {
+.prayer-adjust-btn:hover,
+.prayer-theme-btn:hover {
   background: var(--vscode-button-secondaryHoverBackground, rgba(255, 255, 255, 0.16));
   color: #fff;
-  border-color: var(--vscode-focusBorder, #007acc);
+  border-color: var(--zen-accent);
 }
 
 .prayer-location {
@@ -360,7 +373,7 @@ body {
 
 .prayer-location.clickable:hover {
   background-color: var(--vscode-list-hoverBackground, rgba(255, 255, 255, 0.08));
-  color: var(--vscode-textLink-activeForeground, #4fc3f7);
+  color: var(--zen-accent);
 }
 
 .prayer-location-edit-icon {
@@ -373,6 +386,7 @@ body {
 .prayer-location.clickable:hover .prayer-location-edit-icon {
   opacity: 1;
   transform: scale(1.15);
+  color: var(--zen-accent);
 }
 
 .prayer-list {
@@ -390,7 +404,7 @@ body {
 }
 
 .prayer-item.active {
-  color: var(--vscode-textLink-activeForeground, #4fc3f7);
+  color: var(--zen-accent);
   font-weight: 600;
 }
 
@@ -424,9 +438,10 @@ body {
 }
 
 .pomodoro-tab.active {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--vscode-foreground, #fff);
+  background-color: var(--zen-accent);
+  color: var(--zen-accent-text, #fff);
   font-weight: 600;
+  box-shadow: 0 2px 8px var(--zen-accent-glow);
 }
 
 .pomodoro-timer-display {
@@ -450,13 +465,26 @@ body {
   height: 44px;
   border-radius: 50%;
   border: none;
-  background-color: var(--vscode-button-background, #007acc);
-  color: var(--vscode-button-foreground, #fff);
+  background-color: var(--zen-accent);
+  color: var(--zen-accent-text, #fff);
   cursor: pointer;
-  transition: transform 0.1s ease, background-color 0.2s ease;
+  transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 10px var(--zen-accent-glow);
 }
 
 .pomodoro-btn:hover {
-  background-color: var(--vscode-button-hoverBackground, #005999);
+  background-color: var(--zen-accent-hover);
   transform: scale(1.05);
+}
+
+.pomodoro-btn.btn-secondary {
+  background-color: var(--vscode-button-secondaryBackground, rgba(255, 255, 255, 0.1));
+  color: var(--vscode-button-secondaryForeground, #fff);
+  box-shadow: none;
+  border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.15));
+}
+
+.pomodoro-btn.btn-secondary:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground, rgba(255, 255, 255, 0.2));
+  border-color: var(--zen-accent);
 }

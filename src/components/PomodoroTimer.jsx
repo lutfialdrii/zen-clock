@@ -134,7 +134,7 @@ export default function PomodoroTimer() {
           {isRunning ? <Pause size={18} /> : <Play size={18} />}
         </button>
         <button
-          className="pomodoro-btn"
+          className="pomodoro-btn btn-secondary"
           onClick={resetTimer}
           aria-label="Reset Pomodoro"
           title="Reset"

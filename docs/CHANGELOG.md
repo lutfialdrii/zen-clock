@@ -8,6 +8,32 @@ Format pencatatan mengacu pada [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [0.0.1] - 2026-09-14
 
+### Milestone 4: Theme Harmonization & Customizable Accent Color System
+- **Prompt Pengguna:**
+  > *"menyesuaikan tema dari page webview nya, dan page reminder untuk sholat, tujuannya ya hanya menyesuaikan warna saja untuk saat ini , karena ketidakseragaman antara page pada saat zen clock dan reminder page"*
+  > *"apakah memungkinkan biarkan user yang memilih accent warna? atau kita sediakan opsi opsi yang paling masuk akal?"* -> *"oke gas untuk fase awal ini"*
+- **Komponen & File Terkait:**
+  - `src/utils/themeHelper.ts`: Helper modular untuk mengelola preset tema terkurasi (Warm Amber `#fbbf24`, Islamic Emerald `#10b981`, Modern Sky Cyan `#38bdf8`, Pomodoro Rose `#f43f5e`, Mystic Purple `#a855f7`, Monochrome Silver `#e2e8f0`), parser kode HEX kustom dinamis, serta kalkulasi otomatis teks kontras (*luminance formula*) dan warna hover/glow.
+  - `package.json`: Mendaftarkan perintah VS Code `extension-clock.changeAccentColor` dan konfigurasi `zenClock.accentColor`.
+  - `src/extension.ts`:
+    - Menyediakan dialog QuickPick interaktif untuk memilih preset warna tema atau memasukkan kode HEX kustom dengan validasi regex format warna.
+    - Sinkronisasi reaktif: Membroadcast `THEME_COLOR_UPDATED` ke semua webview aktif saat konfigurasi `zenClock.accentColor` berubah.
+    - Memperbarui halaman pengingat sholat (`ZenPrayerReminderPanel`) agar menggunakan variabel CSS tema `--zen-accent` yang sama untuk ikon bulan sabit, badge, kutipan ayat, dan tombol aksi utama.
+    - Injeksi gaya awal `<style id="zen-theme-vars">` ke dalam `getWebviewContent` untuk mencegah *flicker* / kedipan warna saat webview baru dibuka.
+    - Menambahkan shortcut `Warna Tema` di tooltip Status Bar.
+  - `src/index.css`:
+    - Mengintegrasikan variabel CSS `--zen-accent`, `--zen-accent-hover`, `--zen-accent-text`, dan `--zen-accent-glow` ke elemen navigasi aktif, highlight jadwal sholat berikutnya, hover lokasi, tombol setting, dan kontrol Pomodoro.
+  - `src/App.jsx`: Menangani listener IPC `THEME_COLOR_UPDATED` dan memicu `GET_THEME_COLOR` saat inisialisasi.
+  - `src/components/PrayerTime.jsx`: Menambahkan tombol `Warna Tema` di baris aksi cepat dan handler `REQUEST_CHANGE_ACCENT`.
+  - `src/components/PomodoroTimer.jsx`: Memisahkan styling tombol Play (primary aksen) dan Reset (secondary).
+- **Keputusan Desain & Rationale:**
+  - Pendekatan *Hybrid* (Curated Presets + Custom Hex Input) memberikan kemudahan 1-klik bagi mayoritas pengguna dengan estetika dan kontras terjamin, sekaligus memberikan kebebasan kustomisasi penuh bagi power user.
+  - Harmonisasi warna secara menyeluruh menghilangkan inkonsistensi visual antara Zen Clock webview dan popup Pengingat Sholat.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - Unit test node untuk parser tema, kontras kalkulasi, dan fallback: Sukses.
+  - `npm run package:vsix`: Sukses menghasilkan paket VSIX `extension-clock-0.0.1.vsix` (327.66 KB, 35 file valid).
+
 ### Milestone 2 & 3: Prayer Countdown on Hover, Auto-Refresh & Kemenag Adjustments
 - **Prompt Pengguna:**
   > *"2. tambahkan countdown sholat terdekat pada saat hover di bottompanel, dan saat sholat tiba maka akan auto refresh ke sholat selanjutnya"*

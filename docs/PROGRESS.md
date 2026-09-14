@@ -12,7 +12,7 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 | **M1: Background Pomodoro Engine** | Timer jalan di Extension Host (Node.js), status bar sync, IPC broadcast ke webviews | `feat/pomodoro-background-host` | ✅ Selesai |
 | **M2: Countdown Sholat di Hover & Auto-Refresh** | Countdown presisi detik di tooltip status bar & webview, auto-switch saat waktu sholat tiba | `feat/prayer-countdown-kemenag` | ✅ Selesai |
 | **M3: Formula Kemenag & Menu Adjust Waktu Sholat** | Standar Kemenag RI (+2m ihtiyat), menu QuickPick/Modal penyesuaian offset waktu sholat | `feat/prayer-countdown-kemenag` | ✅ Selesai |
-| **M4: Pembersihan Kode PWA & Polish Tampilan** | Hapus tombol PWA install di extension, sinkronisasi tema VS Code, perapihan UI | `refactor/cleanup-pwa-bloat` | ⏳ Siap Dikerjakan |
+| **M4: Harmonisasi Tema & Pembersihan Kode** | Presets aksen warna + custom hex, harmonisasi Zen Clock & Pengingat Sholat, pembersihan kode PWA | `feat/accent-color-theme` | ✅ Selesai |
 | **M5: VSIX Release & Packaging Verifikasi** | Pengujian akhir bundle VSIX, update README & CHANGELOG final | `main` | ⏳ Antrean Akhir |
 
 ---
@@ -60,7 +60,9 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 
 ---
 
-### Milestone 4: Pembersihan Kode PWA & Polish Tampilan ⏳
-- [ ] Hapus tombol download/install PWA di [App.jsx](file:///Users/sm/Documents/Lutfi/DEV/Learn/extension-clock/src/App.jsx#L59-L68) (tidak relevan untuk extension VS Code).
-- [ ] Hapus listener `beforeinstallprompt` dan service worker register yang tidak terpakai.
-- [ ] Selaraskan warna dan font dengan tema VS Code aktif (`--vscode-editor-background`, dll.).
+### Milestone 4: Harmonisasi Tema & Pembersihan Kode ✅
+- [x] Hapus kode PWA yang tidak relevan untuk VS Code extension (service worker & install prompt).
+- [x] Implementasikan sistem tema hybrid (Preset Terkurasi: Warm Amber, Islamic Emerald, Modern Blue, Pomodoro Rose, Mystic Purple, Monochrome Silver + Custom Hex input).
+- [x] Sinkronisasi variabel CSS global (`--zen-accent`, `--zen-accent-hover`, `--zen-accent-text`, `--zen-accent-glow`) secara real-time ke semua webview terbuka (sidebar, bottom panel, reminder tab).
+- [x] Selaraskan tampilan warna antara Zen Clock & Pomodoro Webview dengan Tab Pengingat Sholat (`ZenPrayerReminderPanel`).
+- [x] Tambahkan tombol "Warna Tema" di dalam menu webview dan shortcut di tooltip status bar.

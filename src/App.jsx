@@ -1,12 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FlipClock from './components/FlipClock';
 import PrayerTime from './components/PrayerTime';
 import PomodoroTimer from './components/PomodoroTimer';
 import { Timer, Clock } from 'lucide-react';
+import { getVsCodeApi } from './utils/notification';
 import './index.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('clock'); // 'clock' | 'pomodoro'
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      const message = event.data;
+      if (message && message.type === 'THEME_COLOR_UPDATED' && message.data) {
+        const { hex, hover, text, glow } = message.data;
+        if (hex) document.documentElement.style.setProperty('--zen-accent', hex);
+        if (hover) document.documentElement.style.setProperty('--zen-accent-hover', hover);
+        if (text) document.documentElement.style.setProperty('--zen-accent-text', text);
+        if (glow) document.documentElement.style.setProperty('--zen-accent-glow', glow);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    const api = getVsCodeApi();
+    if (api) {
+      api.postMessage({ type: 'GET_THEME_COLOR' });
+    }
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   return (
     <div className="app-container">
