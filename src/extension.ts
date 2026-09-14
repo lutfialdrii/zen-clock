@@ -754,12 +754,12 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   // 6. Register Webview View Providers (Sidebar View & Bottom Panel View)
-  const sidebarProvider = new ZenClockViewProvider(context.extensionUri, context);
+  const sidebarProvider = new ZenClockViewProvider(context.extensionUri, context, 'sidebar');
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('zen-clock-sidebar', sidebarProvider)
   );
 
-  const panelProvider = new ZenClockViewProvider(context.extensionUri, context);
+  const panelProvider = new ZenClockViewProvider(context.extensionUri, context, 'panel');
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('zen-clock-panel-view', panelProvider)
   );
@@ -1144,7 +1144,7 @@ class ZenClockPanel {
   private _update() {
     const webview = this._panel.webview;
     this._panel.title = 'Zen Flip Clock';
-    this._panel.webview.html = getWebviewContent(webview, this._extensionUri);
+    this._panel.webview.html = getWebviewContent(webview, this._extensionUri, 'editor');
   }
 }
 
@@ -1153,7 +1153,8 @@ class ZenClockViewProvider implements vscode.WebviewViewProvider {
 
   constructor(
     private readonly _extensionUri: vscode.Uri,
-    private readonly _context: vscode.ExtensionContext
+    private readonly _context: vscode.ExtensionContext,
+    private readonly _viewType: 'sidebar' | 'panel' = 'sidebar'
   ) {}
 
   public resolveWebviewView(
@@ -1179,7 +1180,7 @@ class ZenClockViewProvider implements vscode.WebviewViewProvider {
       localResourceRoots: [vscode.Uri.joinPath(this._extensionUri, 'dist')]
     };
 
-    webviewView.webview.html = getWebviewContent(webviewView.webview, this._extensionUri);
+    webviewView.webview.html = getWebviewContent(webviewView.webview, this._extensionUri, this._viewType);
     sendPomodoroState(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage((message) => {
@@ -1270,7 +1271,11 @@ function handleWebviewMessage(message: any, webview: vscode.Webview, context: vs
   }
 }
 
-function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri): string {
+function getWebviewContent(
+  webview: vscode.Webview,
+  extensionUri: vscode.Uri,
+  viewType: 'sidebar' | 'panel' | 'editor' = 'sidebar'
+): string {
   const distPath = vscode.Uri.joinPath(extensionUri, 'dist');
   const htmlPath = path.join(distPath.fsPath, 'index.html');
 
@@ -1289,6 +1294,9 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri): s
     const theme = getThemeVariables(accent);
     const themeStyle = `<style id="zen-theme-vars">:root { --zen-accent: ${theme.hex}; --zen-accent-hover: ${theme.hover}; --zen-accent-text: ${theme.text}; --zen-accent-glow: ${theme.glow}; }</style>`;
     html = html.replace('</head>', `    ${themeStyle}\n  </head>`);
+
+    // Inject data-view to body tag for view-specific CSS adaptations
+    html = html.replace(/<body([^>]*)>/, `<body$1 data-view="${viewType}">`);
 
     // Replace all relative and absolute paths (./assets/..., ./webview.js, /assets/..., etc.) to webview asWebviewUri
     html = html.replace(/(href|src)="(?:\.\/|\/)?(.*?)"/g, (match, attr, relativePath) => {
@@ -1313,7 +1321,7 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri): s
     <meta charset="UTF-8">
     <title>Zen Flip Clock</title>
   </head>
-  <body>
+  <body data-view="${viewType}">
     <h3>Zen Flip Clock</h3>
     <p>Please build the extension first by running <code>npm run build</code>.</p>
   </body>

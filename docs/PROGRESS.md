@@ -13,7 +13,7 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 | **M2: Countdown Sholat di Hover & Auto-Refresh** | Countdown presisi detik di tooltip status bar & webview, auto-switch saat waktu sholat tiba | `feat/prayer-countdown-kemenag` | ✅ Selesai |
 | **M3: Formula Kemenag & Menu Adjust Waktu Sholat** | Standar Kemenag RI (+2m ihtiyat), menu QuickPick/Modal penyesuaian offset waktu sholat | `feat/prayer-countdown-kemenag` | ✅ Selesai |
 | **M4: Harmonisasi Tema & Pembersihan Kode** | Presets aksen warna + custom hex, harmonisasi Zen Clock & Pengingat Sholat, pembersihan kode PWA | `feat/accent-color-theme` | ✅ Selesai |
-| **M5: VSIX Release & Packaging Verifikasi** | Pengujian akhir bundle VSIX, update README & CHANGELOG final | `main` | ⏳ Antrean Akhir |
+| **M5: VSIX Release & Packaging Verifikasi** | Pengujian akhir bundle VSIX, update README & CHANGELOG final | `main` | ✅ Selesai (Siap Rilis) |
 
 ---
 
@@ -66,3 +66,13 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 - [x] Sinkronisasi variabel CSS global (`--zen-accent`, `--zen-accent-hover`, `--zen-accent-text`, `--zen-accent-glow`) secara real-time ke semua webview terbuka (sidebar, bottom panel, reminder tab).
 - [x] Selaraskan tampilan warna antara Zen Clock & Pomodoro Webview dengan Tab Pengingat Sholat (`ZenPrayerReminderPanel`).
 - [x] Tambahkan tombol "Warna Tema" di dalam menu webview dan shortcut di tooltip status bar.
+
+---
+
+### Milestone 5: VSIX Release & Packaging Verifikasi ✅
+- [x] Optimasi layout tipografi flip clock & scaling kartu Pomodoro di sidebar (`feat/pomodoro-card-scaling`).
+- [x] Penyesuaian garis pemisah kartu flip 1px pada sidebar (`feat/sidebar-thin-flip-divider`).
+- [x] Reorganisasi dokumentasi: `docs/DEV_LOG.md` untuk trajectory log internal, `CHANGELOG.md` untuk public release notes.
+- [x] Build dan validasi paket VSIX `extension-clock-0.0.1.vsix` (333.75 KB).
+- [x] Verifikasi instalasi lokal melalui `code --install-extension`.
+- [x] Siap rilis tag `v0.0.1` dan GitHub Release.
