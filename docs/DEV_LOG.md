@@ -8,6 +8,24 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-15
 
+### DX/UX Enhancements: Command Palette Title & Grouping Refinement
+- **Prompt Pengguna:**
+  > *"ada sedikit hal yang cukup membingungkan pada command panel, karena banyak nya command untuk menampilkan , apakah ada command yang bisa kita kurangi, atau sedikit diberi deskripsi mengenai command yang ada? agar tidak menimbulkan ambiguitas?"*
+- **Akar Masalah (Root Cause):**
+  - Command pembuka jam sebelumnya menggunakan kata ambigu "Open Flip Clock Panel" padahal membuka di Tab Editor (Full View), bertabrakan secara istilah dengan "Focus Bottom Panel".
+  - Inkonsistensi kata kerja (`Open...` vs `Focus...`).
+  - Command fitur lainnya (`Pomodoro`, `Prayer Times`, `Theme`) belum memiliki prefix grup yang seragam di Command Palette.
+- **Solusi & Perbaikan:**
+  - `package.json`:
+    - Menyeragamkan kata kerja pembuka menjadi `Open in Editor Tab`, `Open in Sidebar`, dan `Open in Bottom Panel`.
+    - Menambahkan prefix kelompok fungsional yang teratur: `Pomodoro:`, `Prayer Times:`, dan `Theme:`.
+  - `README.md` & `README.id.md`:
+    - Menyelaraskan tabel dokumentasi perintah dengan penamaan baru.
+- **Hasil Verifikasi:**
+  - `npm run compile`: Sukses tanpa error.
+  - `npm run package:vsix`: Sukses (`extension-clock-0.0.1.vsix` 334.6 KB).
+  - `code --install-extension extension-clock-0.0.1.vsix --force`: Berhasil terpasang, daftar command di Command Palette kini rapi, intuitif, dan tidak ambigu.
+
 ### UI/UX Enhancements: Sidebar Viewport Flip Card Divider Refinement
 - **Prompt Pengguna:**
   > *"batas garis flip pada tampilan side panel cukup tebal, buat sedikit tipis namun jika tampilan full view atau bottom panel, tebal garis sudah sangat baik"*

@@ -39,47 +39,47 @@
     "commands": [
       {
         "command": "extension-clock.openClock",
-        "title": "Open Flip Clock Panel",
-        "category": "Zen Clock"
-      },
-      {
-        "command": "extension-clock.changeLocation",
-        "title": "Change City / Location (Pilih Kota)",
-        "category": "Zen Clock"
-      },
-      {
-        "command": "extension-clock.adjustPrayerTimes",
-        "title": "Adjust Prayer Times (Sesuaikan Menit Waktu Sholat)",
+        "title": "Open in Editor Tab (Buka di Tab Editor / Full View)",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.focusSidebar",
-        "title": "Focus Sidebar (Buka Sidebar)",
+        "title": "Open in Sidebar (Buka di Sidebar Samping)",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.focusPanel",
-        "title": "Focus Bottom Panel",
-        "category": "Zen Clock"
-      },
-      {
-        "command": "extension-clock.previewReminder",
-        "title": "Preview Prayer Reminder Page",
+        "title": "Open in Bottom Panel (Buka di Panel Bawah)",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.togglePomodoro",
-        "title": "Start / Pause Pomodoro Timer",
+        "title": "Pomodoro: Start / Pause Timer",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.resetPomodoro",
-        "title": "Reset Pomodoro Timer",
+        "title": "Pomodoro: Reset Timer",
+        "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.changeLocation",
+        "title": "Prayer Times: Change City / Location (Pilih Kota)",
+        "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.adjustPrayerTimes",
+        "title": "Prayer Times: Adjust Minutes (Sesuaikan Koreksi Waktu Sholat)",
+        "category": "Zen Clock"
+      },
+      {
+        "command": "extension-clock.previewReminder",
+        "title": "Prayer Times: Preview Reminder Page (Lihat Tab Pengingat)",
         "category": "Zen Clock"
       },
       {
         "command": "extension-clock.changeAccentColor",
-        "title": "Change Accent Color Theme (Ubah Warna Tema)",
+        "title": "Theme: Change Accent Color (Ubah Warna Tema)",
         "category": "Zen Clock"
       }
     ],

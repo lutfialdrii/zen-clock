@@ -98,15 +98,15 @@ Dapat diakses melalui Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 
 | Perintah | Judul | Deskripsi |
 | :--- | :--- | :--- |
-| `extension-clock.openClock` | **Zen Clock: Open Flip Clock Panel** | Membuka Zen Clock di tab editor penuh |
-| `extension-clock.focusSidebar` | **Zen Clock: Focus Sidebar** | Membuka dan memfokuskan Zen Clock di sidebar samping |
-| `extension-clock.focusPanel` | **Zen Clock: Focus Bottom Panel** | Menampilkan Zen Clock di panel bawah |
-| `extension-clock.changeLocation` | **Zen Clock: Change City / Location** | Memilih kota populer atau cari kota dunia |
-| `extension-clock.adjustPrayerTimes`| **Zen Clock: Adjust Prayer Times** | Mengatur penyesuaian koreksi menit sholat (+/-) |
-| `extension-clock.togglePomodoro` | **Zen Clock: Start / Pause Pomodoro** | Menjalankan / menjeda timer Pomodoro |
-| `extension-clock.resetPomodoro` | **Zen Clock: Reset Pomodoro Timer** | Mengembalikan Pomodoro ke durasi awal |
-| `extension-clock.previewReminder` | **Zen Clock: Preview Prayer Reminder** | Melihat pratinjau tab pengingat sholat |
-| `extension-clock.changeAccentColor` | **Zen Clock: Change Accent Color Theme** | Memilih tema warna aksen (Amber, Emerald, Azure, Rose, Custom HEX) |
+| `extension-clock.openClock` | **Zen Clock: Open in Editor Tab** | Membuka Zen Clock di tab editor utama (tampilan penuh) |
+| `extension-clock.focusSidebar` | **Zen Clock: Open in Sidebar** | Membuka dan memfokuskan Zen Clock di panel samping (sidebar) |
+| `extension-clock.focusPanel` | **Zen Clock: Open in Bottom Panel** | Menampilkan Zen Clock di panel bawah (sejajar Terminal/Output) |
+| `extension-clock.togglePomodoro` | **Zen Clock: Pomodoro: Start / Pause Timer** | Menjalankan atau menjeda timer Pomodoro |
+| `extension-clock.resetPomodoro` | **Zen Clock: Pomodoro: Reset Timer** | Mengembalikan timer Pomodoro ke durasi awal |
+| `extension-clock.changeLocation` | **Zen Clock: Prayer Times: Change City / Location** | Memilih kota populer atau cari kota dunia untuk jadwal sholat |
+| `extension-clock.adjustPrayerTimes`| **Zen Clock: Prayer Times: Adjust Minutes** | Mengatur penyesuaian koreksi menit waktu sholat (+/- menit) |
+| `extension-clock.previewReminder` | **Zen Clock: Prayer Times: Preview Reminder Page** | Melihat pratinjau tab pengingat waktu sholat |
+| `extension-clock.changeAccentColor` | **Zen Clock: Theme: Change Accent Color** | Memilih preset tema warna atau input kode HEX kustom |
 
 ---
 

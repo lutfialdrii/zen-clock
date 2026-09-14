@@ -98,15 +98,15 @@ Access these commands from the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`):
 
 | Command | Title | Description |
 | :--- | :--- | :--- |
-| `extension-clock.openClock` | **Zen Clock: Open Flip Clock Panel** | Opens the Zen Clock in a full editor tab |
-| `extension-clock.focusSidebar` | **Zen Clock: Focus Sidebar** | Opens and focuses the Zen Clock sidebar view |
-| `extension-clock.focusPanel` | **Zen Clock: Focus Bottom Panel** | Focuses the Zen Clock view in the bottom panel |
-| `extension-clock.changeLocation` | **Zen Clock: Change City / Location** | Select popular cities or search global cities |
-| `extension-clock.adjustPrayerTimes`| **Zen Clock: Adjust Prayer Times** | Adjust minutes offset (+/-) per prayer time |
-| `extension-clock.togglePomodoro` | **Zen Clock: Start / Pause Pomodoro** | Toggles Pomodoro timer on/off |
-| `extension-clock.resetPomodoro` | **Zen Clock: Reset Pomodoro Timer** | Resets Pomodoro timer to default duration |
-| `extension-clock.previewReminder` | **Zen Clock: Preview Prayer Reminder** | Previews the prayer reminder tab |
-| `extension-clock.changeAccentColor` | **Zen Clock: Change Accent Color Theme** | Select or customize accent color for clock, timer, & reminder |
+| `extension-clock.openClock` | **Zen Clock: Open in Editor Tab** | Opens the Zen Clock in a full editor tab |
+| `extension-clock.focusSidebar` | **Zen Clock: Open in Sidebar** | Opens and focuses the Zen Clock sidebar view |
+| `extension-clock.focusPanel` | **Zen Clock: Open in Bottom Panel** | Focuses the Zen Clock view in the bottom panel |
+| `extension-clock.togglePomodoro` | **Zen Clock: Pomodoro: Start / Pause Timer** | Toggles Pomodoro timer on/off |
+| `extension-clock.resetPomodoro` | **Zen Clock: Pomodoro: Reset Timer** | Resets Pomodoro timer to default duration |
+| `extension-clock.changeLocation` | **Zen Clock: Prayer Times: Change City / Location** | Select popular cities or search global cities |
+| `extension-clock.adjustPrayerTimes`| **Zen Clock: Prayer Times: Adjust Minutes** | Adjust minutes offset (+/-) per prayer time |
+| `extension-clock.previewReminder` | **Zen Clock: Prayer Times: Preview Reminder Page** | Previews the prayer reminder tab |
+| `extension-clock.changeAccentColor` | **Zen Clock: Theme: Change Accent Color** | Select or customize accent color for clock, timer, & reminder |
 
 ---
 
