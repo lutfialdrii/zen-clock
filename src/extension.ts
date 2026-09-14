@@ -1,10 +1,26 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import {
+  getKemenagCalculationParameters,
+  formatCountdownVerbose,
+  formatCountdownDigits,
+  PRAYER_NAMES
+} from './utils/prayerHelper';
 
 const LOCATION_STORAGE_KEY = 'zenClock.selectedLocation';
+const PRAYER_ADJUSTMENTS_STORAGE_KEY = 'zenClock.prayerAdjustments';
 const activeWebviews = new Set<vscode.Webview>();
+
+interface PrayerAdjustments {
+  fajr?: number;
+  sunrise?: number;
+  dhuhr?: number;
+  asr?: number;
+  maghrib?: number;
+  isha?: number;
+}
 
 interface LocationData {
   name: string;
@@ -345,6 +361,93 @@ async function promptChangeLocation(context: vscode.ExtensionContext) {
   }
 }
 
+async function promptAdjustPrayerTimes(context: vscode.ExtensionContext) {
+  const currentAdjustments = context.globalState.get<PrayerAdjustments>(PRAYER_ADJUSTMENTS_STORAGE_KEY) || {};
+
+  const prayerKeys: Array<{ key: keyof PrayerAdjustments; name: string; ihtiyat: number }> = [
+    { key: 'fajr', name: 'Subuh', ihtiyat: 2 },
+    { key: 'sunrise', name: 'Terbit', ihtiyat: -2 },
+    { key: 'dhuhr', name: 'Dzuhur', ihtiyat: 2 },
+    { key: 'asr', name: 'Ashar', ihtiyat: 2 },
+    { key: 'maghrib', name: 'Maghrib', ihtiyat: 2 },
+    { key: 'isha', name: 'Isya', ihtiyat: 2 }
+  ];
+
+  const items: (vscode.QuickPickItem & { prayerKey?: keyof PrayerAdjustments })[] = [
+    ...prayerKeys.map((p) => {
+      const userOffset = currentAdjustments[p.key] || 0;
+      const totalOffset = p.ihtiyat + userOffset;
+      const sign = userOffset >= 0 ? `+${userOffset}` : `${userOffset}`;
+      const totalSign = totalOffset >= 0 ? `+${totalOffset}` : `${totalOffset}`;
+      return {
+        label: `$(watch) ${p.name}`,
+        description: `Koreksi: ${sign}m (Total buffer: ${totalSign}m)`,
+        detail: `Pilih untuk mengatur koreksi menit sholat ${p.name}`,
+        prayerKey: p.key
+      };
+    }),
+    {
+      kind: vscode.QuickPickItemKind.Separator,
+      label: 'Opsi Standar'
+    },
+    {
+      label: '$(refresh) Reset Semua ke Standar Kemenag RI',
+      description: 'Kembalikan seluruh koreksi manual ke 0 menit'
+    }
+  ];
+
+  const selected = await vscode.window.showQuickPick(items, {
+    placeHolder: 'Pilih waktu sholat untuk mengatur penyesuaian menit (offset)...',
+    matchOnDescription: true
+  });
+
+  if (!selected) return;
+
+  if (selected.label.includes('Reset Semua')) {
+    await context.globalState.update(PRAYER_ADJUSTMENTS_STORAGE_KEY, {});
+    broadcastMessage({ type: 'PRAYER_ADJUSTMENTS_UPDATED', data: {} });
+    updateStatusBar(context);
+    vscode.window.showInformationMessage('Seluruh penyesuaian waktu sholat dikembalikan ke standar Kemenag RI (+2m ihtiyat).');
+    return;
+  }
+
+  const pickedKey = selected.prayerKey;
+  if (!pickedKey) return;
+  const prayerObj = prayerKeys.find((p) => p.key === pickedKey);
+  if (!prayerObj) return;
+
+  const currentVal = currentAdjustments[pickedKey] || 0;
+  const input = await vscode.window.showInputBox({
+    prompt: `Masukkan koreksi menit untuk ${prayerObj.name} (contoh: 2 untuk +2 menit, -1 untuk -1 menit, 0 untuk standar):`,
+    value: String(currentVal),
+    validateInput: (val) => {
+      const num = parseInt(val.trim(), 10);
+      if (isNaN(num)) {
+        return 'Harap masukkan angka bulat menit (misal: 1, -2, 0).';
+      }
+      if (num < -60 || num > 60) {
+        return 'Nilai koreksi harus antara -60 sampai +60 menit.';
+      }
+      return null;
+    }
+  });
+
+  if (input === undefined) return;
+
+  const newOffset = parseInt(input.trim(), 10) || 0;
+  const updatedAdjustments: PrayerAdjustments = {
+    ...currentAdjustments,
+    [pickedKey]: newOffset
+  };
+
+  await context.globalState.update(PRAYER_ADJUSTMENTS_STORAGE_KEY, updatedAdjustments);
+  broadcastMessage({ type: 'PRAYER_ADJUSTMENTS_UPDATED', data: updatedAdjustments });
+  updateStatusBar(context);
+  vscode.window.showInformationMessage(
+    `Waktu ${prayerObj.name} disesuaikan: ${newOffset >= 0 ? '+' : ''}${newOffset} menit.`
+  );
+}
+
 function updateStatusBar(context: vscode.ExtensionContext) {
   if (!statusBarItem) {
     return;
@@ -360,8 +463,9 @@ function updateStatusBar(context: vscode.ExtensionContext) {
     lng: 106.8456
   };
 
+  const savedAdjustments = context.globalState.get<PrayerAdjustments>(PRAYER_ADJUSTMENTS_STORAGE_KEY) || {};
   const coordinates = new Coordinates(savedLocation.lat, savedLocation.lng);
-  const params = CalculationMethod.MuslimWorldLeague();
+  const params = getKemenagCalculationParameters(savedAdjustments);
   const prayerTimes = new PrayerTimes(coordinates, now, params);
 
   const formatTime = (date: Date) => {
@@ -378,17 +482,12 @@ function updateStatusBar(context: vscode.ExtensionContext) {
     nextPrayerDate = tomorrowTimes.timeForPrayer(nextPrayer);
   }
 
-  const prayerNames: Record<string, string> = {
-    fajr: 'Subuh',
-    sunrise: 'Terbit',
-    dhuhr: 'Dzuhur',
-    asr: 'Ashar',
-    maghrib: 'Maghrib',
-    isha: 'Isya'
-  };
-
-  const nextPrayerLabel = prayerNames[nextPrayer.toLowerCase()] || nextPrayer;
+  const nextPrayerLabel = PRAYER_NAMES[nextPrayer.toLowerCase() as keyof typeof PRAYER_NAMES] || nextPrayer;
   const nextPrayerTimeStr = nextPrayerDate ? formatTime(nextPrayerDate) : '';
+
+  const diffSeconds = nextPrayerDate ? Math.max(0, Math.floor((nextPrayerDate.getTime() - now.getTime()) / 1000)) : 0;
+  const countdownVerbose = formatCountdownVerbose(diffSeconds);
+  const countdownDigits = formatCountdownDigits(diffSeconds);
 
   // Status Bar Text
   if (currentPomodoro.isRunning) {
@@ -418,8 +517,9 @@ function updateStatusBar(context: vscode.ExtensionContext) {
 
   tooltip.appendMarkdown(`---\n\n`);
 
-  tooltip.appendMarkdown(`### 🕌 **Jadwal Waktu Sholat Hari Ini**\n`);
-  tooltip.appendMarkdown(`📍 **Lokasi**: ${savedLocation.name}\n\n`);
+  tooltip.appendMarkdown(`### 🕌 **Jadwal Waktu Sholat (Kemenag RI)**\n`);
+  tooltip.appendMarkdown(`📍 **Lokasi**: ${savedLocation.name}\n`);
+  tooltip.appendMarkdown(`⏳ **${nextPrayerLabel} tiba dalam**: \`${countdownVerbose}\` (${countdownDigits})\n\n`);
   tooltip.appendMarkdown(`| Waktu | Jam | Status |\n`);
   tooltip.appendMarkdown(`| :--- | :---: | :---: |\n`);
 
@@ -434,13 +534,17 @@ function updateStatusBar(context: vscode.ExtensionContext) {
 
   for (const p of prayersList) {
     const isNext = p.key.toLowerCase() === nextPrayer.toLowerCase();
-    const marker = isNext ? '👉 **Berikutnya**' : '—';
+    const marker = isNext ? `👉 **Berikutnya (${countdownDigits})**` : '—';
     const bold = isNext ? '**' : '';
     tooltip.appendMarkdown(`| ${bold}${p.name}${bold} | ${bold}${formatTime(p.time)}${bold} | ${marker} |\n`);
   }
 
   tooltip.appendMarkdown(`\n---\n`);
-  tooltip.appendMarkdown(`[$(layout-panel) Buka Bottom Panel](command:extension-clock.focusPanel) &nbsp;|&nbsp; [$(location) Ganti Kota](command:extension-clock.changeLocation)`);
+  tooltip.appendMarkdown(
+    `[$(layout-panel) Buka Panel](command:extension-clock.focusPanel) &nbsp;|&nbsp; ` +
+    `[$(location) Ganti Kota](command:extension-clock.changeLocation) &nbsp;|&nbsp; ` +
+    `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes)`
+  );
 
   statusBarItem.tooltip = tooltip;
 
@@ -457,6 +561,7 @@ function updateStatusBar(context: vscode.ExtensionContext) {
           time: formatTime(p.time),
           location: savedLocation.name
         });
+        broadcastMessage({ type: 'PRAYER_DATA_UPDATED' });
         break;
       }
     }
@@ -517,7 +622,13 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(previewReminderDisposable);
 
-  // 5. Register Pomodoro Controls Commands
+  // 5. Register Adjust Prayer Times Command
+  let adjustPrayerDisposable = vscode.commands.registerCommand('extension-clock.adjustPrayerTimes', () => {
+    promptAdjustPrayerTimes(context);
+  });
+  context.subscriptions.push(adjustPrayerDisposable);
+
+  // 6. Register Pomodoro Controls Commands
   let togglePomodoroDisposable = vscode.commands.registerCommand('extension-clock.togglePomodoro', () => {
     if (currentPomodoro.isRunning) {
       pausePomodoro(context);
@@ -959,6 +1070,16 @@ function handleWebviewMessage(message: any, webview: vscode.Webview, context: vs
     case 'REQUEST_CHANGE_LOCATION':
       promptChangeLocation(context);
       break;
+
+    case 'REQUEST_ADJUST_PRAYER':
+      promptAdjustPrayerTimes(context);
+      break;
+
+    case 'GET_PRAYER_ADJUSTMENTS': {
+      const saved = context.globalState.get<PrayerAdjustments>(PRAYER_ADJUSTMENTS_STORAGE_KEY) || {};
+      webview.postMessage({ type: 'PRAYER_ADJUSTMENTS_UPDATED', data: saved });
+      break;
+    }
 
     case 'GET_SAVED_LOCATION': {
       const saved = context.globalState.get<LocationData>(LOCATION_STORAGE_KEY);
