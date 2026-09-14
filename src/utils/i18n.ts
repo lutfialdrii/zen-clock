@@ -89,7 +89,7 @@ export const translations: Record<Language, Translations> = {
       isha: 'Isya'
     },
     statusBar: {
-      scheduleTitle: 'Jadwal Sholat Hari Ini (Standar Kemenag RI)',
+      scheduleTitle: 'Jadwal Sholat Hari Ini',
       next: 'Berikutnya',
       arrivesIn: 'tiba dalam',
       now: 'sekarang',
@@ -159,7 +159,7 @@ export const translations: Record<Language, Translations> = {
       isha: 'Isha'
     },
     statusBar: {
-      scheduleTitle: "Today's Prayer Times (Kemenag RI Standard)",
+      scheduleTitle: "Today's Prayer Times",
       next: 'Next',
       arrivesIn: 'arrives in',
       now: 'now',

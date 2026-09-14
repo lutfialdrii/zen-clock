@@ -759,12 +759,10 @@ function updateStatusBar(context: vscode.ExtensionContext) {
     (isEn
       ? `[$(location) Change City](command:extension-clock.changeLocation) &nbsp;•&nbsp; ` +
         `[$(gear) Adjust Time](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; ` +
-        `[$(paintcan) Theme Color](command:extension-clock.changeAccentColor) &nbsp;•&nbsp; ` +
-        `[$(globe) Switch Language](command:extension-clock.changeLanguage)`
+        `[$(paintcan) Theme Color](command:extension-clock.changeAccentColor)`
       : `[$(location) Ganti Kota](command:extension-clock.changeLocation) &nbsp;•&nbsp; ` +
         `[$(gear) Sesuaikan Jam](command:extension-clock.adjustPrayerTimes) &nbsp;•&nbsp; ` +
-        `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor) &nbsp;•&nbsp; ` +
-        `[$(globe) Ganti Bahasa](command:extension-clock.changeLanguage)`)
+        `[$(paintcan) Warna Tema](command:extension-clock.changeAccentColor)`)
   );
 
   const newTooltipMarkdown = tooltip.value;

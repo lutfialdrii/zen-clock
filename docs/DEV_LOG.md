@@ -8,6 +8,20 @@ Untuk ringkasan rilis publik (*public release notes*), lihat [CHANGELOG.md](../C
 
 ## [0.0.1] - 2026-09-15
 
+### UI Polish: Simplifying Status Bar Tooltip Header & Actions
+- **Prompt Pengguna:**
+  > *"pada status bar, tidak perlu menambahkan setting Ganti Bahasa, karena hal ini cukup melalui command panel saja, dan tulisan (Standar Kemenag RI) tidak perlu ditampilkan"*
+- **Akar Masalah (Root Cause):**
+  - Tautan "Ganti Bahasa / Switch Language" di footer tooltip status bar membuat baris aksi terlalu padat, padahal pengguna dapat mengakses fitur ini langsung lewat Command Palette (`extension-clock.changeLanguage`).
+  - Teks `(Standar Kemenag RI)` pada judul tooltip jadwal sholat terlalu panjang dan redundan untuk tampilan status bar ringkas.
+- **Solusi & Perbaikan:**
+  - Menghapus tautan `Ganti Bahasa / Switch Language` dari footer tooltip Markdown di `src/extension.ts`, menyisakan 3 aksi esensial: Ganti Kota, Sesuaikan Jam, dan Warna Tema.
+  - Memperbarui kamus `src/utils/i18n.ts`:
+    - `id`: `'Jadwal Sholat Hari Ini'` (menghilangkan `(Standar Kemenag RI)`).
+    - `en`: `"Today's Prayer Times"` (menghilangkan `(Kemenag RI Standard)`).
+- **Hasil Verifikasi:**
+  - Tooltip Status Bar kini jauh lebih bersih, ringkas, dan fokus. Kompilasi TypeScript & Vite lulus tanpa error.
+
 ### Feature & Localization: Multi-Language Support (Indonesian Default & English Optional)
 - **Prompt Pengguna:**
   > *"secara defaultnya berbahasa indonesia, namun kita sediakan jika ingin menggunakan bahasa inggris"*
