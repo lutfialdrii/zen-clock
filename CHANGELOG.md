@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
   - Native OS completion notifications and warning confirmations to prevent accidental timer resets.
 - **Automated Islamic Prayer Times (Kemenag RI Standard)**:
   - Astronomical prayer calculation powered by `adhan` library with Indonesian Ministry of Religious Affairs (Kemenag RI) standard parameters (Fajr 20°, Isha 18°, +2 minutes ihtiyat correction).
+  - Friday prayer label enhancement: Automatically displays "Jum'at" instead of "Dhuhr" / "Dzuhur" on Fridays across status bar, tooltip schedule, reminder panel, and notifications.
   - Interactive minute adjustments menu (`extension-clock.adjustPrayerTimes`) for custom calibration.
   - Global city search and curated Indonesian popular cities selection.
 - **Multi-Language Support (i18n)**:
@@ -46,6 +47,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
   - Notifikasi suara dan peringatan konfirmasi saat berganti mode agar sesi kerja tidak ter-reset secara tidak sengaja.
 - **Jadwal Sholat Otomatis Standar Kemenag RI**:
   - Perhitungan waktu sholat akurat berbasis pustaka astronomi `adhan` dengan parameter resmi Kementerian Agama Republik Indonesia (Subuh 20°, Isya 18°, +2 menit ihtiyat).
+  - Penyesuaian nama Sholat Jum'at otomatis: Menampilkan label "Jum'at" menggantikan "Dzuhur" setiap hari Jumat di status bar, tooltip tabel jadwal, tab pengingat sholat, dan notifikasi.
   - Menu QuickPick interaktif penyesuaian koreksi menit sholat (+/- menit per jadwal).
   - Pencarian kota global dan daftar kota populer di Indonesia.
 - **Dukungan Multi-Bahasa (i18n)**:

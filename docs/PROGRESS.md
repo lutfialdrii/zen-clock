@@ -58,6 +58,7 @@ Dokumen ini memantau milestone, status implementasi fitur, dan roadmap ekstensi 
 - [x] Tambahkan opsi Reset Semua Koreksi ke standar Kemenag RI.
 - [x] Tambahkan tombol "Sesuaikan Jam (Kemenag)" di dalam Webview `PrayerTime.jsx` yang memicu QuickPick native VS Code via IPC `REQUEST_ADJUST_PRAYER`.
 - [x] Simpan konfigurasi penyesuaian di `context.globalState` dan sinkronkan secara reaktif via `PRAYER_ADJUSTMENTS_UPDATED`.
+- [x] Tambahkan konversi otomatis label Dzuhur menjadi Jum'at pada hari Jumat di status bar, jadwal tabel, notifikasi, dan halaman pengingat.
 
 ---
 

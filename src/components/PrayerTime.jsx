@@ -160,7 +160,7 @@ export default function PrayerTime({ language = 'id' }) {
           nextTime = tomorrowTimes.timeForPrayer(next);
         }
 
-        const currentPrayerNameId = getPrayerName(next.toLowerCase(), language);
+        const currentPrayerNameId = getPrayerName(next.toLowerCase(), language, nextTime);
 
         if (nextTime) {
           const diffSeconds = Math.floor((nextTime - currentTime) / 1000);
@@ -186,12 +186,12 @@ export default function PrayerTime({ language = 'id' }) {
         };
 
         setAllPrayers([
-          { key: 'fajr', name: getPrayerName('fajr', language), time: formatTime(times.fajr) },
-          { key: 'sunrise', name: getPrayerName('sunrise', language), time: formatTime(times.sunrise) },
-          { key: 'dhuhr', name: getPrayerName('dhuhr', language), time: formatTime(times.dhuhr) },
-          { key: 'asr', name: getPrayerName('asr', language), time: formatTime(times.asr) },
-          { key: 'maghrib', name: getPrayerName('maghrib', language), time: formatTime(times.maghrib) },
-          { key: 'isha', name: getPrayerName('isha', language), time: formatTime(times.isha) }
+          { key: 'fajr', name: getPrayerName('fajr', language, times.fajr), time: formatTime(times.fajr) },
+          { key: 'sunrise', name: getPrayerName('sunrise', language, times.sunrise), time: formatTime(times.sunrise) },
+          { key: 'dhuhr', name: getPrayerName('dhuhr', language, times.dhuhr), time: formatTime(times.dhuhr) },
+          { key: 'asr', name: getPrayerName('asr', language, times.asr), time: formatTime(times.asr) },
+          { key: 'maghrib', name: getPrayerName('maghrib', language, times.maghrib), time: formatTime(times.maghrib) },
+          { key: 'isha', name: getPrayerName('isha', language, times.isha), time: formatTime(times.isha) }
         ]);
       } catch (err) {
         console.error('Prayer Calculation Error:', err);
@@ -239,7 +239,7 @@ export default function PrayerTime({ language = 'id' }) {
   const diffMs = prayerData.time - currentTime;
   const diffSeconds = Math.max(0, Math.floor(diffMs / 1000));
   const timeString = formatCountdownHoursMinutes(diffSeconds, language);
-  const prayerName = getPrayerName(prayerData.name.toLowerCase(), language);
+  const prayerName = getPrayerName(prayerData.name.toLowerCase(), language, prayerData.time);
   const activeKey = prayerData.name.toLowerCase();
 
   return (

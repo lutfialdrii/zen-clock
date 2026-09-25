@@ -681,7 +681,7 @@ function updateStatusBar(context: vscode.ExtensionContext) {
     nextPrayerDate = tomorrowTimes.timeForPrayer(nextPrayer);
   }
 
-  const nextPrayerLabel = getPrayerName(nextPrayer.toLowerCase(), lang);
+  const nextPrayerLabel = getPrayerName(nextPrayer.toLowerCase(), lang, nextPrayerDate);
   const nextPrayerTimeStr = nextPrayerDate ? formatTime(nextPrayerDate) : '';
 
   const diffSeconds = nextPrayerDate ? Math.max(0, Math.floor((nextPrayerDate.getTime() - now.getTime()) / 1000)) : 0;
@@ -733,12 +733,12 @@ function updateStatusBar(context: vscode.ExtensionContext) {
   tooltip.appendMarkdown(`| :--- | :---: | :--- |\n`);
 
   const prayersList = [
-    { key: 'fajr', name: getPrayerName('fajr', lang), time: prayerTimes.fajr },
-    { key: 'sunrise', name: getPrayerName('sunrise', lang), time: prayerTimes.sunrise },
-    { key: 'dhuhr', name: getPrayerName('dhuhr', lang), time: prayerTimes.dhuhr },
-    { key: 'asr', name: getPrayerName('asr', lang), time: prayerTimes.asr },
-    { key: 'maghrib', name: getPrayerName('maghrib', lang), time: prayerTimes.maghrib },
-    { key: 'isha', name: getPrayerName('isha', lang), time: prayerTimes.isha }
+    { key: 'fajr', name: getPrayerName('fajr', lang, prayerTimes.fajr), time: prayerTimes.fajr },
+    { key: 'sunrise', name: getPrayerName('sunrise', lang, prayerTimes.sunrise), time: prayerTimes.sunrise },
+    { key: 'dhuhr', name: getPrayerName('dhuhr', lang, prayerTimes.dhuhr), time: prayerTimes.dhuhr },
+    { key: 'asr', name: getPrayerName('asr', lang, prayerTimes.asr), time: prayerTimes.asr },
+    { key: 'maghrib', name: getPrayerName('maghrib', lang, prayerTimes.maghrib), time: prayerTimes.maghrib },
+    { key: 'isha', name: getPrayerName('isha', lang, prayerTimes.isha), time: prayerTimes.isha }
   ];
 
   for (const p of prayersList) {

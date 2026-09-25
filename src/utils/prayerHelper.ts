@@ -37,9 +37,24 @@ export const PRAYER_NAMES: Record<string, string> = {
   isha: 'Isya'
 };
 
-export function getPrayerName(key: string, lang: Language = 'id'): string {
+export function getPrayerName(key: string, lang: Language = 'id', date?: Date | number | string | null): string {
+  const normalizedKey = key.toLowerCase();
+  let targetDate: Date;
+  if (date instanceof Date && !isNaN(date.getTime())) {
+    targetDate = date;
+  } else if (typeof date === 'number' || typeof date === 'string') {
+    const parsed = new Date(date);
+    targetDate = !isNaN(parsed.getTime()) ? parsed : new Date();
+  } else {
+    targetDate = new Date();
+  }
+
+  if (normalizedKey === 'dhuhr' && targetDate.getDay() === 5) {
+    return "Jum'at";
+  }
+
   const t = getTranslations(lang);
-  return (t.prayers as Record<string, string>)[key] || PRAYER_NAMES[key] || key;
+  return (t.prayers as Record<string, string>)[normalizedKey] || PRAYER_NAMES[normalizedKey] || key;
 }
 
 export function getKemenagCalculationParameters(customAdjustments: PrayerAdjustments = {}): CalculationParameters {

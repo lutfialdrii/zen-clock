@@ -157,6 +157,7 @@
     "build:extension": "npm run compile",
     "preview": "vite preview",
     "dev": "vite",
+    "test": "esbuild tests/*.test.ts --bundle --platform=node --outdir=out/test && node --test out/test/*.js",
     "package:vsix": "npx @vscode/vsce package",
     "release:patch": "npm version patch -m 'chore(release): v%s'",
     "release:minor": "npm version minor -m 'chore(release): v%s'",
