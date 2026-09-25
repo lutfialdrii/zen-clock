@@ -16,6 +16,7 @@ out
 
 # VS Code Extension packaging
 *.vsix
+releases/
 
 # Editor directories and files
 .vscode/*

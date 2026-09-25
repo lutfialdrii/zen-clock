@@ -2,7 +2,7 @@
   "name": "extension-clock",
   "displayName": "Zen Clock: Pomodoro & Muslim Prayer Times",
   "description": "A mindful 3D flip clock, background Pomodoro timer, and automated Muslim prayer times with adhan reminder for VS Code & Antigravity IDE",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "lutfialdrii",
   "icon": "public/icons/icon-192.png",
   "license": "MIT",
@@ -158,7 +158,7 @@
     "preview": "vite preview",
     "dev": "vite",
     "test": "esbuild tests/*.test.ts --bundle --platform=node --outdir=out/test && node --test out/test/*.js",
-    "package:vsix": "npx @vscode/vsce package",
+    "package:vsix": "mkdir -p releases && npx @vscode/vsce package --out releases/",
     "release:patch": "npm version patch -m 'chore(release): v%s'",
     "release:minor": "npm version minor -m 'chore(release): v%s'",
     "release:major": "npm version major -m 'chore(release): v%s'"
