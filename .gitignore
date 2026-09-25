@@ -35,3 +35,7 @@ releases/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Excluded documentation
+docs/BRANCHING_STRATEGY.md
+docs/DEV_LOG.md
