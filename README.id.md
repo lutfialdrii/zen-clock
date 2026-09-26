@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VS_Code-Extension-007acc?logo=visualstudiocode&logoColor=white" alt="VS Code Extension" />
+  <a href="https://marketplace.visualstudio.com/items?itemName=lutfialdrii.extension-clock"><img src="https://img.shields.io/badge/Visual_Studio_Marketplace-v0.0.2-007acc?logo=visualstudiocode&logoColor=white" alt="Visual Studio Marketplace" /></a>
   <img src="https://img.shields.io/badge/Antigravity_IDE-Compatible-4285F4?logo=google&logoColor=white" alt="Antigravity IDE" />
   <img src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
@@ -94,23 +94,41 @@
 
 ---
 
-## 📦 Pemasangan Ekstensi (.vsix)
+## 📦 Cara Pemasangan (Instalasi)
 
-Unduh file ekstensi `.vsix` dari halaman [Releases](https://github.com/lutfialdrii/zen-clock/releases).
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=lutfialdrii.extension-clock">
+    <img src="https://img.shields.io/badge/Pasang_dari-VS_Marketplace-007acc?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Pasang dari Visual Studio Marketplace" />
+  </a>
+</p>
 
-### Cara 1: Lewat Antarmuka IDE (Direkomendasikan)
-1. Buka **VS Code** atau **Antigravity IDE**.
-2. Tekan `Ctrl+Shift+X` (atau `Cmd+Shift+X` di macOS) untuk membuka panel **Extensions**.
-3. Klik ikon menu titik tiga (**`...`**) di pojok kanan atas panel Extensions.
-4. Pilih **Install from VSIX...**
-5. Pilih file `extension-clock-0.0.1.vsix` yang telah diunduh.
-6. Ikon **Zen Clock** akan langsung muncul di Activity Bar sebelah kiri Anda!
+### 1. Melalui Visual Studio Marketplace (Direkomendasikan)
 
-### Cara 2: Lewat Terminal / Command Line
-```bash
-code --install-extension extension-clock-0.0.1.vsix
-```
-*(Ganti `code` dengan `antigravity` jika menggunakan Antigravity IDE CLI)*
+- **Lewat Antarmuka IDE (VS Code / Antigravity IDE)**:
+  1. Buka **VS Code** atau **Antigravity IDE**.
+  2. Tekan `Ctrl+Shift+X` (atau `Cmd+Shift+X` di macOS) untuk membuka panel **Extensions**.
+  3. Cari **`Zen Clock`** atau **`lutfialdrii.extension-clock`**.
+  4. Klik tombol **Install**.
+
+- **Lewat Terminal / Command Line**:
+  ```bash
+  code --install-extension lutfialdrii.extension-clock
+  ```
+  *(Ganti `code` dengan `antigravity` jika menggunakan Antigravity IDE CLI)*
+
+- **Lewat Browser Web**:
+  Buka halaman [Zen Clock di Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=lutfialdrii.extension-clock) lalu klik **Install**.
+
+### 2. Pemasangan Manual via File VSIX (Offline / Releases)
+
+1. Unduh file `.vsix` versi terbaru dari halaman [Releases](https://github.com/lutfialdrii/zen-clock/releases).
+2. Di VS Code / Antigravity IDE, buka panel Extensions (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+3. Klik menu titik tiga (**`...`**) di pojok kanan atas $\rightarrow$ pilih **Install from VSIX...**
+4. Pilih file `.vsix` yang telah diunduh.
+5. Atau jalankan via terminal:
+   ```bash
+   code --install-extension extension-clock-0.0.2.vsix
+   ```
 
 ---
 

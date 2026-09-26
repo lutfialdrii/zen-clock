@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VS_Code-Extension-007acc?logo=visualstudiocode&logoColor=white" alt="VS Code Extension" />
+  <a href="https://marketplace.visualstudio.com/items?itemName=lutfialdrii.extension-clock"><img src="https://img.shields.io/badge/Visual_Studio_Marketplace-v0.0.2-007acc?logo=visualstudiocode&logoColor=white" alt="Visual Studio Marketplace" /></a>
   <img src="https://img.shields.io/badge/Antigravity_IDE-Compatible-4285F4?logo=google&logoColor=white" alt="Antigravity IDE" />
   <img src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
@@ -94,23 +94,41 @@
 
 ---
 
-## 📦 Installation (.vsix)
+## 📦 Installation
 
-Download the `.vsix` extension package from the [Releases](https://github.com/lutfialdrii/zen-clock/releases) page.
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=lutfialdrii.extension-clock">
+    <img src="https://img.shields.io/badge/Install-VS_Marketplace-007acc?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install from Visual Studio Marketplace" />
+  </a>
+</p>
 
-### Method 1: Via VS Code / Antigravity IDE UI (Recommended)
-1. Open **VS Code** or **Antigravity IDE**.
-2. Press `Ctrl+Shift+X` (or `Cmd+Shift+X` on macOS) to open the **Extensions** panel.
-3. Click the three dots menu (**`...`**) in the top-right corner.
-4. Select **Install from VSIX...**
-5. Select the downloaded `extension-clock-0.0.1.vsix` file.
-6. The **Zen Clock** icon will appear on your Activity Bar!
+### 1. Visual Studio Marketplace (Recommended)
 
-### Method 2: Via Terminal / Command Line
-```bash
-code --install-extension extension-clock-0.0.1.vsix
-```
-*(Or `antigravity --install-extension extension-clock-0.0.1.vsix` for Antigravity IDE CLI)*
+- **Inside VS Code or Antigravity IDE**:
+  1. Open **VS Code** or **Antigravity IDE**.
+  2. Press `Ctrl+Shift+X` (or `Cmd+Shift+X` on macOS) to open the **Extensions** panel.
+  3. Search for **`Zen Clock`** or **`lutfialdrii.extension-clock`**.
+  4. Click **Install**.
+
+- **Via Terminal / Command Line**:
+  ```bash
+  code --install-extension lutfialdrii.extension-clock
+  ```
+  *(Or `antigravity --install-extension lutfialdrii.extension-clock` for Antigravity IDE CLI)*
+
+- **Via Web Browser**:
+  Visit [Zen Clock on Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=lutfialdrii.extension-clock) and click **Install**.
+
+### 2. Manual Installation (.vsix offline package)
+
+1. Download the latest `.vsix` file from the [Releases](https://github.com/lutfialdrii/zen-clock/releases) page.
+2. In VS Code / Antigravity IDE, open Extensions (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+3. Click the three dots menu (**`...`**) in the top-right corner $\rightarrow$ select **Install from VSIX...**
+4. Choose the downloaded `.vsix` file.
+5. Or run via terminal:
+   ```bash
+   code --install-extension extension-clock-0.0.2.vsix
+   ```
 
 ---
 
