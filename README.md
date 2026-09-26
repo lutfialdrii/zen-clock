@@ -19,6 +19,7 @@
   <img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
+  <a href="https://saweria.co/lutfialdrii"><img src="https://img.shields.io/badge/Saweria-Support_Creator-faae2b?logo=kofi&logoColor=black" alt="Support on Saweria" /></a>
 </p>
 
 ---
@@ -172,6 +173,18 @@ npm run package:vsix
 
 Looking for the standalone web app / Progressive Web App (PWA) version of Zen Clock?  
 The web edition is maintained in its dedicated repository: [`zen-flip-clock`](https://github.com/lutfialdrii/zen-flip-clock).
+
+---
+
+## 💖 Support the Project
+
+If you find Zen Clock helpful for your daily workflow, focus, and mindful prayer times, consider supporting the creator:
+
+<p align="center">
+  <a href="https://saweria.co/lutfialdrii" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Support_via-Saweria-faae2b?style=for-the-badge&logo=kofi&logoColor=black" alt="Support via Saweria" />
+  </a>
+</p>
 
 ---
 

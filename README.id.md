@@ -19,6 +19,7 @@
   <img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
+  <a href="https://saweria.co/lutfialdrii"><img src="https://img.shields.io/badge/Saweria-Dukung_Kreator-faae2b?logo=kofi&logoColor=black" alt="Dukung di Saweria" /></a>
 </p>
 
 ---
@@ -172,6 +173,18 @@ npm run package:vsix
 
 Mencari versi web standalone atau Progressive Web App (PWA) dari Zen Clock?  
 Versi web dikelola secara independen di repositori terpisah: [`zen-flip-clock`](https://github.com/lutfialdrii/zen-flip-clock).
+
+---
+
+## 💖 Dukung Pengembangan
+
+Jika Zen Clock bermanfaat untuk produktivitas coding dan ketepatan waktu ibadah Anda sehari-hari, Anda dapat memberikan apresiasi dan dukungan kepada pengembang melalui:
+
+<p align="center">
+  <a href="https://saweria.co/lutfialdrii" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Dukung_via-Saweria-faae2b?style=for-the-badge&logo=kofi&logoColor=black" alt="Dukung via Saweria" />
+  </a>
+</p>
 
 ---
 
